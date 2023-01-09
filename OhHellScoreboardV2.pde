@@ -40,6 +40,7 @@ class Tile {
 class Player {
   int score = 0;
   int bid = 0;
+  boolean has_bid = false;
   int taken = 0;
   int total_bid = 0;
   int total_taken = 0;
@@ -61,12 +62,18 @@ class Player {
     return this;
   }
   String toString() {
-    return score + "," + bid + "," + taken + "," + total_bid + "," + total_taken + "," + bonuses + "," + times_set + "," + hands_played + "," + name;
+    return score + "," + (has_bid ? bid : "X") + "," + taken + "," + total_bid + "," + total_taken + "," + bonuses + "," + times_set + "," + hands_played + "," + name;
   }
   Player parse(String in) {
     String[] inputs = in.split(",");
     score = parseInt(inputs[0]);
-    bid = parseInt(inputs[1]);
+    if(inputs[1].equals("X")) {
+      bid = 0;
+      has_bid = false;
+    } else {
+      bid = parseInt(inputs[1]);
+      has_bid = true;
+    }
     taken = parseInt(inputs[2]);
     total_bid = parseInt(inputs[3]);
     total_taken = parseInt(inputs[4]);
@@ -637,8 +644,10 @@ void draw() {
       }
       textSize(game_tiles[0].w()*0.04);
       text("Bid", p.tile.x() + p.tile.w()/8, p.tile.my() - p.tile.w()/6);
-      textSize(p.tile.w()*0.1);
-      text(p.bid, p.tile.x() + p.tile.w()/8, p.tile.my() - p.tile.w()/10);
+      if(p.has_bid) {
+        textSize(p.tile.w()*0.1);
+        text(p.bid, p.tile.x() + p.tile.w()/8, p.tile.my() - p.tile.w()/10);
+      }
       if(!bidding) {
         textSize(game_tiles[0].w()*0.04);
         text("Taken", p.tile.mx() - p.tile.w()/8, p.tile.my() - p.tile.w()/6);
@@ -871,6 +880,9 @@ void mousePressed() {
         if(p.tile.mouseInTile()) {
           if(mouseButton == LEFT) {
             if(p.bid <= tricks[trick_index] || trick_mode == 0) {
+              if(!p.has_bid) {
+                p.has_bid = true;
+              }
               p.bid++;
             } else {
               displayError("Maximum bid for this hand is " + (tricks[trick_index] + 1));
@@ -878,7 +890,11 @@ void mousePressed() {
           } else if(p.bid > 0) {
             p.bid--;
           } else {
-            displayError("Minimum bid is 0");
+            if(p.has_bid) {
+              displayError("Minimum bid is 0");
+            } else {
+              p.has_bid = true;
+            }
           }
           return;
         }
@@ -920,13 +936,19 @@ void mousePressed() {
     if(proceed_button.mouseInTile()) {
       if(bidding) {
         int total_bid = 0;
-        for(int i = 0; i < players.size(); i++) {
-          total_bid += players.get(i).bid;
+        boolean all_players_bid = true;
+        for(Player p : players) {
+          total_bid += p.bid;
+          all_players_bid &= p.has_bid;
         }
-        if(trick_mode == 0 || total_bid != tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
-          bidding = false;
+        if(all_players_bid) {
+          if(trick_mode == 0 || total_bid != tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
+            bidding = false;
+          } else {
+            displayError("Tricks bid can't equal tricks dealt - override with enter + right click");
+          }
         } else {
-          displayError("Tricks bid can't equal tricks dealt - override with enter + right click");
+          displayError("Not all players have a bid entered");
         }
       } else {
         int total_taken = 0;
@@ -953,6 +975,7 @@ void mousePressed() {
             p.hands_played++;
             Logger.write(p.name + " bid " + p.bid + " tricks and took " + p.taken + ". " + old + " --> " + p.score);
             p.bid = 0;
+            p.has_bid = false;
             p.taken = 0;
           }
           if(trick_mode != 0) {
