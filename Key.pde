@@ -72,34 +72,16 @@ void keyTyped() {
       if(i != 0 && i - 1 < players.size()) {
         i--;
         Player p = players.get(i);
-        if(getKeyValue(key) > 0) {
-          if(p.bid <= tricks[trick_index] || p.bid == 0 || trick_mode == 0) {
-            p.bid++;
-          } else {
-            displayError("Maximum bid for this hand is " + (tricks[trick_index] + 1));
-          }
-        } else if(players.get(i).bid > 0) {
-          p.bid--;
-        } else {
-          displayError("Minimum bid is 0");
-        }
+        handleBidChange(p, getKeyValue(key) > 0);
+        return;
       }
     } else {
       int i = Math.abs(getKeyValue(key));
       if(i != 0 && i - 1 < players.size()) {
         i--;
         Player p = players.get(i);
-        if(getKeyValue(key) > 0) {
-          if(p.taken < tricks[trick_index] || trick_mode == 0) {
-            p.taken++;
-          } else {
-            displayError("Cannot take more tricks than were dealt");
-          }
-        } else if(p.taken > 0) {
-          p.taken--;
-        } else {
-          displayError("Tricks taken must be greater than zero");
-        }
+        handleTakenChange(p, getKeyValue(key) > 0);
+        return;
       }
     }
   }

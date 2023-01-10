@@ -160,24 +160,7 @@ void mousePressed() {
       for(int i = 0; i < players.size(); i++) {
         Player p = players.get(i);
         if(p.tile.mouseInTile()) {
-          if(mouseButton == LEFT) {
-            if(p.bid <= tricks[trick_index] || trick_mode == 0) {
-              if(!p.has_bid) {
-                p.has_bid = true;
-              }
-              p.bid++;
-            } else {
-              displayError("Maximum bid for this hand is " + (tricks[trick_index] + 1));
-            }
-          } else if(p.bid > 0) {
-            p.bid--;
-          } else {
-            if(p.has_bid) {
-              displayError("Minimum bid is 0");
-            } else {
-              p.has_bid = true;
-            }
-          }
+          handleBidChange(p, mouseButton == LEFT);
           return;
         }
       }
@@ -185,17 +168,7 @@ void mousePressed() {
       for(int i = 0; i < players.size(); i++) {
         Player p = players.get(i);
         if(p.tile.mouseInTile()) {
-          if(mouseButton == LEFT) {
-            if(p.taken < tricks[trick_index] || trick_mode == 0) {
-              p.taken++;
-            } else {
-              displayError("Cannot take more tricks than were dealt");
-            }
-          } else if(p.taken > 0) {
-            p.taken--;
-          } else {
-            displayError("Tricks taken must be greater than zero");
-          }
+          handleTakenChange(p, mouseButton == LEFT);
           return;
         }
       }

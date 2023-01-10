@@ -192,6 +192,39 @@ void resetFramerateCooldown() {
   low_framerate_cooldown = 60;
   frameRate(30);
 }
+void handleBidChange(Player p, boolean pos) {
+  if(pos) {
+    if(p.bid <= tricks[trick_index] || trick_mode == 0) {
+      if(!p.has_bid) {
+        p.has_bid = true;
+      }
+      p.bid++;
+    } else {
+      displayError("Maximum bid for this hand is " + (tricks[trick_index] + 1));
+    }
+  } else if(p.bid > 0) {
+    p.bid--;
+  } else {
+    if(p.has_bid) {
+      displayError("Minimum bid is 0");
+    } else {
+      p.has_bid = true;
+    }
+  }
+}
+void handleTakenChange(Player p, boolean pos) {
+  if(pos) {
+    if(p.taken < tricks[trick_index] || trick_mode == 0) {
+      p.taken++;
+    } else {
+      displayError("Cannot take more tricks than were dealt");
+    }
+  } else if(p.taken > 0) {
+    p.taken--;
+  } else {
+    displayError("Tricks taken must be greater than zero");
+  }
+}
 void setup() {
   if(debug) {
     println("System properties:");
