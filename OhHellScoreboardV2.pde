@@ -42,11 +42,11 @@ void numberOfPlayersChanged(boolean holdIndex) {
   setGameTiles();
   if(setup) {
     for(int i = 0; i < players.size(); i++) {
-      players.get(i).setColor(main_theme.getPlayerColor(i)).setTile(setup_tiles[i]);
+      players.get(i).setColor(theme_default.getPlayerColor(i)).setTile(setup_tiles[i]);
     }
   } else {
     for(int i = 0; i < players.size(); i++) {
-      players.get(i).setColor(main_theme.getPlayerColor(i)).setTile(game_tiles[i]);
+      players.get(i).setColor(theme_default.getPlayerColor(i)).setTile(game_tiles[i]);
     }
   }
   int max_deal = suits*cards_per_suit/players.size();
@@ -234,6 +234,7 @@ void setup() {
   fullScreen();
   frameRate(30);
   aspect_ratio = (float)width/height;
+  loadThemes();
   setInitialValues();
   try {
     loadState("latest");

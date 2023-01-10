@@ -93,10 +93,10 @@ void mousePressed() {
     if(add_player_button.mouseInTile()) {
       if(players.size() < MAX_PLAYERS) {
         if(selected_player == -1) {
-          players.add(new Player("").setColor(main_theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+          players.add(new Player("").setColor(theme_default.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
           numberOfPlayersChanged(false);
         } else {
-          players.add(selected_player, new Player("").setColor(main_theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+          players.add(selected_player, new Player("").setColor(theme_default.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
           selected_player++;
           numberOfPlayersChanged(false);
         }
