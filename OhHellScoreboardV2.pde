@@ -42,11 +42,11 @@ void numberOfPlayersChanged(boolean holdIndex) {
   setGameTiles();
   if(setup) {
     for(int i = 0; i < players.size(); i++) {
-      players.get(i).setColor(theme_default.getPlayerColor(i)).setTile(setup_tiles[i]);
+      players.get(i).setColor(theme.getPlayerColor(i)).setTile(setup_tiles[i]);
     }
   } else {
     for(int i = 0; i < players.size(); i++) {
-      players.get(i).setColor(theme_default.getPlayerColor(i)).setTile(game_tiles[i]);
+      players.get(i).setColor(theme.getPlayerColor(i)).setTile(game_tiles[i]);
     }
   }
   int max_deal = suits*cards_per_suit/players.size();
@@ -137,12 +137,12 @@ void drawButton(Tile location, String text, float size, boolean enabled, boolean
   if(enabled && hoverable && location.mouseInTile()) {
     fill(mousePressed ? 127 : 64);
   } else {
-    fill(0);
+    fill(theme.background_color);
   }
   strokeWeight(2);
-  stroke(255);
+  stroke(theme.line_color);
   rect(location.x(), location.y(), location.w(), location.h());
-  fill(enabled ? 255 : 64);
+  fill(enabled ? theme.line_color : 64);
   textSize(size*width);
   text(text, location.cx(), location.cy() - size*width*0.1);
 }
@@ -257,10 +257,10 @@ void draw() {
   if(low_framerate_cooldown == 0) {
     frameRate(2);
   }
-  background(0);
+  background(theme.background_color);
   if(frc % 5 == 0) saveState("latest");
   strokeWeight(2);
-  stroke(255);
+  stroke(theme.line_color);
   textAlign(CENTER, CENTER);
   if(setup) {
     for(int i = 0; i < players.size(); i++) {
@@ -296,10 +296,10 @@ void draw() {
     drawButton(begin_game_button, "Begin Game", 0.02, true, !popup_shown);
     if(custom_tricks_window) {
       fill(64, 230);
-      stroke(255);
+      stroke(theme.line_color);
       rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
       drawButton(close_popup_button, "X", 0.02, true, true);
-      fill(255);
+      fill(theme.line_color);
       textSize(width*0.05);
       text("Trick Customization", popup_window.cx(), popup_window.y() + height/12);
       textAlign(CENTER, TOP);
@@ -312,7 +312,7 @@ void draw() {
       } else if(trick_mode == 6) {
         preview = "Custom trick sequences are not currently available.";
       } else {
-        fill(255);
+        fill(theme.line_color);
         for(int i = 0; i < tricks.length; i++) {
           if(i == trick_index) {
             preview += "*";
@@ -343,7 +343,7 @@ void draw() {
       Player p = players.get(i);
       total_bid += p.bid;
       total_taken += p.taken;
-      fill(0);
+      fill(theme.background_color);
       rect(p.tile.x(), p.tile.y(), p.tile.w(), p.tile.h());
       fill(p.display_color);
       textSize(game_tiles[0].w()*0.1);
@@ -355,7 +355,7 @@ void draw() {
         text(-p.score, p.tile.cx() + p.tile.h()*0.15, p.tile.my() - 2*p.tile.h()/5);
         noStroke();
         rect(p.tile.cx() + p.tile.h()*0.16 - 0.5*textWidth(String.valueOf(-p.score)), p.tile.y() + 0.55*p.tile.h(), -p.tile.h()/6, p.tile.h()/24);
-        stroke(255);
+        stroke(theme.line_color);
       }
       textSize(game_tiles[0].w()*0.04);
       text("Bid", p.tile.x() + p.tile.w()/8, p.tile.my() - p.tile.w()/6);
@@ -376,7 +376,7 @@ void draw() {
       drawButton(proceed_button, "Proceed", 0.02, trick_mode == 0 || (bidding && total_bid != tricks[trick_index]) || (!bidding && total_taken == tricks[trick_index]), true);
       drawButton(end_game_button, "End Game", 0.02, true, true);
       textSize(width*0.01);
-      fill(255);
+      fill(theme.line_color);
       text("Deal", 18*width/25, height*17/20);
       text("Bid", 4*width/5, height*17/20);
       text("Taken", 22*width/25, height*17/20);
@@ -393,7 +393,7 @@ void draw() {
         }
       }
       text(total_bid, 4*width/5, 11*height/12);
-      fill(255);
+      fill(theme.line_color);
       text(total_taken, 22*width/25, 11*height/12);
       PImage trump_icon = trumpIcon();
       if(trump_icon != null) {
@@ -402,13 +402,13 @@ void draw() {
     } else {
       drawButton(restart_button, "Restart", 0.02, true, true);
       textSize(width*0.05);
-      fill(255);
+      fill(theme.line_color);
       text("Game Over", width/2, height*11/12 - width*0.005);
     }
   }
   if(error_frames > 0) {
     fill(64, 230);
-    stroke(255);
+    stroke(theme.line_color);
     if(error_frames <= 15) {
       fill(64, 16*error_frames);
       stroke(255, 16*error_frames);
@@ -427,7 +427,7 @@ void draw() {
   if(debug) {
     textAlign(LEFT, TOP);
     textSize(20);
-    fill(255);
+    fill(theme.line_color);
     text("Milliseconds since last frame: " + frametime, 2, 2);
   }
 }

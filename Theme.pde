@@ -2,14 +2,19 @@ class Theme {
   color[] player_colors = new color[MAX_PLAYERS];
   color background_color = 0;
   color line_color = 0;
-  Theme(color bc, color lc, color[] pc) {
+  String file = "";
+  String name = "Unnamed";
+  Theme(color bc, color lc, color[] pc, String f, String n) {
     player_colors = pc;
     background_color = bc;
     line_color = lc;
+    file = f;
+    name = n;
   }
-  Theme(String filename) {
+  Theme(String directory, String filename, String n) {
     try {
-      String[] lines = loadStrings(filename);
+      name = n;
+      String[] lines = loadStrings(directory + FILE_SEPARATOR + filename);
       if(lines.length < MAX_PLAYERS + 2) {
         System.err.println("Could not load theme \"" + filename + "\": expected " + (MAX_PLAYERS + 2) + " lines, only found " + lines.length);
       } else {
@@ -19,6 +24,7 @@ class Theme {
           player_colors[i] = colorFromLine(lines[i + 2]);
         }
       }
+      file = filename;
     } catch(Exception e) {
       System.err.println("Exception loading theme \"" + filename + "\": " + e.toString());
     }
@@ -40,7 +46,20 @@ class Theme {
     }
   }
 }
-Theme theme_default;
+ArrayList<Theme> themes;
+int theme_index = 0;
+Theme theme;
 void loadThemes() {
-  theme_default = new Theme("themes" + FILE_SEPARATOR + "default.ohsctheme");
+  themes = new ArrayList<Theme>();
+  try {
+    String[] themes_list = loadStrings("themes" + FILE_SEPARATOR + "themes.txt");
+    for(int i = 0; i < themes_list.length; i++) {
+      String file = themes_list[i].split(":")[0];
+      String name = themes_list[i].split(":")[1];
+      themes.add(new Theme("themes", file, name));
+    }
+  } catch(Exception e) {
+    System.err.println("Could not read themes.txt: " + e.toString());
+  }
+  theme = themes.get(theme_index);
 }
