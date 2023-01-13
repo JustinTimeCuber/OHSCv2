@@ -1,27 +1,53 @@
 class Theme {
   color[] player_colors = new color[MAX_PLAYERS];
   color background_color = 0;
+  color popup_background_color = 0;
   color line_color = 0;
+  color text_color = 0;
+  color grayed_text_color = 0;
+  color error_text_color = 0;
+  color button_click_color = 0;
+  color button_hover_color = 0;
+  color underbid_color = 0;
+  color overbid_color = 0;
   String file = "";
   String name = "Unnamed";
-  Theme(color bc, color lc, color[] pc, String f, String n) {
-    player_colors = pc;
+  Theme(color bc, color pbc, color lc, color tc, color gtc, color etc, color bcc, color bhc, color ubc, color obc, color[] pc, String f, String n) {
     background_color = bc;
+    popup_background_color = pbc;
     line_color = lc;
+    text_color = tc;
+    grayed_text_color = gtc;
+    error_text_color = etc;
+    button_click_color = bcc;
+    button_hover_color = bhc;
+    underbid_color = ubc;
+    overbid_color = obc;
+    player_colors = pc;
     file = f;
     name = n;
   }
+  // TODO: Make this use label parsing instead of hardcoded line indices
   Theme(String directory, String filename, String n) {
     try {
       name = n;
       String[] lines = loadStrings(directory + FILE_SEPARATOR + filename);
-      if(lines.length < MAX_PLAYERS + 2) {
-        System.err.println("Could not load theme \"" + filename + "\": expected " + (MAX_PLAYERS + 2) + " lines, only found " + lines.length);
+      final int DELTA = 10;
+      if(lines.length < MAX_PLAYERS + DELTA) {
+        System.err.println("Could not load theme \"" + filename + "\": expected " + (MAX_PLAYERS + DELTA) + " lines, only found " + lines.length);
       } else {
         background_color = colorFromLine(lines[0]);
-        line_color = colorFromLine(lines[1]);
+        popup_background_color = colorFromLine(lines[1]);
+        line_color = colorFromLine(lines[2]);
+        text_color = colorFromLine(lines[3]);
+        grayed_text_color = colorFromLine(lines[4]);
+        error_text_color = colorFromLine(lines[5]);
+        button_click_color = colorFromLine(lines[6]);
+        button_hover_color = colorFromLine(lines[7]);
+        underbid_color = colorFromLine(lines[8]);
+        overbid_color = colorFromLine(lines[9]);
         for(int i = 0; i < MAX_PLAYERS; i++) {
-          player_colors[i] = colorFromLine(lines[i + 2]);
+          player_colors[i] = colorFromLine(lines[i + DELTA]);
         }
       }
       file = filename;

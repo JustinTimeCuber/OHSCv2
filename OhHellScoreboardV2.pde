@@ -135,14 +135,14 @@ void setInitialValues() {
 }
 void drawButton(Tile location, String text, float size, boolean enabled, boolean hoverable) {
   if(enabled && hoverable && location.mouseInTile()) {
-    fill(mousePressed ? 127 : 64);
+    fill(mousePressed ? theme.button_click_color : theme.button_hover_color);
   } else {
     fill(theme.background_color);
   }
   strokeWeight(2);
   stroke(theme.line_color);
   rect(location.x(), location.y(), location.w(), location.h());
-  fill(enabled ? theme.line_color : 64);
+  fill(enabled ? theme.text_color : theme.grayed_text_color);
   textSize(size*width);
   text(text, location.cx(), location.cy() - size*width*0.1);
 }
@@ -295,7 +295,7 @@ void draw() {
     drawButton(theme_button, "Themes", 0.02, false, !popup_shown);
     drawButton(begin_game_button, "Begin Game", 0.02, true, !popup_shown);
     if(custom_tricks_window) {
-      fill(64, 230);
+      fill(theme.popup_background_color, 230);
       stroke(theme.line_color);
       rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
       drawButton(close_popup_button, "X", 0.02, true, true);
@@ -306,13 +306,13 @@ void draw() {
       textSize(width*0.02);
       text("Number of suits: " + suits + "\nCards per suit: " + cards_per_suit + "\nTotal cards in deck: " + (suits*cards_per_suit) + "\nTrick mode: " + trickMode() + "\nPreview:", popup_window.cx(), popup_window.y() + width/10);
       String preview = "";
-      fill(255, 0, 0);
+      fill(theme.error_text_color);
       if(trick_mode == 0) {
         preview = "Trick sequence disabled; some checks will not function";
       } else if(trick_mode == 6) {
         preview = "Custom trick sequences are not currently available.";
       } else {
-        fill(theme.line_color);
+        fill(theme.text_color);
         for(int i = 0; i < tricks.length; i++) {
           if(i == trick_index) {
             preview += "*";
@@ -376,7 +376,7 @@ void draw() {
       drawButton(proceed_button, "Proceed", 0.02, trick_mode == 0 || (bidding && total_bid != tricks[trick_index]) || (!bidding && total_taken == tricks[trick_index]), true);
       drawButton(end_game_button, "End Game", 0.02, true, true);
       textSize(width*0.01);
-      fill(theme.line_color);
+      fill(theme.text_color);
       text("Deal", 18*width/25, height*17/20);
       text("Bid", 4*width/5, height*17/20);
       text("Taken", 22*width/25, height*17/20);
@@ -386,14 +386,14 @@ void draw() {
       if(!bidding) {
         if(trick_mode != 0) {
           if(total_bid < tricks[trick_index]) {
-            fill(255, 127, 127);
+            fill(theme.underbid_color);
           } else {
-            fill(127, 191, 255);
+            fill(theme.overbid_color);
           }
         }
       }
       text(total_bid, 4*width/5, 11*height/12);
-      fill(theme.line_color);
+      fill(theme.text_color);
       text(total_taken, 22*width/25, 11*height/12);
       PImage trump_icon = trumpIcon();
       if(trump_icon != null) {
@@ -402,23 +402,23 @@ void draw() {
     } else {
       drawButton(restart_button, "Restart", 0.02, true, true);
       textSize(width*0.05);
-      fill(theme.line_color);
+      fill(theme.text_color);
       text("Game Over", width/2, height*11/12 - width*0.005);
     }
   }
   if(error_frames > 0) {
-    fill(64, 230);
+    fill(theme.popup_background_color, 230);
     stroke(theme.line_color);
     if(error_frames <= 15) {
-      fill(64, 16*error_frames);
-      stroke(255, 16*error_frames);
+      fill(theme.popup_background_color, 16*error_frames);
+      stroke(theme.line_color, 16*error_frames);
     }
     textSize(width*0.025);
     textAlign(CENTER, CENTER);
     rect(width*0.45 - 0.5*textWidth(error_message), height*0.45, width*0.1 + textWidth(error_message), height*0.1);
-    fill(255, 0, 0);
+    fill(theme.error_text_color);
     if(error_frames <= 25) {
-      fill(255, 0, 0, 10*error_frames);
+      fill(theme.error_text_color, 10*error_frames);
     }
     text(error_message, width/2, height/2 - width*0.0025);
     error_frames--;
@@ -427,7 +427,7 @@ void draw() {
   if(debug) {
     textAlign(LEFT, TOP);
     textSize(20);
-    fill(theme.line_color);
+    fill(theme.text_color);
     text("Milliseconds since last frame: " + frametime, 2, 2);
   }
 }
