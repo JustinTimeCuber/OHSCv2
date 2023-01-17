@@ -74,18 +74,32 @@ class Theme {
 }
 ArrayList<Theme> themes;
 int theme_index = 0;
+String theme_file;
 Theme theme;
 void loadThemes() {
+  if(themes == null) {
   themes = new ArrayList<Theme>();
-  try {
-    String[] themes_list = loadStrings("themes" + FILE_SEPARATOR + "themes.txt");
-    for(int i = 0; i < themes_list.length; i++) {
-      String file = themes_list[i].split(":")[0];
-      String name = themes_list[i].split(":")[1];
-      themes.add(new Theme("themes", file, name));
+    try {
+      String[] themes_list = loadStrings("themes" + FILE_SEPARATOR + "themes.txt");
+      for(int i = 0; i < themes_list.length; i++) {
+        String file = themes_list[i].split(":")[0];
+        String name = themes_list[i].split(":")[1];
+        themes.add(new Theme("themes", file, name));
+        if(file.equals(theme_file)) {
+          theme_index = i;
+        }
+      }
+    } catch(Exception e) {
+      System.err.println("Could not read themes.txt: " + e.toString());
     }
-  } catch(Exception e) {
-    System.err.println("Could not read themes.txt: " + e.toString());
+  } else {
+    for(int i = 0; i < themes.size(); i++) {
+      Theme t = themes.get(i);
+      if(t.file.equals(theme_file)) {
+        theme_index = i;
+      }
+    }
   }
   theme = themes.get(theme_index);
+  println(theme_index);
 }

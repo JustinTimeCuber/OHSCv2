@@ -14,6 +14,7 @@ void saveState(String filename) {
   state.add("custom_tricks_window:" + custom_tricks_window);
   state.add("setup:" + setup);
   state.add("hands_played:" + hands_played);
+  state.add("theme_file:" + theme.file);
   for(Player p : players) {
     state.add("player:" + p.toString());
   }
@@ -41,8 +42,10 @@ void loadState(String filename) {
     else if(label.equals("custom_tricks_window")) custom_tricks_window = parseBoolean(value);
     else if(label.equals("setup")) setup = parseBoolean(value);
     else if(label.equals("hands_played")) hands_played = parseInt(value);
+    else if(label.equals("theme_file")) theme_file = value;
     else if(label.equals("player")) players.add(new Player("").parse(value));
     else System.err.println("Unrecognized label: " + label);
   }
+  loadThemes();
   numberOfPlayersChanged(true);
 }

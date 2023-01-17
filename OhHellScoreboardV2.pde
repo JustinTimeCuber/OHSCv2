@@ -130,6 +130,7 @@ void setInitialValues() {
   end_game_button = new Tile(13./25, 7./8, 16./25, 23./24);
   restart_button = new Tile(18./25, 7./8, 23./25, 23./24);
   trump_suit_bounding_box = new Tile(23./25, 1 - aspect_ratio*2./25, 1, 1);
+  loadThemes();
   numberOfPlayersChanged(false);
   Logger.reset();
 }
@@ -234,7 +235,6 @@ void setup() {
   fullScreen();
   frameRate(30);
   aspect_ratio = (float)width/height;
-  loadThemes();
   setInitialValues();
   try {
     loadState("latest");
