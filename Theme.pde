@@ -101,5 +101,12 @@ void loadThemes() {
     }
   }
   theme = themes.get(theme_index);
-  println(theme_index);
+}
+void setTheme(int index) {  
+  theme_index = index;
+  if(theme_index >= themes.size()) {
+    theme_index = 0;
+  }
+  theme = themes.get(theme_index);
+  theme_file = theme.file;
 }

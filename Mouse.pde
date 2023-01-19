@@ -143,7 +143,8 @@ void mousePressed() {
       setInitialValues();
     }
     if(theme_button.mouseInTile()) {
-      displayError("Themes have not been implemented yet.");
+      theme_index++;
+      setTheme(theme_index);
       return;
     }
     if(begin_game_button.mouseInTile()) {

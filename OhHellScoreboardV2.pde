@@ -292,7 +292,7 @@ void draw() {
     drawButton(ten_point_button, "Add/Remove 10 pts", 0.02, selected_player != -1, !popup_shown);
     drawButton(custom_tricks_button, "Trick Options", 0.02, true, !popup_shown);
     drawButton(reset_button, "Reset", 0.02, true, !popup_shown);
-    drawButton(theme_button, "Themes", 0.02, false, !popup_shown);
+    drawButton(theme_button, "Themes", 0.02, true, !popup_shown);
     drawButton(begin_game_button, "Begin Game", 0.02, true, !popup_shown);
     if(custom_tricks_window) {
       fill(theme.popup_background_color, 230);
