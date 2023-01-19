@@ -1,3 +1,16 @@
+v2.1 beta 1
++ Add initial theme support
+    Currently no theme editor within the scoreboard, but custom themes can be added manually
+    Button currently cycles through loaded themes, but a full GUI for selecting a theme will be added in the future
+    Currently has a dark theme and a light theme
+* Bids no longer show at all until entered, instead of showing a 0
+    Each player must have a bid entered directly, even if that bid is 0
+    Right-clicking will initialize bid to 0
+    Left-clicking will initialize bid to 1
+* Code cleanup
+    Subclasses split into separate files
+- Known issue: It is possible to bypass bid checks by adding a player after bids have been entered
+
 v2.0
   No changes from 2.0rc4; Release project on GitHub
 
