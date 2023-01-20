@@ -100,6 +100,7 @@ void mousePressed() {
           selected_player++;
           numberOfPlayersChanged(false);
         }
+        bidding = true;
       } else {
         displayError("The maximum number of players is " + MAX_PLAYERS);
       }
