@@ -1,3 +1,10 @@
+v2.1 beta 2
++ Add grayscale themes
+    Mono dark with a black background and white text
+    Mono light with a white background and black text
+* Improved light theme
+* Fixed issue where changing the theme using the theme button would not affect player colors
+
 v2.1 beta 1
 + Add initial theme support
     Currently no theme editor within the scoreboard, but custom themes can be added manually
@@ -9,7 +16,7 @@ v2.1 beta 1
     Left-clicking will initialize bid to 1
 * Code cleanup
     Subclasses split into separate files
-- Known issue: It is possible to bypass bid checks by adding a player after bids have been entered
+- Known issue: It is possible to bypass bid checks by adding a player after bids have been entered [FIXED: 2.1b2]
 
 v2.0
   No changes from 2.0rc4; Release project on GitHub
