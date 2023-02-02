@@ -1,2 +1,4 @@
 dark.ohsctheme:Dark
 light.ohsctheme:Light
+monodark.ohsctheme:Mono Dark
+monolight.ohsctheme:Mono Light

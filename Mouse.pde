@@ -146,6 +146,7 @@ void mousePressed() {
     if(theme_button.mouseInTile()) {
       theme_index++;
       setTheme(theme_index);
+      numberOfPlayersChanged(false);
       return;
     }
     if(begin_game_button.mouseInTile()) {
