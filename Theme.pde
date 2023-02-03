@@ -27,7 +27,6 @@ class Theme {
     file = f;
     name = n;
   }
-  // TODO: Make this use label parsing instead of hardcoded line indices
   Theme(String directory, String filename, String n) {
     try {
       name = n;
@@ -36,18 +35,25 @@ class Theme {
       if(lines.length < MAX_PLAYERS + DELTA) {
         System.err.println("Could not load theme \"" + filename + "\": expected " + (MAX_PLAYERS + DELTA) + " lines, only found " + lines.length);
       } else {
-        background_color = colorFromLine(lines[0]);
-        popup_background_color = colorFromLine(lines[1]);
-        line_color = colorFromLine(lines[2]);
-        text_color = colorFromLine(lines[3]);
-        grayed_text_color = colorFromLine(lines[4]);
-        error_text_color = colorFromLine(lines[5]);
-        button_click_color = colorFromLine(lines[6]);
-        button_hover_color = colorFromLine(lines[7]);
-        underbid_color = colorFromLine(lines[8]);
-        overbid_color = colorFromLine(lines[9]);
-        for(int i = 0; i < MAX_PLAYERS; i++) {
-          player_colors[i] = colorFromLine(lines[i + DELTA]);
+        for(int i = 0; i < lines.length; i++) {
+          String label = lines[i].split(" ")[0];
+          if(label.equals("background")) background_color = colorFromLine(lines[i]);
+          else if(label.equals("popupbackground")) popup_background_color = colorFromLine(lines[i]);
+          else if(label.equals("line")) line_color = colorFromLine(lines[i]);
+          else if(label.equals("text")) text_color = colorFromLine(lines[i]);
+          else if(label.equals("grayedtext")) grayed_text_color = colorFromLine(lines[i]);
+          else if(label.equals("errortext")) error_text_color = colorFromLine(lines[i]);
+          else if(label.equals("buttonclick")) button_click_color = colorFromLine(lines[i]);
+          else if(label.equals("buttonhover")) button_hover_color = colorFromLine(lines[i]);
+          else if(label.equals("underbid")) underbid_color = colorFromLine(lines[i]);
+          else if(label.equals("overbid")) overbid_color = colorFromLine(lines[i]);
+          else if(label.charAt(0) == 'p') {
+            int player = parseInt(label.substring(1));
+            player--;
+            player_colors[player] = colorFromLine(lines[i]);
+          } else {
+            System.err.println("Unknown label in theme " + filename + ": " + label);
+          }
         }
       }
       file = filename;
