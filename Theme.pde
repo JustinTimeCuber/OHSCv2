@@ -115,4 +115,5 @@ void setTheme(int index) {
   }
   theme = themes.get(theme_index);
   theme_file = theme.file;
+  updatePlayers(false);
 }

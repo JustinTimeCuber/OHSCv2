@@ -47,5 +47,5 @@ void loadState(String filename) {
     else System.err.println("Unrecognized label: " + label);
   }
   loadThemes();
-  numberOfPlayersChanged(true);
+  updatePlayers(false);
 }

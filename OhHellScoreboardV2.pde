@@ -38,7 +38,7 @@ void displayError(String m, int f) {
 void displayError(String m) {
   displayError(m, 75);
 }
-void numberOfPlayersChanged(boolean holdIndex) {
+void updatePlayers(boolean resetIndex) {
   setGameTiles();
   if(setup) {
     for(int i = 0; i < players.size(); i++) {
@@ -75,7 +75,7 @@ void numberOfPlayersChanged(boolean holdIndex) {
       }
     }
   }
-  if(!holdIndex || trick_index >= tricks.length) {
+  if(resetIndex || trick_index >= tricks.length) {
     trick_index = 0;
   }
 }
@@ -131,7 +131,7 @@ void setInitialValues() {
   restart_button = new Tile(18./25, 7./8, 23./25, 23./24);
   trump_suit_bounding_box = new Tile(23./25, 1 - aspect_ratio*2./25, 1, 1);
   loadThemes();
-  numberOfPlayersChanged(false);
+  updatePlayers(true);
   Logger.reset();
 }
 void drawButton(Tile location, String text, float size, boolean enabled, boolean hoverable) {
@@ -224,6 +224,123 @@ void handleTakenChange(Player p, boolean pos) {
     p.taken--;
   } else {
     displayError("Tricks taken must be greater than zero");
+  }
+}
+void handleSuitsChange(boolean direction) {
+  if(direction) {
+    if(suits < MAX_SUITS) {
+      suits++;
+      updatePlayers(true);
+    } else {
+      displayError("The maximum number of suits is " + MAX_SUITS);
+    }
+  } else {
+    if((suits - 1)*cards_per_suit >= MAX_PLAYERS) {
+      suits--;
+      updatePlayers(true);
+    } else {
+      displayError("The minimum deck size is " + MAX_PLAYERS);
+    }
+  }
+}
+void handleCardsPerSuitChange(boolean direction) {
+  if(direction) {
+    if(cards_per_suit < MAX_CARDS_PER_SUIT) {
+      cards_per_suit++;
+      updatePlayers(true);
+    } else {
+      displayError("The maximum cards per suit is " + MAX_CARDS_PER_SUIT);
+    }
+  } else {
+    if(suits*(cards_per_suit - 1) >= MAX_PLAYERS) {
+      cards_per_suit--;
+      updatePlayers(true);
+    } else {
+      displayError("The minimum deck size is " + MAX_PLAYERS);
+    }
+  }
+}
+void handleTrickModeChange(boolean direction) {
+  if(direction) {
+    trick_mode++;
+    if(trick_mode > 6) {
+      trick_mode = 0;
+    }
+  } else {
+    trick_mode--;
+    if(trick_mode < 0) {
+      trick_mode = 6;
+    }
+  }
+  trick_index = 0;
+  updatePlayers(true);
+}
+void handleStartingPointChange(boolean direction) {
+  if(direction) {
+    trick_index++;
+    if(trick_index >= tricks.length) {
+      trick_index = 0;
+    }
+  } else {
+    trick_index--;
+    if(trick_index < 0) {
+      trick_index = tricks.length - 1;
+    }
+  }
+}
+void handleAddPlayer() {
+  if(players.size() < MAX_PLAYERS) {
+    if(selected_player == -1) {
+      players.add(new Player("").setColor(theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+      updatePlayers(false);
+    } else {
+      players.add(selected_player, new Player("").setColor(theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+      selected_player++;
+      updatePlayers(false);
+    }
+    bidding = true;
+  } else {
+    displayError("The maximum number of players is " + MAX_PLAYERS);
+  }
+}
+void handleRemovePlayer() {
+  if(players.size() > 2) {
+    if(selected_player == -1) {
+      displayError("Must select a player to remove");
+    } else {
+      players.remove(selected_player);
+      selected_player--;
+      updatePlayers(false);
+    }
+  } else {
+    displayError("The minimum number of players is 2");
+  }
+}
+void handleChangeScore(boolean direction, int amount) {
+  if(selected_player == -1) {
+    displayError("Must select a player to change score");
+  } else {
+    players.get(selected_player).score += (direction ? amount : -amount);
+  }
+}
+void handleBeginGame() {
+  setup = false;
+  for(int i = 0; i < players.size(); i++) {
+    players.get(i).setTile(game_tiles[i]);
+  }
+  selected_player = -1;
+}
+void handleSetup() {
+  setup = true;
+  for(int i = 0; i < players.size(); i++) {
+    players.get(i).setTile(setup_tiles[i]);
+  }
+}
+void handleChangeBids() {
+  if(bidding) {
+    displayError("Already changing bids");
+  } else {
+    bidding = true;
   }
 }
 void setup() {

@@ -16,65 +16,19 @@ void mousePressed() {
         return;
       }
       if(number_suits_button.mouseInTile()) {
-        if(mouseButton == LEFT) {
-          if(suits < MAX_SUITS) {
-            suits++;
-            numberOfPlayersChanged(false);
-          } else {
-            displayError("The maximum number of suits is " + MAX_SUITS);
-          }
-        } else if((suits - 1)*cards_per_suit >= MAX_PLAYERS) {
-          suits--;
-          numberOfPlayersChanged(false);
-        } else {
-          displayError("The minimum deck size is " + MAX_PLAYERS);
-        }
+        handleSuitsChange(mouseButton == LEFT);
         return;
       }
       if(cards_per_suit_button.mouseInTile()) {
-        if(mouseButton == LEFT) {
-          if(cards_per_suit < MAX_CARDS_PER_SUIT) {
-            cards_per_suit++;
-            numberOfPlayersChanged(false);
-          } else {
-            displayError("The maximum cards per suit is " + MAX_CARDS_PER_SUIT);
-          }
-        } else if(suits*(cards_per_suit - 1) >= MAX_PLAYERS) {
-          cards_per_suit--;
-          numberOfPlayersChanged(false);
-        } else {
-          displayError("The minimum deck size is " + MAX_PLAYERS);
-        }
+        handleCardsPerSuitChange(mouseButton == LEFT);
         return;
       }
       if(trick_mode_button.mouseInTile()) {
-        if(mouseButton == LEFT) {
-          trick_mode++;
-          if(trick_mode > 6) {
-            trick_mode = 0;
-          }
-        } else {
-          trick_mode--;
-          if(trick_mode < 0) {
-            trick_mode = 6;
-          }
-        }
-        trick_index = 0;
-        numberOfPlayersChanged(false);
+        handleTrickModeChange(mouseButton == LEFT);
         return;
       }
       if(starting_point_button.mouseInTile()) {
-        if(mouseButton == LEFT) {
-          trick_index++;
-          if(trick_index >= tricks.length) {
-            trick_index = 0;
-          }
-        } else {
-          trick_index--;
-          if(trick_index < 0) {
-            trick_index = tricks.length - 1;
-          }
-        }
+        handleStartingPointChange(mouseButton == LEFT);
       }
       return;
     }
@@ -91,49 +45,19 @@ void mousePressed() {
     }
     editing_name = false;
     if(add_player_button.mouseInTile()) {
-      if(players.size() < MAX_PLAYERS) {
-        if(selected_player == -1) {
-          players.add(new Player("").setColor(theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
-          numberOfPlayersChanged(false);
-        } else {
-          players.add(selected_player, new Player("").setColor(theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
-          selected_player++;
-          numberOfPlayersChanged(false);
-        }
-        bidding = true;
-      } else {
-        displayError("The maximum number of players is " + MAX_PLAYERS);
-      }
+      handleAddPlayer();
       return;
     }
     if(remove_player_button.mouseInTile()) {
-      if(players.size() > 2) {
-        if(selected_player == -1) {
-          displayError("Must select a player to remove");
-        } else {
-          players.remove(selected_player);
-          selected_player--;
-          numberOfPlayersChanged(false);
-        }
-      } else {
-        displayError("The minimum number of players is 2");
-      }
+      handleRemovePlayer();
       return;
     }
     if(one_point_button.mouseInTile()) {
-      if(selected_player == -1) {
-        displayError("Must select a player to change score");
-      } else {
-        players.get(selected_player).score += (mouseButton == LEFT ? 1 : -1);
-      }
+      handleChangeScore(mouseButton == LEFT, 1);
       return;
     }
     if(ten_point_button.mouseInTile()) {
-      if(selected_player == -1) {
-        displayError("Must select a player to change score");
-      } else {
-        players.get(selected_player).score += (mouseButton == LEFT ? 10 : -10);
-      }
+      handleChangeScore(mouseButton == LEFT, 10);
       return;
     }
     if(custom_tricks_button.mouseInTile()) {
@@ -144,51 +68,31 @@ void mousePressed() {
       setInitialValues();
     }
     if(theme_button.mouseInTile()) {
-      theme_index++;
-      setTheme(theme_index);
-      numberOfPlayersChanged(false);
+      setTheme(++theme_index);
       return;
     }
     if(begin_game_button.mouseInTile()) {
-      setup = false;
-      for(int i = 0; i < players.size(); i++) {
-        players.get(i).setTile(game_tiles[i]);
-      }
-      selected_player = -1;
+      handleBeginGame();
       return;
     }
     selected_player = -1;
   } else {
-    if(bidding) {
-      for(int i = 0; i < players.size(); i++) {
-        Player p = players.get(i);
-        if(p.tile.mouseInTile()) {
+    for(Player p : players) {
+      if(p.tile.mouseInTile()) {
+        if(bidding) {
           handleBidChange(p, mouseButton == LEFT);
-          return;
-        }
-      }
-    } else {
-      for(int i = 0; i < players.size(); i++) {
-        Player p = players.get(i);
-        if(p.tile.mouseInTile()) {
+        } else {
           handleTakenChange(p, mouseButton == LEFT);
-          return;
         }
+        return;
       }
     }
     if(setup_button.mouseInTile()) {
-      setup = true;
-      for(int i = 0; i < players.size(); i++) {
-        players.get(i).setTile(setup_tiles[i]);
-      }
+      handleSetup();
       return;
     }
     if(change_bids_button.mouseInTile()) {
-      if(bidding) {
-        displayError("Already changing bids");
-      } else {
-        bidding = true;
-      }
+      handleChangeBids();
       return;
     }
     if(proceed_button.mouseInTile()) {
