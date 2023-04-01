@@ -1,3 +1,9 @@
+v2.1 beta 3
+* Refactoring code
+    Separate logic from mousePressed into individual methods
+    Renamed numberOfPlayersChanged() to updatePlayers()
+* Slightly changed when the trick index is or is not reset
+
 v2.1 beta 2
 + Add grayscale themes
     Mono dark with a black background and white text
