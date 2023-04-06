@@ -3,16 +3,16 @@ void mouseMoved() {
 }
 void mousePressed() {
   resetFramerateCooldown();
-  if(game_over) {
+  if(current_screen == Screen.GAME_OVER) {
     if(restart_button.mouseInTile()) {
       setInitialValues();
     }
     return;
   }
-  if(setup) {
-    if(custom_tricks_window) {
+  if(current_screen.isSetup()) {
+    if(current_window == Window.TRICKS) {
       if(close_popup_button.mouseInTile()) {
-        custom_tricks_window = false;
+        current_window = Window.NONE;
         return;
       }
       if(number_suits_button.mouseInTile()) {
@@ -61,7 +61,7 @@ void mousePressed() {
       return;
     }
     if(custom_tricks_button.mouseInTile()) {
-      custom_tricks_window = true;
+      current_window = Window.TRICKS;
       return;
     }
     if(reset_button.mouseInTile()) {
@@ -79,7 +79,7 @@ void mousePressed() {
   } else {
     for(Player p : players) {
       if(p.tile.mouseInTile()) {
-        if(bidding) {
+        if(current_screen == Screen.BIDDING) {
           handleBidChange(p, mouseButton == LEFT);
         } else {
           handleTakenChange(p, mouseButton == LEFT);
@@ -96,7 +96,7 @@ void mousePressed() {
       return;
     }
     if(proceed_button.mouseInTile()) {
-      if(bidding) {
+      if(current_screen == Screen.BIDDING) {
         handleFinishBidding();
       } else {
         handleFinishRound();

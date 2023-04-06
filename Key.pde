@@ -3,11 +3,11 @@ void keyPressed() {
 }
 void keyTyped() {
   resetFramerateCooldown();
-  if(game_over) {
+  if(current_screen == Screen.GAME_OVER) {
     return;
   }
-  if(setup) {
-    if(custom_tricks_window) {
+  if(current_screen.isSetup()) {
+    if(current_window != Window.NONE) {
       return;
     }
     if(editing_name) {
@@ -67,7 +67,7 @@ void keyTyped() {
       trump_suit = 6;
       return;
     }
-    if(bidding) {
+    if(current_screen == Screen.BIDDING) {
       int i = Math.abs(getKeyValue(key));
       if(i != 0 && i - 1 < players.size()) {
         i--;

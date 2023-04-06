@@ -1,5 +1,4 @@
 int frc = 0;
-boolean setup = true;
 ArrayList<Player> players = new ArrayList<Player>();
 Tile[] setup_tiles, game_tiles;
 Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
@@ -16,9 +15,23 @@ int selected_player;
 String error_message;
 int error_frames;
 boolean editing_name;
-boolean bidding;
-boolean game_over;
-boolean custom_tricks_window;
+enum Window {
+  NONE,
+  TRICKS,
+  THEMES
+}
+Window current_window = Window.NONE;
+enum Screen {
+  SETUP_TO_BIDDING,
+  SETUP_TO_TAKING,
+  BIDDING,
+  TAKING,
+  GAME_OVER;
+  boolean isSetup() {
+    return this == SETUP_TO_BIDDING || this == SETUP_TO_TAKING;
+  }
+}
+Screen current_screen = Screen.SETUP_TO_BIDDING;
 int hands_played;
 int suits;
 int cards_per_suit;
@@ -40,7 +53,7 @@ void displayError(String m) {
 }
 void updatePlayers(boolean resetIndex) {
   setGameTiles();
-  if(setup) {
+  if(current_screen.isSetup()) {
     for(int i = 0; i < players.size(); i++) {
       players.get(i).setColor(theme.getPlayerColor(i)).setTile(setup_tiles[i]);
     }
@@ -85,8 +98,7 @@ void setInitialValues() {
   error_frames = 0;
   players = new ArrayList<Player>();
   editing_name = false;
-  bidding = true;
-  game_over = false;
+  current_screen = Screen.SETUP_TO_BIDDING;
   for(int i = 0; i < 4; i++) {
     players.add(new Player(""));
   }
@@ -96,8 +108,7 @@ void setInitialValues() {
   trick_mode = 1;
   trump_suit = 0;
   low_framerate_cooldown = 60;
-  custom_tricks_window = false;
-  setup = true;
+  current_window = Window.NONE;
   setup_tiles = new Tile[] {
     new Tile(0, 0, 1./2, 1./8),
     new Tile(1./2, 0, 1., 1./8),
@@ -298,7 +309,7 @@ void handleAddPlayer() {
       selected_player++;
       updatePlayers(false);
     }
-    bidding = true;
+    current_screen = Screen.BIDDING;
   } else {
     displayError("The maximum number of players is " + MAX_PLAYERS);
   }
@@ -324,23 +335,31 @@ void handleChangeScore(boolean direction, int amount) {
   }
 }
 void handleBeginGame() {
-  setup = false;
+  if(current_screen == Screen.SETUP_TO_BIDDING) {
+    current_screen = Screen.BIDDING;
+  } else if(current_screen == Screen.SETUP_TO_TAKING) {
+    current_screen = Screen.TAKING;
+  }
   for(int i = 0; i < players.size(); i++) {
     players.get(i).setTile(game_tiles[i]);
   }
   selected_player = -1;
 }
 void handleSetup() {
-  setup = true;
+  if(current_screen == Screen.BIDDING) {
+    current_screen = Screen.SETUP_TO_BIDDING;
+  } else if(current_screen == Screen.TAKING) {
+    current_screen = Screen.SETUP_TO_TAKING;
+  }
   for(int i = 0; i < players.size(); i++) {
     players.get(i).setTile(setup_tiles[i]);
   }
 }
 void handleChangeBids() {
-  if(bidding) {
+  if(current_screen == Screen.BIDDING) {
     displayError("Already changing bids");
   } else {
-    bidding = true;
+    current_screen = Screen.BIDDING;
   }
 }
 void handleFinishBidding() {
@@ -352,7 +371,7 @@ void handleFinishBidding() {
   }
   if(all_players_bid) {
     if(trick_mode == 0 || total_bid != tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
-      bidding = false;
+      current_screen = Screen.TAKING;
     } else {
       displayError("Tricks bid can't equal tricks dealt - override with enter + right click");
     }
@@ -391,20 +410,20 @@ void handleFinishRound() {
     if(trick_mode != 0) {
       trick_index++;
       if(trick_index >= tricks.length) {
-        game_over = true;
+        current_screen = Screen.GAME_OVER;
         saveRecord();
         trick_index--;
       }
     }
     trump_suit = 0;
-    bidding = true;
+    current_screen = Screen.BIDDING;
   } else {
     displayError("Tricks taken must equal tricks dealt - override with enter + right click");
   }
 }
 void handleEndGame() {
   if(keyPressed && key == ENTER && mouseButton == RIGHT) {
-    game_over = true;
+    current_screen = Screen.GAME_OVER;
     saveRecord();
   } else {
     displayError("End game? Confirm with enter + right click");
@@ -455,7 +474,7 @@ void draw() {
   strokeWeight(2);
   stroke(theme.line_color);
   textAlign(CENTER, CENTER);
-  if(setup) {
+  if(current_screen.isSetup()) {
     for(int i = 0; i < players.size(); i++) {
       Player p = players.get(i);
       noFill();
@@ -478,7 +497,7 @@ void draw() {
       fill(p.display_color);
       text(p.score, p.tile.mx() - width*0.04, p.tile.cy() - width*0.003);
     }
-    boolean popup_shown = custom_tricks_window;
+    boolean popup_shown = current_window != Window.NONE;
     drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02, players.size() < MAX_PLAYERS, !popup_shown);
     drawButton(remove_player_button, "Remove Player", 0.02, selected_player != -1 && players.size() > 2, !popup_shown);
     drawButton(one_point_button, "Add/Remove 1 pt", 0.02, selected_player != -1, !popup_shown);
@@ -487,7 +506,7 @@ void draw() {
     drawButton(reset_button, "Reset", 0.02, true, !popup_shown);
     drawButton(theme_button, "Themes", 0.02, true, !popup_shown);
     drawButton(begin_game_button, "Begin Game", 0.02, true, !popup_shown);
-    if(custom_tricks_window) {
+    if(current_window == Window.TRICKS) {
       fill(theme.popup_background_color, 230);
       stroke(theme.line_color);
       rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
@@ -556,17 +575,17 @@ void draw() {
         textSize(p.tile.w()*0.1);
         text(p.bid, p.tile.x() + p.tile.w()/8, p.tile.my() - p.tile.w()/10);
       }
-      if(!bidding) {
+      if(current_screen == Screen.TAKING) {
         textSize(game_tiles[0].w()*0.04);
         text("Taken", p.tile.mx() - p.tile.w()/8, p.tile.my() - p.tile.w()/6);
         textSize(p.tile.w()*0.1);
         text(p.taken, p.tile.mx() - p.tile.w()/8, p.tile.my() - p.tile.w()/10);
       }
     }
-    if(!game_over) {
+    if(current_screen != Screen.GAME_OVER) {
       drawButton(setup_button, "Setup", 0.02, true, true);
-      drawButton(change_bids_button, "Change Bids", 0.02, !bidding, true);
-      drawButton(proceed_button, "Proceed", 0.02, trick_mode == 0 || (bidding && total_bid != tricks[trick_index]) || (!bidding && total_taken == tricks[trick_index]), true);
+      drawButton(change_bids_button, "Change Bids", 0.02, current_screen == Screen.TAKING, true);
+      drawButton(proceed_button, "Proceed", 0.02, trick_mode == 0 || (current_screen == Screen.BIDDING && total_bid != tricks[trick_index]) || (current_screen == Screen.TAKING && total_taken == tricks[trick_index]), true);
       drawButton(end_game_button, "End Game", 0.02, true, true);
       textSize(width*0.01);
       fill(theme.text_color);
@@ -576,7 +595,7 @@ void draw() {
       text("Trump", 24*width/25, height*17/20);
       textSize(width*0.05);
       text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), 18*width/25, 11*height/12);
-      if(!bidding) {
+      if(current_screen == Screen.TAKING) {
         if(trick_mode != 0) {
           if(total_bid < tricks[trick_index]) {
             fill(theme.underbid_color);
