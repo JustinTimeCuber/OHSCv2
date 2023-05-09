@@ -1,3 +1,11 @@
+v2.1 beta 4
+* Reformatted all code into .java files instead of .pde
+    Mouse and Key files were moved back into the main file
+    This change will be expanded upon later
+    This allows the project to be developed outside of the Processing IDE
+* Move screen states to enums
+- Do not save the state of the error message (not really useful)
+
 v2.1 beta 3
 * Refactoring code
     Separate logic from mousePressed into individual methods
