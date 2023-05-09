@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
-    boolean setup = true;
     ArrayList<Player> players = new ArrayList<Player>();
     Tile[] setup_tiles, game_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
@@ -21,9 +20,8 @@ public class OhHellScoreboardV2 extends PApplet {
     String error_message;
     int error_frames;
     boolean editing_name;
-    boolean bidding;
-    boolean game_over;
-    boolean custom_tricks_window;
+    Window current_window = Window.NONE;
+    Screen current_screen = Screen.SETUP_TO_BIDDING;
     int hands_played;
     int suits;
     int cards_per_suit;
@@ -48,7 +46,7 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void updatePlayers(boolean resetIndex) {
         Tile.setGameTiles();
-        if (setup) {
+        if (current_screen.isSetup()) {
             for (int i = 0; i < players.size(); i++) {
                 players.get(i).setColor(Theme.theme.getPlayerColor(i)).setTile(setup_tiles[i]);
             }
@@ -94,8 +92,8 @@ public class OhHellScoreboardV2 extends PApplet {
         error_frames = 0;
         players = new ArrayList<Player>();
         editing_name = false;
-        bidding = true;
-        game_over = false;
+        current_window = Window.NONE;
+        current_screen = Screen.SETUP_TO_BIDDING;
         for (int i = 0; i < 4; i++) {
             players.add(new Player(""));
         }
@@ -105,8 +103,6 @@ public class OhHellScoreboardV2 extends PApplet {
         trick_mode = 1;
         trump_suit = 0;
         low_framerate_cooldown = 60;
-        custom_tricks_window = false;
-        setup = true;
         setup_tiles = new Tile[]{
                 new Tile(0, 0, 1. / 2, 1. / 8),
                 new Tile(1. / 2, 0, 1., 1. / 8),
@@ -336,7 +332,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 selected_player++;
                 updatePlayers(false);
             }
-            bidding = true;
+            current_screen = Screen.BIDDING;
         } else {
             displayError("The maximum number of players is " + MAX_PLAYERS);
         }
@@ -365,7 +361,11 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void handleBeginGame() {
-        setup = false;
+        if(current_screen == Screen.SETUP_TO_BIDDING) {
+            current_screen = Screen.BIDDING;
+        } else if(current_screen == Screen.SETUP_TO_TAKING) {
+            current_screen = Screen.TAKING;
+        }
         for (int i = 0; i < players.size(); i++) {
             players.get(i).setTile(game_tiles[i]);
         }
@@ -373,17 +373,21 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void handleSetup() {
-        setup = true;
+        if(current_screen == Screen.BIDDING) {
+            current_screen = Screen.SETUP_TO_BIDDING;
+        } else if(current_screen == Screen.TAKING) {
+            current_screen = Screen.SETUP_TO_TAKING;
+        }
         for (int i = 0; i < players.size(); i++) {
             players.get(i).setTile(setup_tiles[i]);
         }
     }
 
     void handleChangeBids() {
-        if (bidding) {
+        if (current_screen == Screen.BIDDING) {
             displayError("Already changing bids");
         } else {
-            bidding = true;
+            current_screen = Screen.BIDDING;
         }
     }
 
@@ -396,7 +400,7 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         if (all_players_bid) {
             if (trick_mode == 0 || total_bid != tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
-                bidding = false;
+                current_screen = Screen.TAKING;
             } else {
                 displayError("Tricks bid can't equal tricks dealt - override with enter + right click");
             }
@@ -436,13 +440,13 @@ public class OhHellScoreboardV2 extends PApplet {
             if (trick_mode != 0) {
                 trick_index++;
                 if (trick_index >= tricks.length) {
-                    game_over = true;
+                    current_screen = Screen.GAME_OVER;
                     saveRecord();
                     trick_index--;
                 }
             }
             trump_suit = 0;
-            bidding = true;
+            current_screen = Screen.BIDDING;
         } else {
             displayError("Tricks taken must equal tricks dealt - override with enter + right click");
         }
@@ -450,7 +454,7 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void handleEndGame() {
         if (keyPressed && key == ENTER && mouseButton == RIGHT) {
-            game_over = true;
+            current_screen = Screen.GAME_OVER;
             saveRecord();
         } else {
             displayError("End game? Confirm with enter + right click");
@@ -517,7 +521,7 @@ public class OhHellScoreboardV2 extends PApplet {
         strokeWeight(2);
         stroke(Theme.theme.line_color);
         textAlign(CENTER, CENTER);
-        if (setup) {
+        if (current_screen.isSetup()) {
             for (int i = 0; i < players.size(); i++) {
                 Player p = players.get(i);
                 noFill();
@@ -540,7 +544,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 fill(p.display_color);
                 text(p.score, p.tile.mx() - width * 0.04f, p.tile.cy() - width * 0.003f);
             }
-            boolean popup_shown = custom_tricks_window;
+            boolean popup_shown = current_window != Window.NONE;
             drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, players.size() < MAX_PLAYERS, !popup_shown);
             drawButton(remove_player_button, "Remove Player", 0.02f, selected_player != -1 && players.size() > 2, !popup_shown);
             drawButton(one_point_button, "Add/Remove 1 pt", 0.02f, selected_player != -1, !popup_shown);
@@ -549,7 +553,7 @@ public class OhHellScoreboardV2 extends PApplet {
             drawButton(reset_button, "Reset", 0.02f, true, !popup_shown);
             drawButton(theme_button, "Themes", 0.02f, true, !popup_shown);
             drawButton(begin_game_button, "Begin Game", 0.02f, true, !popup_shown);
-            if (custom_tricks_window) {
+            if (current_window == Window.TRICKS) {
                 fill(Theme.theme.popup_background_color, 230);
                 stroke(Theme.theme.line_color);
                 rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
@@ -618,17 +622,17 @@ public class OhHellScoreboardV2 extends PApplet {
                     textSize(p.tile.w() * 0.1f);
                     text(p.bid, p.tile.x() + p.tile.w() / 8, p.tile.my() - p.tile.w() / 10);
                 }
-                if (!bidding) {
+                if (current_screen == Screen.TAKING) {
                     textSize(game_tiles[0].w() * 0.04f);
                     text("Taken", p.tile.mx() - p.tile.w() / 8, p.tile.my() - p.tile.w() / 6);
                     textSize(p.tile.w() * 0.1f);
                     text(p.taken, p.tile.mx() - p.tile.w() / 8, p.tile.my() - p.tile.w() / 10);
                 }
             }
-            if (!game_over) {
+            if (current_screen != Screen.GAME_OVER) {
                 drawButton(setup_button, "Setup", 0.02f, true, true);
-                drawButton(change_bids_button, "Change Bids", 0.02f, !bidding, true);
-                drawButton(proceed_button, "Proceed", 0.02f, trick_mode == 0 || (bidding && total_bid != tricks[trick_index]) || (!bidding && total_taken == tricks[trick_index]), true);
+                drawButton(change_bids_button, "Change Bids", 0.02f, current_screen == Screen.TAKING, true);
+                drawButton(proceed_button, "Proceed", 0.02f, trick_mode == 0 || (current_screen == Screen.BIDDING && total_bid != tricks[trick_index]) || (current_screen == Screen.TAKING && total_taken == tricks[trick_index]), true);
                 drawButton(end_game_button, "End Game", 0.02f, true, true);
                 textSize(width * 0.01f);
                 fill(Theme.theme.text_color);
@@ -638,7 +642,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 text("Trump", 24 * width / 25, height * 17 / 20);
                 textSize(width * 0.05f);
                 text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), 18 * width / 25, 11 * height / 12);
-                if (!bidding) {
+                if (current_screen == Screen.TAKING) {
                     if (trick_mode != 0) {
                         if (total_bid < tricks[trick_index]) {
                             fill(Theme.theme.underbid_color);
@@ -695,11 +699,11 @@ public class OhHellScoreboardV2 extends PApplet {
     @Override
     public void keyTyped() {
         resetFramerateCooldown();
-        if(game_over) {
+        if(current_screen == Screen.GAME_OVER) {
             return;
         }
-        if(setup) {
-            if(custom_tricks_window) {
+        if(current_screen.isSetup()) {
+            if(current_window != Window.NONE) {
                 return;
             }
             if(editing_name) {
@@ -759,7 +763,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 trump_suit = 6;
                 return;
             }
-            if(bidding) {
+            if(current_screen == Screen.BIDDING) {
                 int i = Math.abs(getKeyValue(key));
                 if(i != 0 && i - 1 < players.size()) {
                     i--;
@@ -812,16 +816,16 @@ public class OhHellScoreboardV2 extends PApplet {
     @Override
     public void mousePressed() {
         resetFramerateCooldown();
-        if(game_over) {
+        if(current_screen == Screen.GAME_OVER) {
             if(restart_button.mouseInTile()) {
                 setInitialValues();
             }
             return;
         }
-        if(setup) {
-            if(custom_tricks_window) {
+        if(current_screen.isSetup()) {
+            if(current_window == Window.TRICKS) {
                 if(close_popup_button.mouseInTile()) {
-                    custom_tricks_window = false;
+                    current_window = Window.NONE;
                     return;
                 }
                 if(number_suits_button.mouseInTile()) {
@@ -870,7 +874,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 return;
             }
             if(custom_tricks_button.mouseInTile()) {
-                custom_tricks_window = true;
+                current_window = Window.TRICKS;
                 return;
             }
             if(reset_button.mouseInTile()) {
@@ -888,7 +892,7 @@ public class OhHellScoreboardV2 extends PApplet {
         } else {
             for(Player p : players) {
                 if(p.tile.mouseInTile()) {
-                    if(bidding) {
+                    if(current_screen == Screen.BIDDING) {
                         handleBidChange(p, mouseButton == LEFT);
                     } else {
                         handleTakenChange(p, mouseButton == LEFT);
@@ -905,7 +909,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 return;
             }
             if(proceed_button.mouseInTile()) {
-                if(bidding) {
+                if(current_screen == Screen.BIDDING) {
                     handleFinishBidding();
                 } else {
                     handleFinishRound();
