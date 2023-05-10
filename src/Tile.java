@@ -42,92 +42,92 @@ public class Tile {
   static void setGameTiles() {
     if(sc.players.size() == 2) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./2, 5./6),
-              new Tile(1./2, 0, 1, 5./6)
+              new Tile(0, 0, 0.5, 0.833),
+              new Tile(0.5, 0, 1, 0.833)
       };
     }
     if(sc.players.size() == 3) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./3, 5./6),
-              new Tile(1./3, 0, 2./3, 5./6),
-              new Tile(2./3, 0, 1, 5./6)
+              new Tile(0, 0, 0.333, 0.833),
+              new Tile(0.333, 0, 0.667, 0.833),
+              new Tile(0.667, 0, 1, 0.833)
       };
     }
     if(sc.players.size() == 4) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./2, 5./12),
-              new Tile(1./2, 0, 1, 5./12),
-              new Tile(0, 5./12, 1./2, 5./6),
-              new Tile(1./2, 5./12, 1, 5./6)
+              new Tile(0, 0, 0.5, 0.417),
+              new Tile(0.5, 0, 1, 0.417),
+              new Tile(0, 0.417, 0.5, 0.833),
+              new Tile(0.5, 0.417, 1, 0.833)
       };
     }
     if(sc.players.size() == 5) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./3, 5./12),
-              new Tile(1./3, 0, 2./3, 5./12),
-              new Tile(2./3, 0, 1, 5./12),
-              new Tile(0, 5./12, 1./2, 5./6),
-              new Tile(1./2, 5./12, 1, 5./6)
+              new Tile(0, 0, 0.333, 0.417),
+              new Tile(0.333, 0, 0.667, 0.417),
+              new Tile(0.667, 0, 1, 0.417),
+              new Tile(0, 0.417, 0.5, 0.833),
+              new Tile(0.5, 0.417, 1, 0.833)
       };
     }
     if(sc.players.size() == 6) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./3, 5./12),
-              new Tile(1./3, 0, 2./3, 5./12),
-              new Tile(2./3, 0, 1, 5./12),
-              new Tile(0, 5./12, 1./3, 5./6),
-              new Tile(1./3, 5./12, 2./3, 5./6),
-              new Tile(2./3, 5./12, 1, 5./6)
+              new Tile(0, 0, 0.333, 0.417),
+              new Tile(0.333, 0, 0.667, 0.417),
+              new Tile(0.667, 0, 1, 0.417),
+              new Tile(0, 0.417, 0.333, 0.833),
+              new Tile(0.333, 0.417, 0.667, 0.833),
+              new Tile(0.667, 0.417, 1, 0.833)
       };
     }
     if(sc.players.size() == 7) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./4, 5./12),
-              new Tile(1./4, 0, 1./2, 5./12),
-              new Tile(1./2, 0, 3./4, 5./12),
-              new Tile(3./4, 0, 1, 5./12),
-              new Tile(0, 5./12, 1./3, 5./6),
-              new Tile(1./3, 5./12, 2./3, 5./6),
-              new Tile(2./3, 5./12, 1, 5./6)
+              new Tile(0, 0, 0.25, 0.417),
+              new Tile(0.25, 0, 0.5, 0.417),
+              new Tile(0.5, 0, 0.75, 0.417),
+              new Tile(0.75, 0, 1, 0.417),
+              new Tile(0, 0.417, 0.333, 0.833),
+              new Tile(0.333, 0.417, 0.667, 0.833),
+              new Tile(0.667, 0.417, 1, 0.833)
       };
     }
     if(sc.players.size() == 8) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./4, 5./12),
-              new Tile(1./4, 0, 1./2, 5./12),
-              new Tile(1./2, 0, 3./4, 5./12),
-              new Tile(3./4, 0, 1, 5./12),
-              new Tile(0, 5./12, 1./4, 5./6),
-              new Tile(1./4, 5./12, 1./2, 5./6),
-              new Tile(1./2, 5./12, 3./4, 5./6),
-              new Tile(3./4, 5./12, 1, 5./6)
+              new Tile(0, 0, 0.25, 0.417),
+              new Tile(0.25, 0, 0.5, 0.417),
+              new Tile(0.5, 0, 0.75, 0.417),
+              new Tile(0.75, 0, 1, 0.417),
+              new Tile(0, 0.417, 0.25, 0.833),
+              new Tile(0.25, 0.417, 0.5, 0.833),
+              new Tile(0.5, 0.417, 0.75, 0.833),
+              new Tile(0.75, 0.417, 1, 0.833)
       };
     }
     if(sc.players.size() == 9) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./3, 5./18),
-              new Tile(1./3, 0, 2./3, 5./18),
-              new Tile(2./3, 0, 1, 5./18),
-              new Tile(0, 5./18, 1./3, 5./9),
-              new Tile(1./3, 5./18, 2./3, 5./9),
-              new Tile(2./3, 5./18, 1, 5./9),
-              new Tile(0, 5./9, 1./3, 5./6),
-              new Tile(1./3, 5./9, 2./3, 5./6),
-              new Tile(2./3, 5./9, 1, 5./6)
+              new Tile(0, 0, 0.333, 0.278),
+              new Tile(0.333, 0, 0.667, 0.278),
+              new Tile(0.667, 0, 1, 0.278),
+              new Tile(0, 0.278, 0.333, 0.556),
+              new Tile(0.333, 0.278, 0.667, 0.556),
+              new Tile(0.667, 0.278, 1, 0.556),
+              new Tile(0, 0.556, 0.333, 0.833),
+              new Tile(0.333, 0.556, 0.667, 0.833),
+              new Tile(0.667, 0.556, 1, 0.833)
       };
     }
     if(sc.players.size() == 10) {
       sc.game_tiles = new Tile[] {
-              new Tile(0, 0, 1./4, 5./18),
-              new Tile(1./4, 0, 1./2, 5./18),
-              new Tile(1./2, 0, 3./4, 5./18),
-              new Tile(3./4, 0, 1, 5./18),
-              new Tile(0, 5./18, 1./3, 5./9),
-              new Tile(1./3, 5./18, 2./3, 5./9),
-              new Tile(2./3, 5./18, 1, 5./9),
-              new Tile(0, 5./9, 1./3, 5./6),
-              new Tile(1./3, 5./9, 2./3, 5./6),
-              new Tile(2./3, 5./9, 1, 5./6)
+              new Tile(0, 0, 0.25, 0.278),
+              new Tile(0.25, 0, 0.5, 0.278),
+              new Tile(0.5, 0, 0.75, 0.278),
+              new Tile(0.75, 0, 1, 0.278),
+              new Tile(0, 0.278, 0.333, 0.556),
+              new Tile(0.333, 0.278, 0.667, 0.556),
+              new Tile(0.667, 0.278, 1, 0.556),
+              new Tile(0, 0.556, 0.333, 0.833),
+              new Tile(0.333, 0.556, 0.667, 0.833),
+              new Tile(0.667, 0.556, 1, 0.833)
       };
     }
   }

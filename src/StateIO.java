@@ -20,7 +20,7 @@ public class StateIO {
         for (Player p : sc.players) {
             state.add("player:" + p.toString());
         }
-        sc.saveStrings(filename + ".ohsc", state.toArray(new String[state.size()]));
+        sc.saveStrings(filename + ".ohsc", state.toArray(new String[]{}));
         Logger.save(filename + ".log");
     }
 
@@ -28,24 +28,26 @@ public class StateIO {
         String[] state = sc.loadStrings(filename + ".ohsc");
         Logger.read(filename + ".log");
         sc.players = new ArrayList<Player>();
-        for (int i = 0; i < state.length; i++) {
-            String label = state[i].split(":")[0];
-            String value = state[i].substring(label.length() + 1);
-            if (label.equals("selected_player")) sc.selected_player = sc.parseInt(value);
-            else if (label.equals("error_message")) sc.error_message = value;
-            else if (label.equals("error_frames")) sc.error_frames = sc.parseInt(value);
-            else if (label.equals("editing_name")) sc.editing_name = sc.parseBoolean(value);
-            else if (label.equals("current_window")) sc.current_window = Window.valueOf(value);
-            else if (label.equals("current_screen")) sc.current_screen = Screen.valueOf(value);
-            else if (label.equals("suits")) sc.suits = sc.parseInt(value);
-            else if (label.equals("cards_per_suit")) sc.cards_per_suit = sc.parseInt(value);
-            else if (label.equals("trick_mode")) sc.trick_mode = sc.parseInt(value);
-            else if (label.equals("trick_index")) sc.trick_index = sc.parseInt(value);
-            else if (label.equals("trump_suit")) sc.trump_suit = sc.parseInt(value);
-            else if (label.equals("hands_played")) sc.hands_played = sc.parseInt(value);
-            else if (label.equals("theme_file")) Theme.theme_file = value;
-            else if (label.equals("player")) sc.players.add(new Player("").parse(value));
-            else System.err.println("Unrecognized label: " + label);
+        for (String s : state) {
+            String label = s.split(":")[0];
+            String value = s.substring(label.length() + 1);
+            switch (label) {
+                case "selected_player" -> sc.selected_player = Integer.parseInt(value);
+                case "error_message" -> sc.error_message = value;
+                case "error_frames" -> sc.error_frames = Integer.parseInt(value);
+                case "editing_name" -> sc.editing_name = Boolean.parseBoolean(value);
+                case "current_window" -> sc.current_window = Window.valueOf(value);
+                case "current_screen" -> sc.current_screen = Screen.valueOf(value);
+                case "suits" -> sc.suits = Integer.parseInt(value);
+                case "cards_per_suit" -> sc.cards_per_suit = Integer.parseInt(value);
+                case "trick_mode" -> sc.trick_mode = Integer.parseInt(value);
+                case "trick_index" -> sc.trick_index = Integer.parseInt(value);
+                case "trump_suit" -> sc.trump_suit = Integer.parseInt(value);
+                case "hands_played" -> sc.hands_played = Integer.parseInt(value);
+                case "theme_file" -> Theme.theme_file = value;
+                case "player" -> sc.players.add(new Player("").parse(value));
+                default -> System.err.println("Unrecognized label: " + label);
+            }
         }
         Theme.loadThemes();
         sc.updatePlayers(false);

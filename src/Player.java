@@ -29,20 +29,20 @@ class Player {
   }
   Player parse(String in) {
     String[] inputs = in.split(",");
-    score = sc.parseInt(inputs[0]);
+    score = Integer.parseInt(inputs[0]);
     if(inputs[1].equals("X")) {
       bid = 0;
       has_bid = false;
     } else {
-      bid = sc.parseInt(inputs[1]);
+      bid = Integer.parseInt(inputs[1]);
       has_bid = true;
     }
-    taken = sc.parseInt(inputs[2]);
-    total_bid = sc.parseInt(inputs[3]);
-    total_taken = sc.parseInt(inputs[4]);
-    bonuses = sc.parseInt(inputs[5]);
-    times_set = sc.parseInt(inputs[6]);
-    hands_played = sc.parseInt(inputs[7]);
+    taken = Integer.parseInt(inputs[2]);
+    total_bid = Integer.parseInt(inputs[3]);
+    total_taken = Integer.parseInt(inputs[4]);
+    bonuses = Integer.parseInt(inputs[5]);
+    times_set = Integer.parseInt(inputs[6]);
+    hands_played = Integer.parseInt(inputs[7]);
     if(inputs.length > 8) {
       name = inputs[8];
     }

@@ -15,21 +15,6 @@ class Theme {
   int overbid_color = 0;
   String file = "";
   String name = "Unnamed";
-  Theme(int bc, int pbc, int lc, int tc, int gtc, int etc, int bcc, int bhc, int ubc, int obc, int[] pc, String f, String n) {
-    background_color = bc;
-    popup_background_color = pbc;
-    line_color = lc;
-    text_color = tc;
-    grayed_text_color = gtc;
-    error_text_color = etc;
-    button_click_color = bcc;
-    button_hover_color = bhc;
-    underbid_color = ubc;
-    overbid_color = obc;
-    player_colors = pc;
-    file = f;
-    name = n;
-  }
   Theme(String directory, String filename, String n) {
     try {
       name = n;
@@ -38,22 +23,22 @@ class Theme {
       if(lines.length < sc.MAX_PLAYERS + DELTA) {
         System.err.println("Could not load theme \"" + filename + "\": expected " + (sc.MAX_PLAYERS + DELTA) + " lines, only found " + lines.length);
       } else {
-        for(int i = 0; i < lines.length; i++) {
-          String label = lines[i].split(" ")[0];
-          if(label.equals("background")) background_color = colorFromLine(lines[i]);
-          else if(label.equals("popupbackground")) popup_background_color = colorFromLine(lines[i]);
-          else if(label.equals("line")) line_color = colorFromLine(lines[i]);
-          else if(label.equals("text")) text_color = colorFromLine(lines[i]);
-          else if(label.equals("grayedtext")) grayed_text_color = colorFromLine(lines[i]);
-          else if(label.equals("errortext")) error_text_color = colorFromLine(lines[i]);
-          else if(label.equals("buttonclick")) button_click_color = colorFromLine(lines[i]);
-          else if(label.equals("buttonhover")) button_hover_color = colorFromLine(lines[i]);
-          else if(label.equals("underbid")) underbid_color = colorFromLine(lines[i]);
-          else if(label.equals("overbid")) overbid_color = colorFromLine(lines[i]);
-          else if(label.charAt(0) == 'p') {
-            int player = sc.parseInt(label.substring(1));
+        for (String line : lines) {
+          String label = line.split(" ")[0];
+          if (label.equals("background")) background_color = colorFromLine(line);
+          else if (label.equals("popupbackground")) popup_background_color = colorFromLine(line);
+          else if (label.equals("line")) line_color = colorFromLine(line);
+          else if (label.equals("text")) text_color = colorFromLine(line);
+          else if (label.equals("grayedtext")) grayed_text_color = colorFromLine(line);
+          else if (label.equals("errortext")) error_text_color = colorFromLine(line);
+          else if (label.equals("buttonclick")) button_click_color = colorFromLine(line);
+          else if (label.equals("buttonhover")) button_hover_color = colorFromLine(line);
+          else if (label.equals("underbid")) underbid_color = colorFromLine(line);
+          else if (label.equals("overbid")) overbid_color = colorFromLine(line);
+          else if (label.charAt(0) == 'p') {
+            int player = Integer.parseInt(label.substring(1));
             player--;
-            player_colors[player] = colorFromLine(lines[i]);
+            player_colors[player] = colorFromLine(line);
           } else {
             System.err.println("Unknown label in theme " + filename + ": " + label);
           }
@@ -67,7 +52,7 @@ class Theme {
   int colorFromLine(String line) {
     String[] parts = line.split(" ");
     try {
-      return sc.color(sc.parseInt(parts[1]), sc.parseInt(parts[2]), sc.parseInt(parts[3]));
+      return sc.color(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
     } catch(Exception e) {
       System.err.println("Exception parsing theme line \"" + line + "\": " + e.toString());
       return sc.color(255);

@@ -155,43 +155,28 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     String trickMode() {
-        switch (trick_mode) {
-            case 0:
-                return "Off";
-            case 1:
-                return "Down/Up";
-            case 2:
-                return "Down";
-            case 3:
-                return "Up/Down";
-            case 4:
-                return "Up";
-            case 5:
-                return "Split";
-            case 6:
-                return "Custom";
-            default:
-                return "Undefined";
-        }
+        return switch (trick_mode) {
+            case 0 -> "Off";
+            case 1 -> "Down/Up";
+            case 2 -> "Down";
+            case 3 -> "Up/Down";
+            case 4 -> "Up";
+            case 5 -> "Split";
+            case 6 -> "Custom";
+            default -> "Undefined";
+        };
     }
 
     PImage trumpIcon() {
-        switch (trump_suit) {
-            case 1:
-                return spades;
-            case 2:
-                return clubs;
-            case 3:
-                return hearts;
-            case 4:
-                return diamonds;
-            case 5:
-                return dots;
-            case 6:
-                return crosses;
-            default:
-                return null;
-        }
+        return switch (trump_suit) {
+            case 1 -> spades;
+            case 2 -> clubs;
+            case 3 -> hearts;
+            case 4 -> diamonds;
+            case 5 -> dots;
+            case 6 -> crosses;
+            default -> null;
+        };
     }
 
     @Override
@@ -411,8 +396,8 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void handleFinishRound() {
         int total_taken = 0;
-        for (int i = 0; i < players.size(); i++) {
-            total_taken += players.get(i).taken;
+        for (Player player : players) {
+            total_taken += player.taken;
         }
         if (trick_mode == 0 || total_taken == tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
             hands_played++;
@@ -560,33 +545,34 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(close_popup_button, "X", 0.02f, true, true);
                 fill(Theme.theme.line_color);
                 textSize(width * 0.05f);
-                text("Trick Customization", popup_window.cx(), popup_window.y() + height / 12);
+                text("Trick Customization", popup_window.cx(), popup_window.y() + height * 0.083f);
                 textAlign(CENTER, TOP);
                 textSize(width * 0.02f);
-                text("Number of suits: " + suits + "\nCards per suit: " + cards_per_suit + "\nTotal cards in deck: " + (suits * cards_per_suit) + "\nTrick mode: " + trickMode() + "\nPreview:", popup_window.cx(), popup_window.y() + width / 10);
-                String preview = "";
+                text("Number of suits: " + suits + "\nCards per suit: " + cards_per_suit + "\nTotal cards in deck: " + (suits * cards_per_suit) +
+                        "\nTrick mode: " + trickMode() + "\nPreview:", popup_window.cx(), popup_window.y() + width * 0.1f);
+                StringBuilder preview = new StringBuilder();
                 fill(Theme.theme.error_text_color);
                 if (trick_mode == 0) {
-                    preview = "Trick sequence disabled; some checks will not function";
+                    preview = new StringBuilder("Trick sequence disabled; some checks will not function");
                 } else if (trick_mode == 6) {
-                    preview = "Custom trick sequences are not currently available.";
+                    preview = new StringBuilder("Custom trick sequences are not currently available.");
                 } else {
                     fill(Theme.theme.text_color);
                     for (int i = 0; i < tricks.length; i++) {
                         if (i == trick_index) {
-                            preview += "*";
+                            preview.append("*");
                         }
-                        preview += tricks[i];
+                        preview.append(tricks[i]);
                         if (i < tricks.length - 1) {
-                            preview += ", ";
+                            preview.append(", ");
                         }
                     }
                 }
-                if (textWidth(preview) > popup_window.w() * 0.9) {
-                    textSize(width * 0.02f * 0.9f * popup_window.w() / textWidth(preview));
+                if (textWidth(preview.toString()) > popup_window.w() * 0.9) {
+                    textSize(width * 0.02f * 0.9f * popup_window.w() / textWidth(preview.toString()));
                 }
                 textAlign(CENTER, CENTER);
-                text(preview, popup_window.cx(), popup_window.y() + width * 0.26f);
+                text(preview.toString(), popup_window.cx(), popup_window.y() + width * 0.26f);
                 drawButton(number_suits_button, "Number of Suits", 0.015f, true, true);
                 drawButton(cards_per_suit_button, "Cards per Suit", 0.015f, true, true);
                 drawButton(trick_mode_button, "Trick Mode", 0.015f, true, true);
@@ -636,12 +622,12 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(end_game_button, "End Game", 0.02f, true, true);
                 textSize(width * 0.01f);
                 fill(Theme.theme.text_color);
-                text("Deal", 18 * width / 25, height * 17 / 20);
-                text("Bid", 4 * width / 5, height * 17 / 20);
-                text("Taken", 22 * width / 25, height * 17 / 20);
-                text("Trump", 24 * width / 25, height * 17 / 20);
+                text("Deal", width * 0.72f, height * 0.85f);
+                text("Bid", width * 0.8f, height * 0.85f);
+                text("Taken", width * 0.88f, height * 0.85f);
+                text("Trump", width * 0.96f, height * 0.85f);
                 textSize(width * 0.05f);
-                text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), 18 * width / 25, 11 * height / 12);
+                text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), width * 0.72f, height * 0.917f);
                 if (current_screen == Screen.TAKING) {
                     if (trick_mode != 0) {
                         if (total_bid < tricks[trick_index]) {
@@ -651,9 +637,9 @@ public class OhHellScoreboardV2 extends PApplet {
                         }
                     }
                 }
-                text(total_bid, 4 * width / 5, 11 * height / 12);
+                text(total_bid, width * 0.8f, height * 0.917f);
                 fill(Theme.theme.text_color);
-                text(total_taken, 22 * width / 25, 11 * height / 12);
+                text(total_taken, width * 0.88f, height * 0.917f);
                 PImage trump_icon = trumpIcon();
                 if (trump_icon != null) {
                     image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() / 4, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() / 4, trump_suit_bounding_box.w() / 2, trump_suit_bounding_box.h() / 2);
@@ -662,7 +648,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(restart_button, "Restart", 0.02f, true, true);
                 textSize(width * 0.05f);
                 fill(Theme.theme.text_color);
-                text("Game Over", width / 2, height * 11 / 12 - width * 0.005f);
+                text("Game Over", width * 0.5f, height * 0.917f - width * 0.005f);
             }
         }
         if (error_frames > 0) {
@@ -679,7 +665,7 @@ public class OhHellScoreboardV2 extends PApplet {
             if (error_frames <= 25) {
                 fill(Theme.theme.error_text_color, 10 * error_frames);
             }
-            text(error_message, width / 2, height / 2 - width * 0.0025f);
+            text(error_message, width * 0.5f, height * 0.5f - width * 0.0025f);
             error_frames--;
             low_framerate_cooldown++;
         }
@@ -763,8 +749,8 @@ public class OhHellScoreboardV2 extends PApplet {
                 trump_suit = 6;
                 return;
             }
+            int i = Math.abs(getKeyValue(key));
             if(current_screen == Screen.BIDDING) {
-                int i = Math.abs(getKeyValue(key));
                 if(i != 0 && i - 1 < players.size()) {
                     i--;
                     Player p = players.get(i);
@@ -772,7 +758,6 @@ public class OhHellScoreboardV2 extends PApplet {
                     return;
                 }
             } else {
-                int i = Math.abs(getKeyValue(key));
                 if(i != 0 && i - 1 < players.size()) {
                     i--;
                     Player p = players.get(i);
@@ -783,29 +768,29 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
     int getKeyValue(char k) {
-        switch(k) {
-            case '1': return 1;
-            case '2': return 2;
-            case '3': return 3;
-            case '4': return 4;
-            case '5': return 5;
-            case '6': return 6;
-            case '7': return 7;
-            case '8': return 8;
-            case '9': return 9;
-            case '0': return 10;
-            case 'q': return -1;
-            case 'w': return -2;
-            case 'e': return -3;
-            case 'r': return -4;
-            case 't': return -5;
-            case 'y': return -6;
-            case 'u': return -7;
-            case 'i': return -8;
-            case 'o': return -9;
-            case 'p': return -10;
-            default: return 0;
-        }
+        return switch (k) {
+            case '1' -> 1;
+            case '2' -> 2;
+            case '3' -> 3;
+            case '4' -> 4;
+            case '5' -> 5;
+            case '6' -> 6;
+            case '7' -> 7;
+            case '8' -> 8;
+            case '9' -> 9;
+            case '0' -> 10;
+            case 'q' -> -1;
+            case 'w' -> -2;
+            case 'e' -> -3;
+            case 'r' -> -4;
+            case 't' -> -5;
+            case 'y' -> -6;
+            case 'u' -> -7;
+            case 'i' -> -8;
+            case 'o' -> -9;
+            case 'p' -> -10;
+            default -> 0;
+        };
     }
 
     @Override

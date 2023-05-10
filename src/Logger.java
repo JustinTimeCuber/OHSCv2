@@ -3,12 +3,10 @@ public class Logger {
   static String[] log = new String[0];
   static void write(String out) {
     String[] new_log = new String[log.length + 1];
-    for(int i = 0; i < log.length; i++) {
-      new_log[i] = log[i];
-    }
+    System.arraycopy(log, 0, new_log, 0, log.length);
     new_log[log.length] = out;
     log = new_log;
-    sc.println("[LOGGER] " + out);
+    System.out.println("[LOGGER] " + out);
   }
   static void read(String file) {
     try {
@@ -27,12 +25,8 @@ public class Logger {
   }
   static String[] append(String[] in) {
     String[] out = new String[log.length + in.length];
-    for(int i = 0; i < in.length; i++) {
-      out[i] = in[i];
-    }
-    for(int i = 0; i < log.length; i++) {
-      out[in.length + i] = log[i];
-    }
+    System.arraycopy(in, 0, out, 0, in.length);
+    System.arraycopy(log, 0, out, in.length, log.length);
     return out;
   }
 }
