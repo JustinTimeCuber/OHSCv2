@@ -18,7 +18,7 @@ class Theme {
   Theme(String directory, String filename, String n) {
     try {
       name = n;
-      String[] lines = sc.loadStrings(directory + sc.FILE_SEPARATOR + filename);
+      String[] lines = sc.loadStrings(directory + filename);
       final int DELTA = 10;
       if(lines.length < sc.MAX_PLAYERS + DELTA) {
         System.err.println("Could not load theme \"" + filename + "\": expected " + (sc.MAX_PLAYERS + DELTA) + " lines, only found " + lines.length);
@@ -73,11 +73,11 @@ class Theme {
     if(themes == null) {
       themes = new ArrayList<>();
       try {
-        String[] themes_list = sc.loadStrings("themes" + sc.FILE_SEPARATOR + "themes.txt");
+        String[] themes_list = sc.loadStrings("themes/themes.txt");
         for(int i = 0; i < themes_list.length; i++) {
           String file = themes_list[i].split(":")[0];
           String name = themes_list[i].split(":")[1];
-          themes.add(new Theme("themes", file, name));
+          themes.add(new Theme("themes/", file, name));
           if(file.equals(theme_file)) {
             theme_index = i;
           }

@@ -514,12 +514,12 @@ public class OhHellScoreboardV2 extends PApplet {
             System.err.println("Exception loading save: " + e);
             setInitialValues();
         }
-        spades = loadImage("assets" + FILE_SEPARATOR + "spades.png");
-        hearts = loadImage("assets" + FILE_SEPARATOR + "hearts.png");
-        clubs = loadImage("assets" + FILE_SEPARATOR + "clubs.png");
-        diamonds = loadImage("assets" + FILE_SEPARATOR + "diamonds.png");
-        dots = loadImage("assets" + FILE_SEPARATOR + "dots.png");
-        crosses = loadImage("assets" + FILE_SEPARATOR + "crosses.png");
+        spades = loadImage("assets/spades.png");
+        hearts = loadImage("assets/hearts.png");
+        clubs = loadImage("assets/clubs.png");
+        diamonds = loadImage("assets/diamonds.png");
+        dots = loadImage("assets/dots.png");
+        crosses = loadImage("assets/crosses.png");
     }
 
     @Override
