@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 class Theme {
   static OhHellScoreboardV2 sc;
-  int[] player_colors = new int[sc.MAX_PLAYERS];
+  final int[] player_colors = new int[sc.MAX_PLAYERS];
   int background_color = 0;
   int popup_background_color = 0;
   int line_color = 0;
@@ -46,7 +46,7 @@ class Theme {
       }
       file = filename;
     } catch(Exception e) {
-      System.err.println("Exception loading theme \"" + filename + "\": " + e.toString());
+      System.err.println("Exception loading theme \"" + filename + "\": " + e);
     }
   }
   int colorFromLine(String line) {
@@ -54,7 +54,7 @@ class Theme {
     try {
       return sc.color(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
     } catch(Exception e) {
-      System.err.println("Exception parsing theme line \"" + line + "\": " + e.toString());
+      System.err.println("Exception parsing theme line \"" + line + "\": " + e);
       return sc.color(255);
     }
   }
@@ -71,7 +71,7 @@ class Theme {
   static Theme theme;
   static void loadThemes() {
     if(themes == null) {
-      themes = new ArrayList<Theme>();
+      themes = new ArrayList<>();
       try {
         String[] themes_list = sc.loadStrings("themes" + sc.FILE_SEPARATOR + "themes.txt");
         for(int i = 0; i < themes_list.length; i++) {
@@ -83,7 +83,7 @@ class Theme {
           }
         }
       } catch(Exception e) {
-        System.err.println("Could not read themes.txt: " + e.toString());
+        System.err.println("Could not read themes.txt: " + e);
       }
     } else {
       for(int i = 0; i < themes.size(); i++) {

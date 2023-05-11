@@ -1,5 +1,3 @@
-import processing.core.PApplet;
-
 public class Tile {
   static OhHellScoreboardV2 sc;
   float x1;

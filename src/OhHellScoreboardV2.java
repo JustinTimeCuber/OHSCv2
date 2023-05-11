@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
-    ArrayList<Player> players = new ArrayList<Player>();
+    ArrayList<Player> players = new ArrayList<>();
     Tile[] setup_tiles, game_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile popup_window, close_popup_button;
@@ -33,7 +33,7 @@ public class OhHellScoreboardV2 extends PApplet {
     PImage spades, clubs, hearts, diamonds, dots, crosses;
     float aspect_ratio;
     int millis_last_frame = 0;
-    boolean debug = false;
+    final boolean debug = false;
 
     void displayError(String m, int f) {
         error_message = m;
@@ -57,7 +57,7 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         int max_deal = suits * cards_per_suit / players.size();
         if (trick_mode != 6 && trick_mode != 0) {
-            int total_hands = (trick_mode == 1 || trick_mode == 3) ? total_hands = 2 * max_deal - 1 : max_deal;
+            int total_hands = (trick_mode == 1 || trick_mode == 3) ? 2 * max_deal - 1 : max_deal;
             tricks = new int[total_hands];
             for (int i = 0; i < tricks.length; i++) {
                 if (trick_mode == 1) {
@@ -90,12 +90,12 @@ public class OhHellScoreboardV2 extends PApplet {
         selected_player = -1;
         error_message = "";
         error_frames = 0;
-        players = new ArrayList<Player>();
+        players = new ArrayList<>();
         editing_name = false;
         current_window = Window.NONE;
         current_screen = Screen.SETUP_TO_BIDDING;
         for (int i = 0; i < 4; i++) {
-            players.add(new Player(""));
+            players.add(new Player());
         }
         hands_played = 0;
         suits = 4;
@@ -310,10 +310,10 @@ public class OhHellScoreboardV2 extends PApplet {
     void handleAddPlayer() {
         if (players.size() < MAX_PLAYERS) {
             if (selected_player == -1) {
-                players.add(new Player("").setColor(Theme.theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+                players.add(new Player().setColor(Theme.theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
                 updatePlayers(false);
             } else {
-                players.add(selected_player, new Player("").setColor(Theme.theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+                players.add(selected_player, new Player().setColor(Theme.theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
                 selected_player++;
                 updatePlayers(false);
             }
@@ -481,7 +481,7 @@ public class OhHellScoreboardV2 extends PApplet {
         try {
             StateIO.loadState("latest");
         } catch (Exception e) {
-            System.err.println("Exception loading save: " + e.toString());
+            System.err.println("Exception loading save: " + e);
             setInitialValues();
         }
         spades = loadImage("assets" + FILE_SEPARATOR + "spades.png");

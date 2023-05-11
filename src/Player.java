@@ -11,9 +11,8 @@ class Player {
   int hands_played = 0;
   int display_color = sc.color(255);
   Tile tile = new Tile(0, 0, 0, 0);
-  String name;
-  Player(String n) {
-    name = n;
+  String name = "";
+  Player() {
   }
   Player setColor(int c) {
     display_color = c;

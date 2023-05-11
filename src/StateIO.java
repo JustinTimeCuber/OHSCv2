@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class StateIO {
     static OhHellScoreboardV2 sc;
     static void saveState(String filename) {
-        ArrayList<String> state = new ArrayList<String>();
+        ArrayList<String> state = new ArrayList<>();
         state.add("selected_player:" + sc.selected_player);
         state.add("error_message:" + sc.error_message);
         state.add("error_frames:" + sc.error_frames);
@@ -27,7 +27,7 @@ public class StateIO {
     static void loadState(String filename) {
         String[] state = sc.loadStrings(filename + ".ohsc");
         Logger.read(filename + ".log");
-        sc.players = new ArrayList<Player>();
+        sc.players = new ArrayList<>();
         for (String s : state) {
             String label = s.split(":")[0];
             String value = s.substring(label.length() + 1);
@@ -45,7 +45,7 @@ public class StateIO {
                 case "trump_suit" -> sc.trump_suit = Integer.parseInt(value);
                 case "hands_played" -> sc.hands_played = Integer.parseInt(value);
                 case "theme_file" -> Theme.theme_file = value;
-                case "player" -> sc.players.add(new Player("").parse(value));
+                case "player" -> sc.players.add(new Player().parse(value));
                 default -> System.err.println("Unrecognized label: " + label);
             }
         }
