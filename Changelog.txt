@@ -1,3 +1,6 @@
+v2.1-beta.6
+* Fixed resource loading on Windows
+
 v2.1-beta.5
 + Files are now saved in OS-specific locations
     Windows: C:\Users\USERNAME\Appdata\Roaming\OHSCv2\
