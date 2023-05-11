@@ -104,37 +104,37 @@ public class OhHellScoreboardV2 extends PApplet {
         trump_suit = 0;
         low_framerate_cooldown = 60;
         setup_tiles = new Tile[]{
-                new Tile(0, 0, 1. / 2, 1. / 8),
-                new Tile(1. / 2, 0, 1., 1. / 8),
-                new Tile(0, 1. / 8, 1. / 2, 1. / 4),
-                new Tile(1. / 2, 1. / 8, 1, 1. / 4),
-                new Tile(0, 1. / 4, 1. / 2, 3. / 8),
-                new Tile(1. / 2, 1. / 4, 1, 3. / 8),
-                new Tile(0, 3. / 8, 1. / 2, 1. / 2),
-                new Tile(1. / 2, 3. / 8, 1, 1. / 2),
-                new Tile(0, 1. / 2, 1. / 2, 5. / 8),
-                new Tile(1. / 2, 1. / 2, 1, 5. / 8)
+                new Tile(0, 0, 0.5, 0.125),
+                new Tile(0.5, 0, 1., 0.125),
+                new Tile(0, 0.125, 0.5, 0.25),
+                new Tile(0.5, 0.125, 1, 0.25),
+                new Tile(0, 0.25, 0.5, 0.375),
+                new Tile(0.5, 0.25, 1, 0.375),
+                new Tile(0, 0.375, 0.5, 0.5),
+                new Tile(0.5, 0.375, 1, 0.5),
+                new Tile(0, 0.5, 0.5, 0.625),
+                new Tile(0.5, 0.5, 1, 0.625)
         };
-        add_player_button = new Tile(1. / 25, 7. / 8, 6. / 25, 23. / 24);
-        remove_player_button = new Tile(7. / 25, 7. / 8, 12. / 25, 23. / 24);
-        one_point_button = new Tile(1. / 25, 3. / 4, 6. / 25, 5. / 6);
-        ten_point_button = new Tile(7. / 25, 3. / 4, 12. / 25, 5. / 6);
-        custom_tricks_button = new Tile(13. / 25, 3. / 4, 18. / 25, 5. / 6);
-        reset_button = new Tile(19. / 25, 3. / 4, 24. / 25, 5. / 6);
-        theme_button = new Tile(13. / 25, 7. / 8, 18. / 25, 23. / 24);
-        begin_game_button = new Tile(19. / 25, 7. / 8, 24. / 25, 23. / 24);
-        popup_window = new Tile(1. / 6, 1. / 6, 5. / 6, 5. / 6);
-        close_popup_button = new Tile(47. / 60, 1. / 6 + aspect_ratio / 60, 49. / 60, 1. / 6 + aspect_ratio / 20);
-        number_suits_button = new Tile(29. / 150, 17. / 24, 49. / 150, 19. / 24);
-        cards_per_suit_button = new Tile(53. / 150, 17. / 24, 73. / 150, 19. / 24);
-        trick_mode_button = new Tile(77. / 150, 17. / 24, 97. / 150, 19. / 24);
-        starting_point_button = new Tile(101. / 150, 17. / 24, 121. / 150, 19. / 24);
-        setup_button = new Tile(1. / 25, 7. / 8, 4. / 25, 23. / 24);
-        change_bids_button = new Tile(1. / 5, 7. / 8, 8. / 25, 23. / 24);
-        proceed_button = new Tile(9. / 25, 7. / 8, 12. / 25, 23. / 24);
-        end_game_button = new Tile(13. / 25, 7. / 8, 16. / 25, 23. / 24);
-        restart_button = new Tile(18. / 25, 7. / 8, 23. / 25, 23. / 24);
-        trump_suit_bounding_box = new Tile(23. / 25, 1 - aspect_ratio * 2. / 25, 1, 1);
+        add_player_button = new Tile(0.04, 0.875, 0.24, 0.958);
+        remove_player_button = new Tile(0.28, 0.875, 0.48, 0.958);
+        one_point_button = new Tile(0.04, 0.75, 0.24, 0.833);
+        ten_point_button = new Tile(0.28, 0.75, 0.48, 0.833);
+        custom_tricks_button = new Tile(0.52, 0.75, 0.72, 0.833);
+        reset_button = new Tile(0.76, 0.75, 0.96, 0.833);
+        theme_button = new Tile(0.52, 0.875, 0.72, 0.958);
+        begin_game_button = new Tile(0.76, 0.875, 0.96, 0.958);
+        popup_window = new Tile(0.167, 0.167, 0.833, 0.833);
+        close_popup_button = new Tile(0.783, 0.167 * (1 + aspect_ratio * 0.1), 0.817, 0.167 * (1 + aspect_ratio * 0.3));
+        number_suits_button = new Tile(0.193, 0.708, 0.327, 0.792);
+        cards_per_suit_button = new Tile(0.353, 0.708, 0.487, 0.792);
+        trick_mode_button = new Tile(0.513, 0.708, 0.647, 0.792);
+        starting_point_button = new Tile(0.673, 0.708, 0.807, 0.792);
+        setup_button = new Tile(0.04, 0.875, 0.16, 0.958);
+        change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);
+        proceed_button = new Tile(0.36, 0.875, 0.48, 0.958);
+        end_game_button = new Tile(0.52, 0.875, 0.64, 0.958);
+        restart_button = new Tile(0.72, 0.875, 0.92, 0.958);
+        trump_suit_bounding_box = new Tile(0.92, 1 - aspect_ratio * 0.08, 1, 1);
         Theme.loadThemes();
         updatePlayers(true);
         Logger.reset();
@@ -607,27 +607,27 @@ public class OhHellScoreboardV2 extends PApplet {
                 rect(p.tile.x(), p.tile.y(), p.tile.w(), p.tile.h());
                 fill(p.display_color);
                 textSize(game_tiles[0].w() * 0.1f);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.cx(), p.tile.y() + p.tile.h() / 6);
+                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.cx(), p.tile.y() + p.tile.h() * 0.167f);
                 textSize(p.tile.h() * 0.6f);
                 if (p.score >= 0) {
-                    text(p.score, p.tile.cx(), p.tile.my() - 2 * p.tile.h() / 5);
+                    text(p.score, p.tile.cx(), p.tile.my() - 2 * p.tile.h() * 0.2f);
                 } else {
-                    text(-p.score, p.tile.cx() + p.tile.h() * 0.15f, p.tile.my() - 2 * p.tile.h() / 5);
+                    text(-p.score, p.tile.cx() + p.tile.h() * 0.15f, p.tile.my() - 2 * p.tile.h() * 0.2f);
                     noStroke();
-                    rect(p.tile.cx() + p.tile.h() * 0.16f - 0.5f * textWidth(String.valueOf(-p.score)), p.tile.y() + 0.55f * p.tile.h(), -p.tile.h() / 6, p.tile.h() / 24);
+                    rect(p.tile.cx() + p.tile.h() * 0.16f - 0.5f * textWidth(String.valueOf(-p.score)), p.tile.y() + 0.55f * p.tile.h(), -p.tile.h() * 0.167f, p.tile.h() * 0.042f);
                     stroke(Theme.theme.line_color);
                 }
                 textSize(game_tiles[0].w() * 0.04f);
-                text("Bid", p.tile.x() + p.tile.w() / 8, p.tile.my() - p.tile.w() / 6);
+                text("Bid", p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.167f);
                 if (p.has_bid) {
                     textSize(p.tile.w() * 0.1f);
-                    text(p.bid, p.tile.x() + p.tile.w() / 8, p.tile.my() - p.tile.w() / 10);
+                    text(p.bid, p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.1f);
                 }
                 if (current_screen == Screen.TAKING) {
                     textSize(game_tiles[0].w() * 0.04f);
-                    text("Taken", p.tile.mx() - p.tile.w() / 8, p.tile.my() - p.tile.w() / 6);
+                    text("Taken", p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.167f);
                     textSize(p.tile.w() * 0.1f);
-                    text(p.taken, p.tile.mx() - p.tile.w() / 8, p.tile.my() - p.tile.w() / 10);
+                    text(p.taken, p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.1f);
                 }
             }
             if (current_screen != Screen.GAME_OVER) {
@@ -657,7 +657,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 text(total_taken, width * 0.88f, height * 0.922f);
                 PImage trump_icon = trumpIcon();
                 if (trump_icon != null) {
-                    image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() / 4, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() / 4, trump_suit_bounding_box.w() / 2, trump_suit_bounding_box.h() / 2);
+                    image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() * 0.25f, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() * 0.25f, trump_suit_bounding_box.w() * 0.5f, trump_suit_bounding_box.h() * 0.5f);
                 }
             } else {
                 drawButton(restart_button, "Restart", 0.02f, true, true);
