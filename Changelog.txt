@@ -1,3 +1,14 @@
+v2.1 beta 5
++ Files are now saved in OS-specific locations
+    Windows: C:\Users\USERNAME\Appdata\Roaming\OHSCv2\
+    Linux: /home/USERNAME/.local/share/OHSCv2/
+    MacOS: /Users/USERNAME/Library/Application Support/OHSCv2/
+    This means the jar file should work more easily on all platforms.
+* Significant code cleanup
+    All fractions used for graphics have been replaced with decimals
+    text() is now overridden to work around the vertical alignment issues
+* Alignment of some text and UI elements have been slightly tweaked
+
 v2.1 beta 4
 * Reformatted all code into .java files instead of .pde
     Mouse and Key files were moved back into the main file
