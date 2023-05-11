@@ -151,7 +151,7 @@ public class OhHellScoreboardV2 extends PApplet {
         rect(location.x(), location.y(), location.w(), location.h());
         fill(enabled ? Theme.theme.text_color : Theme.theme.grayed_text_color);
         textSize(size * width);
-        text(text, location.cx(), location.cy() - size * width * 0.1f);
+        text(text, location.cx(), location.cy());
     }
 
     String trickMode() {
@@ -456,6 +456,21 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
 
+    // Approximate fix for vertically-centered text to seem slightly too low
+    @Override
+    public void text(String str, float x, float y) {
+        if(g.textAlignY == CENTER) {
+            super.text(str, x, y - g.textSize * 0.1f);
+        } else {
+            super.text(str, x, y);
+        }
+    }
+
+    @Override
+    public void text(int i, float x, float y) {
+        text(String.valueOf(i), x, y);
+    }
+
     public static void main(String[] args) {
         PApplet.main("OhHellScoreboardV2");
     }
@@ -523,11 +538,11 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
                 textAlign(LEFT, CENTER);
                 textSize(width * 0.05f);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.x() + width * 0.01f, p.tile.cy() - width * 0.005f);
+                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.x() + width * 0.01f, p.tile.cy());
                 textAlign(CENTER, CENTER);
                 textSize(width * 0.03f);
                 fill(p.display_color);
-                text(p.score, p.tile.mx() - width * 0.04f, p.tile.cy() - width * 0.003f);
+                text(p.score, p.tile.mx() - width * 0.04f, p.tile.cy());
             }
             boolean popup_shown = current_window != Window.NONE;
             drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, players.size() < MAX_PLAYERS, !popup_shown);
@@ -622,12 +637,12 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(end_game_button, "End Game", 0.02f, true, true);
                 textSize(width * 0.01f);
                 fill(Theme.theme.text_color);
-                text("Deal", width * 0.72f, height * 0.85f);
-                text("Bid", width * 0.8f, height * 0.85f);
-                text("Taken", width * 0.88f, height * 0.85f);
-                text("Trump", width * 0.96f, height * 0.85f);
+                text("Deal", width * 0.72f, height * 0.86f);
+                text("Bid", width * 0.8f, height * 0.86f);
+                text("Taken", width * 0.88f, height * 0.86f);
+                text("Trump", width * 0.96f, height * 0.86f);
                 textSize(width * 0.05f);
-                text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), width * 0.72f, height * 0.917f);
+                text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), width * 0.72f, height * 0.922f);
                 if (current_screen == Screen.TAKING) {
                     if (trick_mode != 0) {
                         if (total_bid < tricks[trick_index]) {
@@ -637,9 +652,9 @@ public class OhHellScoreboardV2 extends PApplet {
                         }
                     }
                 }
-                text(total_bid, width * 0.8f, height * 0.917f);
+                text(total_bid, width * 0.8f, height * 0.922f);
                 fill(Theme.theme.text_color);
-                text(total_taken, width * 0.88f, height * 0.917f);
+                text(total_taken, width * 0.88f, height * 0.922f);
                 PImage trump_icon = trumpIcon();
                 if (trump_icon != null) {
                     image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() / 4, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() / 4, trump_suit_bounding_box.w() / 2, trump_suit_bounding_box.h() / 2);
@@ -648,7 +663,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(restart_button, "Restart", 0.02f, true, true);
                 textSize(width * 0.05f);
                 fill(Theme.theme.text_color);
-                text("Game Over", width * 0.5f, height * 0.917f - width * 0.005f);
+                text("Game Over", width * 0.5f, height * 0.917f);
             }
         }
         if (error_frames > 0) {
@@ -665,7 +680,7 @@ public class OhHellScoreboardV2 extends PApplet {
             if (error_frames <= 25) {
                 fill(Theme.theme.error_text_color, 10 * error_frames);
             }
-            text(error_message, width * 0.5f, height * 0.5f - width * 0.0025f);
+            text(error_message, width * 0.5f, height * 0.5f);
             error_frames--;
             low_framerate_cooldown++;
         }
