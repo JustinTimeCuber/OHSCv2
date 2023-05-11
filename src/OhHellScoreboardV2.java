@@ -16,6 +16,7 @@ public class OhHellScoreboardV2 extends PApplet {
     final int MAX_SUITS = 12;
     final int MAX_CARDS_PER_SUIT = 50;
     final String FILE_SEPARATOR = System.getProperty("file.separator");
+    final String DATA_PATH = getOSSpecificDataPath() + FILE_SEPARATOR + "OHSCv2" + FILE_SEPARATOR;
     int selected_player;
     String error_message;
     int error_frames;
@@ -34,6 +35,20 @@ public class OhHellScoreboardV2 extends PApplet {
     float aspect_ratio;
     int millis_last_frame = 0;
     final boolean debug = false;
+
+    static String getOSSpecificDataPath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("windows")) {
+            return System.getenv("APPDATA");
+        } else if(os.contains("linux")) {
+            return System.getenv("HOME") + "/.local/share";
+        } else if(os.contains("mac")) {
+            return System.getenv("HOME") + "/Library/Application Support";
+        } else {
+            System.err.println("Warning: OS \"" + os + "\" not supported. Will attempt to save to ~/OHSCv2.");
+            return System.getenv("HOME");
+        }
+    }
 
     void displayError(String m, int f) {
         error_message = m;
@@ -198,7 +213,7 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         out = Logger.append(out);
         String timestamp = year() + "-" + month() + "-" + day() + "-" + hour() + "_" + minute() + "_" + second();
-        saveStrings("saves" + FILE_SEPARATOR + timestamp + ".txt", out);
+        saveStrings(DATA_PATH + "saves" + FILE_SEPARATOR + timestamp + ".txt", out);
     }
 
     void resetFramerateCooldown() {
@@ -494,7 +509,7 @@ public class OhHellScoreboardV2 extends PApplet {
         aspect_ratio = (float) width / height;
         setInitialValues();
         try {
-            StateIO.loadState("latest");
+            StateIO.loadState(DATA_PATH + "latest");
         } catch (Exception e) {
             System.err.println("Exception loading save: " + e);
             setInitialValues();
@@ -517,7 +532,7 @@ public class OhHellScoreboardV2 extends PApplet {
             frameRate(2);
         }
         background(Theme.theme.background_color);
-        if (frc % 5 == 0) StateIO.saveState("latest");
+        if (frc % 5 == 0) StateIO.saveState(DATA_PATH + "latest");
         strokeWeight(2);
         stroke(Theme.theme.line_color);
         textAlign(CENTER, CENTER);
