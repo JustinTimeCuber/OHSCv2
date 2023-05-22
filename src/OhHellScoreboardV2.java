@@ -156,15 +156,19 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void drawButton(Tile location, String text, float size, boolean enabled, boolean hoverable) {
+        drawButton(Theme.theme, location, text, size, enabled, hoverable);
+    }
+
+    void drawButton(Theme theme, Tile location, String text, float size, boolean enabled, boolean hoverable) {
         if (enabled && hoverable && location.mouseInTile()) {
-            fill(mousePressed ? Theme.theme.button_click_color : Theme.theme.button_hover_color);
+            fill(mousePressed ? theme.button_click_color : theme.button_hover_color);
         } else {
-            fill(Theme.theme.background_color);
+            fill(theme.background_color);
         }
         strokeWeight(2);
-        stroke(Theme.theme.line_color);
+        stroke(theme.line_color);
         rect(location.x(), location.y(), location.w(), location.h());
-        fill(enabled ? Theme.theme.text_color : Theme.theme.grayed_text_color);
+        fill(enabled ? theme.text_color : theme.grayed_text_color);
         textSize(size * width);
         text(text, location.cx(), location.cy());
     }
@@ -332,7 +336,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 selected_player++;
                 updatePlayers(false);
             }
-            current_screen = Screen.BIDDING;
+            current_screen = Screen.SETUP_TO_BIDDING;
         } else {
             displayError("The maximum number of players is " + MAX_PLAYERS);
         }
@@ -573,7 +577,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 stroke(Theme.theme.line_color);
                 rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
                 drawButton(close_popup_button, "X", 0.02f, true, true);
-                fill(Theme.theme.line_color);
+                fill(Theme.theme.text_color);
                 textSize(width * 0.05f);
                 text("Trick Customization", popup_window.cx(), popup_window.y() + height * 0.083f);
                 textAlign(CENTER, TOP);
@@ -609,6 +613,78 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(starting_point_button, "Starting Point", 0.015f, true, true);
             } else if (trick_mode == 6) {
                 trick_mode = 0;
+            }
+            if(current_window == Window.THEMES) {
+                fill(Theme.theme.popup_background_color, 230);
+                stroke(Theme.theme.line_color);
+                rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
+                drawButton(close_popup_button, "X", 0.02f, true, true);
+                fill(Theme.theme.text_color);
+                textSize(width * 0.05f);
+                text("Theme Selector", popup_window.cx(), popup_window.y() + height * 0.083f);
+                float box_left = popup_window.x() + width * 0.05f;
+                float box_right = popup_window.mx() - width * 0.05f;
+                float box_width = box_right - box_left;
+                float box_top = popup_window.y() + height * 0.15f;
+                float row_height = width * 0.035f;
+                int rows = Theme.themes.size() + 1;
+                noStroke();
+                for(int i = 0; i < Theme.themes.size(); i++) {
+                    fill(Theme.themes.get(i).background_color);
+                    rect(box_left + box_width * 0.7f, box_top + row_height * (i + 1), box_width * 0.3f, row_height);
+                }
+                strokeWeight(2);
+                stroke(Theme.theme.line_color);
+                fill(Theme.theme.text_color);
+                for(int i = 0; i <= rows; i++) {
+                    line(box_left, box_top + i * row_height, box_right, box_top + i * row_height);
+                }
+                line(box_left, box_top, box_left, box_top + rows * row_height);
+                line(box_left + box_width * 0.3f, box_top, box_left + box_width * 0.3f, box_top + rows * row_height);
+                line(box_left + box_width * 0.7f, box_top, box_left + box_width * 0.7f, box_top + rows * row_height);
+                line(box_right, box_top, box_right, box_top + rows * row_height);
+                textSize(width * 0.02f);
+                text("Theme", box_left + box_width * 0.15f, box_top + row_height * 0.5f);
+                text("File", box_left + box_width * 0.5f, box_top + row_height * 0.5f);
+                text("Colors", box_left + box_width * 0.85f, box_top + row_height * 0.5f);
+                for(int i = 0; i < Theme.themes.size(); i++) {
+                    textSize(width * 0.02f);
+                    fill(Theme.theme.text_color);
+                    Theme current = Theme.themes.get(i);
+                    text(Theme.theme_index == i ? "▶" + current.name + "◀" : current.name, box_left + box_width * 0.15f, box_top + row_height * (i + 1.5f));
+                    text(current.file, box_left + box_width * 0.5f, box_top + row_height * (i + 1.5f));
+                    for(int j = 0; j < MAX_PLAYERS; j++) {
+                        fill(current.getPlayerColor(j));
+                        stroke(current.line_color);
+                        rect(box_left + box_width * (0.75f + 0.02f * j), box_top + row_height * (i + 1.1f), box_width * 0.015f, box_width * 0.015f);
+                    }
+                    fill(current.overbid_color);
+                    textSize(width * 0.015f);
+                    text("+", box_left + box_width * 0.725f, box_top + row_height * (i + 1.2f));
+                    fill(current.underbid_color);
+                    text("-", box_left + box_width * 0.975f, box_top + row_height * (i + 1.2f));
+                    Tile popup_button = Tile.fromCoordinates(box_left + box_width * 0.72f, box_top + row_height * (i + 1.5f), box_left + box_width * 0.84f, box_top + row_height * (i + 1.9f));
+                    drawButton(current, popup_button, "Pop-up", 0.01f, true, true);
+                    Tile error_button = Tile.fromCoordinates(box_left + box_width * 0.86f, box_top + row_height * (i + 1.5f), box_left + box_width * 0.98f, box_top + row_height * (i + 1.9f));
+                    drawButton(current, error_button, "Error", 0.01f, false, false);
+                    if(mousePressed) {
+                        if(popup_button.mouseInTile()) {
+                            fill(current.popup_background_color, 230);
+                            stroke(current.line_color);
+                            rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
+                            fill(current.text_color);
+                            text("Pop-up Window", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
+                        } else if(error_button.mouseInTile()) {
+                            fill(current.popup_background_color, 230);
+                            stroke(current.line_color);
+                            rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
+                            fill(current.error_text_color);
+                            text("Error Message", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
+                        } else if(mouseX > box_left && mouseX < box_right && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
+                            Theme.setTheme(i);
+                        }
+                    }
+                }
             }
         } else {
             textAlign(CENTER, CENTER);
@@ -839,10 +915,6 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         if(current_screen.isSetup()) {
             if(current_window == Window.TRICKS) {
-                if(close_popup_button.mouseInTile()) {
-                    current_window = Window.NONE;
-                    return;
-                }
                 if(number_suits_button.mouseInTile()) {
                     handleSuitsChange(mouseButton == LEFT);
                     return;
@@ -857,6 +929,12 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
                 if(starting_point_button.mouseInTile()) {
                     handleStartingPointChange(mouseButton == LEFT);
+                    return;
+                }
+            }
+            if(current_window != Window.NONE) {
+                if(close_popup_button.mouseInTile()) {
+                    current_window = Window.NONE;
                 }
                 return;
             }
@@ -894,9 +972,10 @@ public class OhHellScoreboardV2 extends PApplet {
             }
             if(reset_button.mouseInTile()) {
                 setInitialValues();
+                return;
             }
             if(theme_button.mouseInTile()) {
-                Theme.setTheme(++Theme.theme_index);
+                current_window = Window.THEMES;
                 return;
             }
             if(begin_game_button.mouseInTile()) {

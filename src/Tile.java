@@ -10,6 +10,9 @@ public class Tile {
     this.x2 = (float)x2;
     this.y2 = (float)y2;
   }
+  static Tile fromCoordinates(float x1, float y1, float x2, float y2) {
+    return new Tile(x1/sc.width, y1/sc.height, x2/sc.width, y2/sc.height);
+  }
   boolean mouseInTile() {
     return sc.mouseX > x1*sc.width && sc.mouseX < x2*sc.width && sc.mouseY > y1*sc.height && sc.mouseY < y2*sc.height;
   }

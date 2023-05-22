@@ -1,3 +1,10 @@
+v2.1-beta.7
++ Added theme selector GUI
+    Replaces the previous functionality of the theme button, which would just cycle to the next theme
+    Shows all available themes including their names, files, and colors
+    Buttons can be clicked to show pop-up and error message colors
+* Fixed issue where adding players would set the scoreboard to bidding mode
+
 v2.1-beta.6
 * Fixed resource loading on Windows
 
