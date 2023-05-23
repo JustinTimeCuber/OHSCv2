@@ -97,9 +97,7 @@ class Theme {
       if(themes_list_ext == null) {
         themes_list_ext = new String[]{"custom.ohsctheme:Custom Theme"};
         sc.saveStrings(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR + "external_themes.txt", themes_list_ext);
-        String[] custom = sc.loadStrings("themes/dark.ohsctheme");
-        custom[0] = "background 255 0 0";
-        custom[10] = "p1 0 0 0";
+        String[] custom = sc.loadStrings("themes/custom/custom.ohsctheme");
         sc.saveStrings(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR + "custom.ohsctheme", custom);
       }
       int offset = themes.size();

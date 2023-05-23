@@ -3,6 +3,10 @@ v2.1-beta.7
     Replaces the previous functionality of the theme button, which would just cycle to the next theme
     Shows all available themes including their names, files, and colors
     Buttons can be clicked to show pop-up and error message colors
+    Hovering over the filename shows the full path to the file
++ Added the ability to load additional themes from the data directory
+    On initial launch, a new file "external_themes.txt" will be created as well as one example theme in custom.ohsctheme
+    Themes listed here will be shown below the built-in themes in the selector menu
 * Fixed issue where adding players would set the scoreboard to bidding mode
 
 v2.1-beta.6
