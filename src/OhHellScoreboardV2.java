@@ -685,6 +685,24 @@ public class OhHellScoreboardV2 extends PApplet {
                         }
                     }
                 }
+                for(int i = 0; i < Theme.themes.size(); i++) {
+                    Theme current = Theme.themes.get(i);
+                    if(mouseX > box_left + box_width * 0.3 && mouseX < box_left + box_width * 0.7 && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
+                        String file = current.directory + current.file;
+                        // Test whether file is in the jar
+                        if(!file.startsWith("/") && file.charAt(1) != ':') {
+                            file = "jar/" + file;
+                        }
+                        textSize(width * 0.015f);
+                        fill(Theme.theme.background_color);
+                        stroke(Theme.theme.line_color);
+                        rect(mouseX, mouseY, textWidth(file) + width * 0.02f, width * 0.03f);
+                        fill(Theme.theme.text_color);
+                        textAlign(LEFT, CENTER);
+                        text(file, mouseX + width * 0.01f, mouseY + width * 0.015f);
+                        textAlign(CENTER, CENTER);
+                    }
+                }
             }
         } else {
             textAlign(CENTER, CENTER);

@@ -17,6 +17,7 @@ public class StateIO {
         state.add("trump_suit:" + sc.trump_suit);
         state.add("hands_played:" + sc.hands_played);
         state.add("theme_file:" + Theme.theme.file);
+        state.add("theme_directory:" + Theme.theme.directory);
         for (Player p : sc.players) {
             state.add("player:" + p.toString());
         }
@@ -45,6 +46,7 @@ public class StateIO {
                 case "trump_suit" -> sc.trump_suit = Integer.parseInt(value);
                 case "hands_played" -> sc.hands_played = Integer.parseInt(value);
                 case "theme_file" -> Theme.theme_file = value;
+                case "theme_directory" -> Theme.theme_directory = value;
                 case "player" -> sc.players.add(new Player().parse(value));
                 default -> System.err.println("Unrecognized label: " + label);
             }

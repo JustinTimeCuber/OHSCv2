@@ -13,6 +13,7 @@ class Theme {
   int button_hover_color = 0;
   int underbid_color = 0;
   int overbid_color = 0;
+  String directory = "";
   String file = "";
   String name = "Unnamed";
   Theme(String directory, String filename, String n) {
@@ -44,6 +45,7 @@ class Theme {
           }
         }
       }
+      this.directory = directory;
       file = filename;
     } catch(Exception e) {
       System.err.println("Exception loading theme \"" + filename + "\": " + e);
@@ -68,6 +70,7 @@ class Theme {
   static ArrayList<Theme> themes;
   static int theme_index = 0;
   static String theme_file;
+  static String theme_directory;
   static Theme theme;
   static void loadThemes() {
     if(themes == null) {
@@ -78,17 +81,40 @@ class Theme {
           String file = themes_list[i].split(":")[0];
           String name = themes_list[i].split(":")[1];
           themes.add(new Theme("themes/", file, name));
-          if(file.equals(theme_file)) {
+          if(file.equals(theme_file) && theme_directory.equals("themes/")) {
             theme_index = i;
           }
         }
       } catch(Exception e) {
         System.err.println("Could not read themes.txt: " + e);
       }
+      String[] themes_list_ext = null;
+      try {
+        themes_list_ext = sc.loadStrings(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR + "external_themes.txt");
+      } catch(Exception e) {
+        System.err.println("Could not read external_themes.txt: " + e);
+      }
+      if(themes_list_ext == null) {
+        themes_list_ext = new String[]{"custom.ohsctheme:Custom Theme"};
+        sc.saveStrings(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR + "external_themes.txt", themes_list_ext);
+        String[] custom = sc.loadStrings("themes/dark.ohsctheme");
+        custom[0] = "background 255 0 0";
+        custom[10] = "p1 0 0 0";
+        sc.saveStrings(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR + "custom.ohsctheme", custom);
+      }
+      int offset = themes.size();
+      for(int i = 0; i < themes_list_ext.length; i++) {
+        String file = themes_list_ext[i].split(":")[0];
+        String name = themes_list_ext[i].split(":")[1];
+        themes.add(new Theme(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR, file, name));
+        if(file.equals(theme_file) && theme_directory.equals(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR)) {
+          theme_index = i + offset;
+        }
+      }
     } else {
       for(int i = 0; i < themes.size(); i++) {
         Theme t = themes.get(i);
-        if(t.file.equals(theme_file)) {
+        if(t.file.equals(theme_file) && t.directory.equals(theme_directory)) {
           theme_index = i;
         }
       }
@@ -102,6 +128,7 @@ class Theme {
     }
     theme = themes.get(theme_index);
     theme_file = theme.file;
+    theme_directory = theme.directory;
     sc.updatePlayers(false);
   }
 }
