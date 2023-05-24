@@ -1,5 +1,7 @@
 import processing.core.PApplet;
 import processing.core.PImage;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class OhHellScoreboardV2 extends PApplet {
@@ -9,6 +11,7 @@ public class OhHellScoreboardV2 extends PApplet {
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile popup_window, close_popup_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
+    Tile refresh_themes_button;
     Tile setup_button, change_bids_button, proceed_button, end_game_button, trump_suit_bounding_box;
     Tile restart_button;
     final int MAX_PLAYERS = 10;
@@ -144,6 +147,7 @@ public class OhHellScoreboardV2 extends PApplet {
         cards_per_suit_button = new Tile(0.353, 0.708, 0.487, 0.792);
         trick_mode_button = new Tile(0.513, 0.708, 0.647, 0.792);
         starting_point_button = new Tile(0.673, 0.708, 0.807, 0.792);
+        refresh_themes_button = new Tile(0.733, 0.167 * (1 + aspect_ratio * 0.1), 0.767, 0.167 * (1 + aspect_ratio * 0.3));
         setup_button = new Tile(0.04, 0.875, 0.16, 0.958);
         change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);
         proceed_button = new Tile(0.36, 0.875, 0.48, 0.958);
@@ -619,7 +623,16 @@ public class OhHellScoreboardV2 extends PApplet {
                 stroke(Theme.theme.line_color);
                 rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
                 drawButton(close_popup_button, "X", 0.02f, true, true);
+                drawButton(refresh_themes_button, "", 0.02f, true, true);
+                noFill();
+                stroke(Theme.theme.text_color);
+                strokeWeight(width * 0.002f);
+                arc(refresh_themes_button.cx(), refresh_themes_button.cy(), refresh_themes_button.w() * 0.4f, refresh_themes_button.w() * 0.4f, -5, 0);
+                noStroke();
                 fill(Theme.theme.text_color);
+                triangle(refresh_themes_button.cx() + refresh_themes_button.w() * 0.1f, refresh_themes_button.cy(),
+                        refresh_themes_button.cx() + refresh_themes_button.w() * 0.3f, refresh_themes_button.cy(),
+                        refresh_themes_button.cx() + refresh_themes_button.w() * 0.2f, refresh_themes_button.cy() + refresh_themes_button.h() * 0.2f);
                 textSize(width * 0.05f);
                 text("Theme Selector", popup_window.cx(), popup_window.y() + height * 0.083f);
                 float box_left = popup_window.x() + width * 0.05f;
@@ -628,7 +641,6 @@ public class OhHellScoreboardV2 extends PApplet {
                 float box_top = popup_window.y() + height * 0.15f;
                 float row_height = width * 0.035f;
                 int rows = Theme.themes.size() + 1;
-                noStroke();
                 for(int i = 0; i < Theme.themes.size(); i++) {
                     fill(Theme.themes.get(i).background_color);
                     rect(box_left + box_width * 0.7f, box_top + row_height * (i + 1), box_width * 0.3f, row_height);
@@ -680,7 +692,7 @@ public class OhHellScoreboardV2 extends PApplet {
                             rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
                             fill(current.error_text_color);
                             text("Error Message", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
-                        } else if(mouseX > box_left && mouseX < box_right && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
+                        } else if(mouseX > box_left && mouseX < box_left + box_width * 0.3f && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
                             Theme.setTheme(i);
                         }
                     }
@@ -948,6 +960,34 @@ public class OhHellScoreboardV2 extends PApplet {
                 if(starting_point_button.mouseInTile()) {
                     handleStartingPointChange(mouseButton == LEFT);
                     return;
+                }
+            }
+            if(current_window == Window.THEMES) {
+                if(refresh_themes_button.mouseInTile()) {
+                    Theme.themes = null;
+                    Theme.loadThemes();
+                }
+                for(int i = 0; i < Theme.themes.size(); i++) {
+                    Theme current = Theme.themes.get(i);
+                    float box_left = popup_window.x() + width * 0.05f;
+                    float box_right = popup_window.mx() - width * 0.05f;
+                    float box_width = box_right - box_left;
+                    float box_top = popup_window.y() + height * 0.15f;
+                    float row_height = width * 0.035f;
+                    if(mouseX > box_left + box_width * 0.3 && mouseX < box_left + box_width * 0.7 && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
+                        String file = current.directory + current.file;
+                        // Test whether file is in the jar
+                        if(!file.startsWith("/") && file.charAt(1) != ':') {
+                            displayError("Cannot edit internal file within program jar");
+                            return;
+                        }
+                        try {
+                            java.awt.Desktop.getDesktop().open(new File(file));
+                        } catch(Exception e) {
+                            displayError("Cannot open file: " + e.getMessage());
+                        }
+                        return;
+                    }
                 }
             }
             if(current_window != Window.NONE) {

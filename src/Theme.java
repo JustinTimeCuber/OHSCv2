@@ -76,12 +76,19 @@ class Theme {
     if(themes == null) {
       themes = new ArrayList<>();
       try {
-        String[] themes_list = sc.loadStrings("themes/themes.txt");
+        String[] themes_list = sc.loadStrings(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR + "themes.txt");
+        if(themes_list == null) {
+          themes_list = sc.loadStrings("themes/themes.txt");
+        }
         for(int i = 0; i < themes_list.length; i++) {
           String file = themes_list[i].split(":")[0];
           String name = themes_list[i].split(":")[1];
-          themes.add(new Theme("themes/", file, name));
-          if(file.equals(theme_file) && theme_directory.equals("themes/")) {
+          String dir = sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR;
+          if(sc.loadStrings(dir + file) == null) {
+            dir = "themes/";
+          }
+          themes.add(new Theme(dir, file, name));
+          if(file.equals(theme_file) && theme_directory.equals(dir)) {
             theme_index = i;
           }
         }

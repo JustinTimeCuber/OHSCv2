@@ -5,8 +5,6 @@ public class StateIO {
     static void saveState(String filename) {
         ArrayList<String> state = new ArrayList<>();
         state.add("selected_player:" + sc.selected_player);
-        state.add("error_message:" + sc.error_message);
-        state.add("error_frames:" + sc.error_frames);
         state.add("editing_name:" + sc.editing_name);
         state.add("current_window:" + sc.current_window);
         state.add("current_screen:" + sc.current_screen);
@@ -34,8 +32,6 @@ public class StateIO {
             String value = s.substring(label.length() + 1);
             switch (label) {
                 case "selected_player" -> sc.selected_player = Integer.parseInt(value);
-                case "error_message" -> sc.error_message = value;
-                case "error_frames" -> sc.error_frames = Integer.parseInt(value);
                 case "editing_name" -> sc.editing_name = Boolean.parseBoolean(value);
                 case "current_window" -> sc.current_window = Window.valueOf(value);
                 case "current_screen" -> sc.current_screen = Screen.valueOf(value);

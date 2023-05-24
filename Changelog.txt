@@ -1,3 +1,12 @@
+v2.1-beta.8
++ Clicking on file names in the theme selector opens the file, when applicable
+    Does not open files stored inside the jar
++ Added a refresh button to the theme selector, which reloads all themes
+* It is now possible to overwrite the included themes
+    For example, creating a file "dark.ohsctheme" in the themes folder will supersede the built-in dark theme
+    Additionally, creating a file "themes.txt" in the themes folder overwrites the built-in themes.txt, allowing built-in themes to be hidden
+* Fixed the unintentional reversion of the error message saving change from 2.1b4
+
 v2.1-beta.7
 + Added theme selector GUI
     Replaces the previous functionality of the theme button, which would just cycle to the next theme
