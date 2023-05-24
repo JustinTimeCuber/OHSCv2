@@ -204,7 +204,11 @@ public class OhHellScoreboardV2 extends PApplet {
 
     @Override
     public PImage loadImage(String file) {
-        PImage img = super.loadImage(file);
+        String external = DATA_PATH + file.replace("/", FILE_SEPARATOR);
+        PImage img = super.loadImage(external);
+        if(img == null) {
+            img = super.loadImage(file);
+        }
         if (img == null) {
             System.err.println("Failed to load image: " + file + " - cannot start program.");
             System.exit(1);
