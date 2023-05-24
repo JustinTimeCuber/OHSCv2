@@ -1,4 +1,5 @@
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class OhHellScoreboardV2 extends PApplet {
     int trump_suit;
     int low_framerate_cooldown;
     PImage spades, clubs, hearts, diamonds, dots, crosses;
+    PFont font;
     float aspect_ratio;
     int millis_last_frame = 0;
     final boolean debug = false;
@@ -532,6 +534,8 @@ public class OhHellScoreboardV2 extends PApplet {
         diamonds = loadImage("assets/diamonds.png");
         dots = loadImage("assets/dots.png");
         crosses = loadImage("assets/crosses.png");
+        font = createFont("assets/NTSomic-Bold.ttf", 64);
+        textFont(font);
     }
 
     @Override
@@ -665,9 +669,9 @@ public class OhHellScoreboardV2 extends PApplet {
                 text("Colors", box_left + box_width * 0.85f, box_top + row_height * 0.5f);
                 for(int i = 0; i < Theme.themes.size(); i++) {
                     textSize(width * 0.02f);
-                    fill(Theme.theme.text_color);
+                    fill(Theme.theme_index == i ? Theme.theme.highlight_text_color : Theme.theme.text_color);
                     Theme current = Theme.themes.get(i);
-                    text(Theme.theme_index == i ? "▶" + current.name + "◀" : current.name, box_left + box_width * 0.15f, box_top + row_height * (i + 1.5f));
+                    text(current.name, box_left + box_width * 0.15f, box_top + row_height * (i + 1.5f));
                     text(current.file, box_left + box_width * 0.5f, box_top + row_height * (i + 1.5f));
                     for(int j = 0; j < MAX_PLAYERS; j++) {
                         fill(current.getPlayerColor(j));

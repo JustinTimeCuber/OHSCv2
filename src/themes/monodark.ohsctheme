@@ -4,6 +4,7 @@ line 255 255 255
 text 255 255 255
 grayedtext 64 64 64
 errortext 255 255 255
+highlighttext 191 191 191
 buttonclick 127 127 127
 buttonhover 64 64 64
 underbid 191 191 191

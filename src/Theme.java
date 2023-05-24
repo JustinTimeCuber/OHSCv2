@@ -9,6 +9,7 @@ class Theme {
   int text_color = 0;
   int grayed_text_color = 0;
   int error_text_color = 0;
+  int highlight_text_color = 0;
   int button_click_color = 0;
   int button_hover_color = 0;
   int underbid_color = 0;
@@ -32,6 +33,7 @@ class Theme {
           else if (label.equals("text")) text_color = colorFromLine(line);
           else if (label.equals("grayedtext")) grayed_text_color = colorFromLine(line);
           else if (label.equals("errortext")) error_text_color = colorFromLine(line);
+          else if (label.equals("highlighttext")) highlight_text_color = colorFromLine(line);
           else if (label.equals("buttonclick")) button_click_color = colorFromLine(line);
           else if (label.equals("buttonhover")) button_hover_color = colorFromLine(line);
           else if (label.equals("underbid")) underbid_color = colorFromLine(line);
