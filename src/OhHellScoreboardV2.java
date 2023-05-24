@@ -527,6 +527,7 @@ public class OhHellScoreboardV2 extends PApplet {
         } catch (Exception e) {
             System.err.println("Exception loading save: " + e);
             setInitialValues();
+            StateIO.saveState(DATA_PATH + "latest");
         }
         spades = loadImage("assets/spades.png");
         hearts = loadImage("assets/hearts.png");
@@ -548,7 +549,6 @@ public class OhHellScoreboardV2 extends PApplet {
             frameRate(2);
         }
         background(Theme.theme.background_color);
-        if (frc % 5 == 0) StateIO.saveState(DATA_PATH + "latest");
         strokeWeight(2);
         stroke(Theme.theme.line_color);
         textAlign(CENTER, CENTER);
@@ -700,8 +700,6 @@ public class OhHellScoreboardV2 extends PApplet {
                             rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
                             fill(current.error_text_color);
                             text("Error Message", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
-                        } else if(mouseX > box_left && mouseX < box_left + box_width * 0.3f && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
-                            Theme.setTheme(i);
                         }
                     }
                 }
@@ -829,69 +827,52 @@ public class OhHellScoreboardV2 extends PApplet {
     @Override
     public void keyTyped() {
         resetFramerateCooldown();
-        if(current_screen == Screen.GAME_OVER) {
-            return;
-        }
         if(current_screen.isSetup()) {
-            if(current_window != Window.NONE) {
-                return;
-            }
-            if(editing_name) {
-                String s = players.get(selected_player).name;
-                textSize(width*0.05f);
-                if(key == ',') {
-                    displayError("That character conflicts with the OHSC v2.0 autosave format");
-                    return;
-                }
-                if(key == BACKSPACE) {
-                    if(s.length() > 0) {
-                        players.get(selected_player).name = s.substring(0, s.length() - 1);
-                    }
-                } else if(key == ENTER) {
-                    editing_name = false;
-                } else if(textWidth(s + key) <= MAX_NAME_WIDTH*width) {
-                    players.get(selected_player).name += key;
-                } else {
-                    displayError("The maximum name width is " + round(MAX_NAME_WIDTH*width) + " pixels");
-                }
-            } else {
-                int i = Math.abs(getKeyValue(key));
-                if(i != 0 && i - 1 < players.size()) {
-                    i--;
-                    if(selected_player == i) {
-                        editing_name = true;
+            if(current_window == Window.NONE) {
+                if (editing_name) {
+                    String s = players.get(selected_player).name;
+                    textSize(width * 0.05f);
+                    if (key == ',') {
+                        displayError("That character conflicts with the OHSC v2.0 autosave format");
+                    } else if (key == BACKSPACE) {
+                        if (s.length() > 0) {
+                            players.get(selected_player).name = s.substring(0, s.length() - 1);
+                        }
+                    } else if (key == ENTER) {
+                        editing_name = false;
+                    } else if (textWidth(s + key) <= MAX_NAME_WIDTH * width) {
+                        players.get(selected_player).name += key;
                     } else {
-                        selected_player = i;
+                        displayError("The maximum name width is " + round(MAX_NAME_WIDTH * width) + " pixels");
                     }
-                }
-                if(selected_player >= 0 && key == ENTER) {
-                    editing_name = true;
+                } else {
+                    int i = Math.abs(getKeyValue(key));
+                    if (i != 0 && i - 1 < players.size()) {
+                        i--;
+                        if (selected_player == i) {
+                            editing_name = true;
+                        } else {
+                            selected_player = i;
+                        }
+                    }
+                    if (selected_player >= 0 && key == ENTER) {
+                        editing_name = true;
+                    }
                 }
             }
         } else {
             if(key == 's') {
                 trump_suit = 1;
-                return;
-            }
-            if(key == 'c') {
+            } else if(key == 'c') {
                 trump_suit = 2;
-                return;
-            }
-            if(key == 'h') {
+            } else if(key == 'h') {
                 trump_suit = 3;
-                return;
-            }
-            if(key == 'd') {
+            } else if(key == 'd') {
                 trump_suit = 4;
-                return;
-            }
-            if(key == 'o') {
+            } else if(key == 'o') {
                 trump_suit = 5;
-                return;
-            }
-            if(key == 'x') {
+            } else if(key == 'x') {
                 trump_suit = 6;
-                return;
             }
             int i = Math.abs(getKeyValue(key));
             if(current_screen == Screen.BIDDING) {
@@ -899,17 +880,16 @@ public class OhHellScoreboardV2 extends PApplet {
                     i--;
                     Player p = players.get(i);
                     handleBidChange(p, getKeyValue(key) > 0);
-                    return;
                 }
             } else {
                 if(i != 0 && i - 1 < players.size()) {
                     i--;
                     Player p = players.get(i);
                     handleTakenChange(p, getKeyValue(key) > 0);
-                    return;
                 }
             }
         }
+        StateIO.saveState(DATA_PATH + "latest");
     }
     int getKeyValue(char k) {
         return switch (k) {
@@ -949,106 +929,88 @@ public class OhHellScoreboardV2 extends PApplet {
             if(restart_button.mouseInTile()) {
                 setInitialValues();
             }
-            return;
-        }
-        if(current_screen.isSetup()) {
+        } else if(current_screen.isSetup()) {
             if(current_window == Window.TRICKS) {
-                if(number_suits_button.mouseInTile()) {
-                    handleSuitsChange(mouseButton == LEFT);
-                    return;
-                }
-                if(cards_per_suit_button.mouseInTile()) {
-                    handleCardsPerSuitChange(mouseButton == LEFT);
-                    return;
-                }
-                if(trick_mode_button.mouseInTile()) {
-                    handleTrickModeChange(mouseButton == LEFT);
-                    return;
-                }
-                if(starting_point_button.mouseInTile()) {
-                    handleStartingPointChange(mouseButton == LEFT);
-                    return;
-                }
-            }
-            if(current_window == Window.THEMES) {
-                if(refresh_themes_button.mouseInTile()) {
-                    Theme.themes = null;
-                    Theme.loadThemes();
-                }
-                for(int i = 0; i < Theme.themes.size(); i++) {
-                    Theme current = Theme.themes.get(i);
-                    float box_left = popup_window.x() + width * 0.05f;
-                    float box_right = popup_window.mx() - width * 0.05f;
-                    float box_width = box_right - box_left;
-                    float box_top = popup_window.y() + height * 0.15f;
-                    float row_height = width * 0.035f;
-                    if(mouseX > box_left + box_width * 0.3 && mouseX < box_left + box_width * 0.7 && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
-                        String file = current.directory + current.file;
-                        // Test whether file is in the jar
-                        if(!file.startsWith("/") && file.charAt(1) != ':') {
-                            displayError("Cannot edit internal file within program jar");
-                            return;
-                        }
-                        try {
-                            java.awt.Desktop.getDesktop().open(new File(file));
-                        } catch(Exception e) {
-                            displayError("Cannot open file: " + e.getMessage());
-                        }
-                        return;
-                    }
-                }
-            }
-            if(current_window != Window.NONE) {
                 if(close_popup_button.mouseInTile()) {
                     current_window = Window.NONE;
+                } else if(number_suits_button.mouseInTile()) {
+                    handleSuitsChange(mouseButton == LEFT);
+                } else if(cards_per_suit_button.mouseInTile()) {
+                    handleCardsPerSuitChange(mouseButton == LEFT);
+                } else if(trick_mode_button.mouseInTile()) {
+                    handleTrickModeChange(mouseButton == LEFT);
+                } else if(starting_point_button.mouseInTile()) {
+                    handleStartingPointChange(mouseButton == LEFT);
                 }
-                return;
-            }
-            for(int i = 0; i < players.size(); i++) {
-                if(players.get(i).tile.mouseInTile()) {
-                    if(selected_player == i) {
-                        editing_name = !editing_name;
-                    } else {
-                        selected_player = i;
+            } else if(current_window == Window.THEMES) {
+                if(close_popup_button.mouseInTile()) {
+                    current_window = Window.NONE;
+                } else if(refresh_themes_button.mouseInTile()) {
+                    Theme.themes = null;
+                    Theme.loadThemes();
+                } else {
+                    for (int i = 0; i < Theme.themes.size(); i++) {
+                        Theme current = Theme.themes.get(i);
+                        float box_left = popup_window.x() + width * 0.05f;
+                        float box_right = popup_window.mx() - width * 0.05f;
+                        float box_width = box_right - box_left;
+                        float box_top = popup_window.y() + height * 0.15f;
+                        float row_height = width * 0.035f;
+                        if (mouseX > box_left + box_width * 0.3 && mouseX < box_left + box_width * 0.7 && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
+                            String file = current.directory + current.file;
+                            // Test whether file is in the jar
+                            if (!file.startsWith("/") && file.charAt(1) != ':') {
+                                displayError("Cannot edit internal file within program jar");
+                                break;
+                            }
+                            try {
+                                java.awt.Desktop.getDesktop().open(new File(file));
+                            } catch (Exception e) {
+                                displayError("Cannot open file: " + e.getMessage());
+                            }
+                            break;
+                        } else if(mouseX > box_left && mouseX < box_left + box_width * 0.3f && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
+                            Theme.setTheme(i);
+                        }
+                    }
+                }
+            } else {
+                if (add_player_button.mouseInTile()) {
+                    handleAddPlayer();
+                } else if (remove_player_button.mouseInTile()) {
+                    handleRemovePlayer();
+                } else if (one_point_button.mouseInTile()) {
+                    handleChangeScore(mouseButton == LEFT, 1);
+                } else if (ten_point_button.mouseInTile()) {
+                    handleChangeScore(mouseButton == LEFT, 10);
+                } else if (custom_tricks_button.mouseInTile()) {
+                    current_window = Window.TRICKS;
+                } else if (reset_button.mouseInTile()) {
+                    setInitialValues();
+                } else if (theme_button.mouseInTile()) {
+                    current_window = Window.THEMES;
+                } else if (begin_game_button.mouseInTile()) {
+                    handleBeginGame();
+                } else {
+                    boolean clicked_player = false;
+                    for (int i = 0; i < players.size(); i++) {
+                        if (players.get(i).tile.mouseInTile()) {
+                            clicked_player = true;
+                            if (selected_player == i) {
+                                editing_name = !editing_name;
+                            } else {
+                                selected_player = i;
+                                editing_name = false;
+                            }
+                            break;
+                        }
+                    }
+                    if(!clicked_player) {
+                        selected_player = -1;
                         editing_name = false;
                     }
-                    return;
                 }
             }
-            editing_name = false;
-            if(add_player_button.mouseInTile()) {
-                handleAddPlayer();
-                return;
-            }
-            if(remove_player_button.mouseInTile()) {
-                handleRemovePlayer();
-                return;
-            }
-            if(one_point_button.mouseInTile()) {
-                handleChangeScore(mouseButton == LEFT, 1);
-                return;
-            }
-            if(ten_point_button.mouseInTile()) {
-                handleChangeScore(mouseButton == LEFT, 10);
-                return;
-            }
-            if(custom_tricks_button.mouseInTile()) {
-                current_window = Window.TRICKS;
-                return;
-            }
-            if(reset_button.mouseInTile()) {
-                setInitialValues();
-                return;
-            }
-            if(theme_button.mouseInTile()) {
-                current_window = Window.THEMES;
-                return;
-            }
-            if(begin_game_button.mouseInTile()) {
-                handleBeginGame();
-                return;
-            }
-            selected_player = -1;
         } else {
             for(Player p : players) {
                 if(p.tile.mouseInTile()) {
@@ -1057,33 +1019,25 @@ public class OhHellScoreboardV2 extends PApplet {
                     } else {
                         handleTakenChange(p, mouseButton == LEFT);
                     }
-                    return;
+                    break;
                 }
             }
             if(setup_button.mouseInTile()) {
                 handleSetup();
-                return;
-            }
-            if(change_bids_button.mouseInTile()) {
+            } else if(change_bids_button.mouseInTile()) {
                 handleChangeBids();
-                return;
-            }
-            if(proceed_button.mouseInTile()) {
+            } else if(proceed_button.mouseInTile()) {
                 if(current_screen == Screen.BIDDING) {
                     handleFinishBidding();
                 } else {
                     handleFinishRound();
                 }
-                return;
-            }
-            if(end_game_button.mouseInTile()) {
+            } else if(end_game_button.mouseInTile()) {
                 handleEndGame();
-                return;
-            }
-            if(trump_suit_bounding_box.mouseInTile()) {
+            } else if(trump_suit_bounding_box.mouseInTile()) {
                 handleTrumpButton();
-                return;
             }
         }
+        StateIO.saveState(DATA_PATH + "latest");
     }
 }

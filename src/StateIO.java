@@ -3,6 +3,9 @@ import java.util.ArrayList;
 public class StateIO {
     static OhHellScoreboardV2 sc;
     static void saveState(String filename) {
+        if(sc.debug) {
+            System.out.println("Saving state...");
+        }
         ArrayList<String> state = new ArrayList<>();
         state.add("selected_player:" + sc.selected_player);
         state.add("editing_name:" + sc.editing_name);

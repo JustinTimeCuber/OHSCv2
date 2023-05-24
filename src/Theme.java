@@ -129,6 +129,9 @@ class Theme {
     theme = themes.get(theme_index);
   }
   static void setTheme(int index) {
+    if(theme_index == index) {
+      return;
+    }
     theme_index = index;
     if(theme_index >= themes.size()) {
       theme_index = 0;
@@ -137,6 +140,7 @@ class Theme {
     theme_file = theme.file;
     theme_directory = theme.directory;
     sc.updatePlayers(false);
+    StateIO.saveState(sc.DATA_PATH + "latest");
   }
 }
 
