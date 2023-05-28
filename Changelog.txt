@@ -2,6 +2,7 @@ v2.1-rc.2
 * Tweaked light theme colors
 * Only save after user inputs (mouse or keyboard)
 * Rework logic for mousePressed() and keyTyped() methods
+* Fixed "game over" screen not showing
 
 v2.1-rc.1
 + Images (currently only used for suit icons) can now also be overwritten

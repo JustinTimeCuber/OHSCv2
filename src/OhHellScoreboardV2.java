@@ -457,6 +457,7 @@ public class OhHellScoreboardV2 extends PApplet {
                     current_screen = Screen.GAME_OVER;
                     saveRecord();
                     trick_index--;
+                    return;
                 }
             }
             trump_suit = 0;
