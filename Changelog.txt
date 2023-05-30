@@ -1,3 +1,8 @@
+v2.1-rc.3
+* More light theme tweaks
+* Fixed file names in theme selector potentially running off the screen
+* Debug mode now runs in a 960x540 window rather than fullscreen
+
 v2.1-rc.2
 * Tweaked light theme colors
 * Only save after user inputs (mouse or keyboard)

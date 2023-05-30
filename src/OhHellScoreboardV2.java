@@ -506,7 +506,11 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     public void settings() {
+        if(debug) {
+            size(960, 540);
+        } else {
         fullScreen();
+        }
     }
 
     @Override
@@ -715,10 +719,12 @@ public class OhHellScoreboardV2 extends PApplet {
                         textSize(width * 0.015f);
                         fill(Theme.theme.background_color);
                         stroke(Theme.theme.line_color);
-                        rect(mouseX, mouseY, textWidth(file) + width * 0.02f, width * 0.03f);
+                        float tw = textWidth(file);
+                        float px = (mouseX + tw < width * 0.98f) ? mouseX : (width * 0.98f - tw);
+                        rect(px, mouseY, tw + width * 0.02f, width * 0.03f);
                         fill(Theme.theme.text_color);
                         textAlign(LEFT, CENTER);
-                        text(file, mouseX + width * 0.01f, mouseY + width * 0.015f);
+                        text(file, px + width * 0.01f, mouseY + width * 0.015f);
                         textAlign(CENTER, CENTER);
                     }
                 }
