@@ -1,7 +1,9 @@
 v2.1-rc.3
 * More light theme tweaks
-* Fixed file names in theme selector potentially running off the screen
 * Debug mode now runs in a 960x540 window rather than fullscreen
+* Fixed file names in theme selector potentially running off the screen
+* Fixed "escape" character being typed if program exited while editing name
+* Fixed name staying in edit mode when it shouldn't
 
 v2.1-rc.2
 * Tweaked light theme colors

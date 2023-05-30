@@ -833,6 +833,9 @@ public class OhHellScoreboardV2 extends PApplet {
 
     @Override
     public void keyTyped() {
+        if(key == ESC) {
+            return;
+        }
         resetFramerateCooldown();
         if(current_screen.isSetup()) {
             if(current_window == Window.NONE) {
@@ -982,6 +985,7 @@ public class OhHellScoreboardV2 extends PApplet {
                     }
                 }
             } else {
+                boolean clicked_player = false;
                 if (add_player_button.mouseInTile()) {
                     handleAddPlayer();
                 } else if (remove_player_button.mouseInTile()) {
@@ -999,7 +1003,6 @@ public class OhHellScoreboardV2 extends PApplet {
                 } else if (begin_game_button.mouseInTile()) {
                     handleBeginGame();
                 } else {
-                    boolean clicked_player = false;
                     for (int i = 0; i < players.size(); i++) {
                         if (players.get(i).tile.mouseInTile()) {
                             clicked_player = true;
@@ -1014,8 +1017,10 @@ public class OhHellScoreboardV2 extends PApplet {
                     }
                     if(!clicked_player) {
                         selected_player = -1;
-                        editing_name = false;
                     }
+                }
+                if(!clicked_player) {
+                    editing_name = false;
                 }
             }
         } else {
