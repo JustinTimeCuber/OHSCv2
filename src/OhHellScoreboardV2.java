@@ -751,17 +751,19 @@ public class OhHellScoreboardV2 extends PApplet {
                     rect(p.tile.cx() + p.tile.h() * 0.16f - 0.5f * textWidth(String.valueOf(-p.score)), p.tile.y() + 0.55f * p.tile.h(), -p.tile.h() * 0.167f, p.tile.h() * 0.042f);
                     stroke(Theme.theme.line_color);
                 }
-                textSize(game_tiles[0].w() * 0.04f);
-                text("Bid", p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.167f);
-                if (p.has_bid) {
-                    textSize(p.tile.w() * 0.1f);
-                    text(p.bid, p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.1f);
-                }
-                if (current_screen == Screen.TAKING) {
+                if(current_screen != Screen.GAME_OVER) {
                     textSize(game_tiles[0].w() * 0.04f);
-                    text("Taken", p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.167f);
-                    textSize(p.tile.w() * 0.1f);
-                    text(p.taken, p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - p.tile.w() * 0.1f);
+                    text("Bid", p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.167f);
+                    if (p.has_bid) {
+                        textSize(game_tiles[0].w() * 0.1f);
+                        text(p.bid, p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.1f);
+                    }
+                    if (current_screen == Screen.TAKING) {
+                        textSize(game_tiles[0].w() * 0.04f);
+                        text("Taken", p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.167f);
+                        textSize(game_tiles[0].w() * 0.1f);
+                        text(p.taken, p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.1f);
+                    }
                 }
             }
             if (current_screen != Screen.GAME_OVER) {
@@ -797,7 +799,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 drawButton(restart_button, "Restart", 0.02f, true, true);
                 textSize(width * 0.05f);
                 fill(Theme.theme.text_color);
-                text("Game Over", width * 0.5f, height * 0.93f);
+                text("Game Over", width * 0.5f, height * 0.92f);
             }
         }
         if (error_frames > 0) {
