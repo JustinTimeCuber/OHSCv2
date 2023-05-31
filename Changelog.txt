@@ -27,12 +27,9 @@ v2.1
 * Debug mode now runs in a 960x540 window rather than fullscreen
 * Alignment of some text and UI elements have been slightly tweaked
 * Slightly changed when the trick index is or is not reset
-* Fixed "escape" character being typed if program exited while editing name
-* Fixed name staying in edit mode when it shouldn't
 * Fixed incorrect size and alignment of bid and taken values
-* Fixed incorrect alignment of "Game Over" text
 * Fixed bid still showing on game over screen
-* Fixed error messages always showing in the console on launch
+* Fixed error messages showing in the console on first launch
 
 v2.1-rc.3
 * More light theme tweaks
