@@ -1,9 +1,49 @@
+v2.1
++ Added themes and theme selector
+    Themes control the colors of all elements of the scoreboard
+    There are five built-in themes: Dark, Light, Mono Dark, Mono Light, and a custom theme example
+    The custom theme example can be edited, and new themes can be added by following it as an example
+    Currently, the best way to remove the custom theme is to remove it from external_themes.txt
++ Added the ability to overwrite themes and images
+    This can be done by placing a file with the same name in the themes/assets folder respectively
+    It is also possible to overwrite the internal themes list, which allows for themes to be hidden or renamed
++ Added OS detection, which is used to store scoreboard data in a consistent location:
+    Windows: C:\Users\USERNAME\Appdata\Roaming\OHSCv2\
+    Linux: /home/USERNAME/.local/share/OHSCv2/
+    MacOS: /Users/USERNAME/Library/Application Support/OHSCv2/
++ The program is now packaged as an executable JAR file, meaning it should be easier and more convenient to run
+    Currently, Java 17 or higher is required
+    The source code will continue to be freely available
+* Significant visual changes
+    Colors have been changed, generally reducing saturation
+    A new font, NT Somic Bold, is used for all text to improve legibility
+    Various tweaks and fixes to text size and alignment
+* Bids no longer show at all until entered, instead of showing a 0
+    Each player must have a bid entered directly, even if that bid is 0
+    Right-clicking will initialize bid to 0
+    Left-clicking will initialize bid to 1
+* Many parts of the code have been reorganized and cleaned up
+    For example, the scoreboard state now uses an enum rather than three separate boolean values
+* Debug mode now runs in a 960x540 window rather than fullscreen
+* Alignment of some text and UI elements have been slightly tweaked
+* Slightly changed when the trick index is or is not reset
+* Fixed "escape" character being typed if program exited while editing name
+* Fixed name staying in edit mode when it shouldn't
+* Fixed incorrect size and alignment of bid and taken values
+* Fixed incorrect alignment of "Game Over" text
+* Fixed bid still showing on game over screen
+* Fixed error messages always showing in the console on launch
+
 v2.1-rc.3
 * More light theme tweaks
 * Debug mode now runs in a 960x540 window rather than fullscreen
 * Fixed file names in theme selector potentially running off the screen
 * Fixed "escape" character being typed if program exited while editing name
 * Fixed name staying in edit mode when it shouldn't
+* Fixed incorrect size and alignment of bid and taken values
+* Fixed incorrect alignment of "Game Over" text
+* Fixed bid still showing on game over screen
+* Fixed error messages always showing in the console on launch
 
 v2.1-rc.2
 * Tweaked light theme colors

@@ -2,7 +2,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 
 public class OhHellScoreboardV2 extends PApplet {
@@ -40,6 +40,11 @@ public class OhHellScoreboardV2 extends PApplet {
     float aspect_ratio;
     int millis_last_frame = 0;
     final boolean debug = false;
+    final PrintStream system_err = System.err;
+    final PrintStream placebo_output = new PrintStream(new OutputStream() {
+        @Override
+        public void write(int b) {}
+    });
 
     static String getOSSpecificDataPath() {
         String os = System.getProperty("os.name").toLowerCase();
@@ -202,20 +207,6 @@ public class OhHellScoreboardV2 extends PApplet {
             case 6 -> crosses;
             default -> null;
         };
-    }
-
-    @Override
-    public PImage loadImage(String file) {
-        String external = DATA_PATH + file.replace("/", FILE_SEPARATOR);
-        PImage img = super.loadImage(external);
-        if(img == null) {
-            img = super.loadImage(file);
-        }
-        if (img == null) {
-            System.err.println("Failed to load image: " + file + " - cannot start program.");
-            System.exit(1);
-        }
-        return img;
     }
 
     void saveRecord() {
@@ -499,6 +490,32 @@ public class OhHellScoreboardV2 extends PApplet {
     @Override
     public void text(int i, float x, float y) {
         text(String.valueOf(i), x, y);
+    }
+
+    // Suppress unnecessary error messages
+    @Override
+    public String[] loadStrings(String filename) {
+        System.setErr(placebo_output);
+        String[] strings = super.loadStrings(filename);
+        System.setErr(system_err);
+        return strings;
+    }
+
+    // Try loading from both locations, while suppressing unnecessary error messages
+    @Override
+    public PImage loadImage(String filename) {
+        System.setErr(placebo_output);
+        String external = DATA_PATH + filename.replace("/", FILE_SEPARATOR);
+        PImage image = super.loadImage(external);
+        if(image == null) {
+            image = super.loadImage(filename);
+        }
+        if (image == null) {
+            System.err.println("Failed to load image: " + filename + " - cannot start program.");
+            System.exit(1);
+        }
+        System.setErr(system_err);
+        return image;
     }
 
     public static void main(String[] args) {
