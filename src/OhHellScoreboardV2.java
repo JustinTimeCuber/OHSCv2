@@ -14,13 +14,14 @@ public class OhHellScoreboardV2 extends PApplet {
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile refresh_themes_button;
     Tile setup_button, change_bids_button, proceed_button, end_game_button, trump_suit_bounding_box;
-    Tile restart_button;
+    Tile restart_button, statistics_button;
     final int MAX_PLAYERS = 10;
     final float MAX_NAME_WIDTH = 0.42f;
     final int MAX_SUITS = 12;
     final int MAX_CARDS_PER_SUIT = 50;
     final String FILE_SEPARATOR = System.getProperty("file.separator");
     final String DATA_PATH = getOSSpecificDataPath() + FILE_SEPARATOR + "OHSCv2" + FILE_SEPARATOR;
+    String last_save = null;
     int selected_player;
     String error_message;
     int error_frames;
@@ -160,6 +161,7 @@ public class OhHellScoreboardV2 extends PApplet {
         change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);
         proceed_button = new Tile(0.36, 0.875, 0.48, 0.958);
         end_game_button = new Tile(0.52, 0.875, 0.64, 0.958);
+        statistics_button = new Tile(0.08, 0.875, 0.28, 0.958);
         restart_button = new Tile(0.72, 0.875, 0.92, 0.958);
         trump_suit_bounding_box = new Tile(0.92, 1 - aspect_ratio * 0.08, 1, 1);
         Theme.loadThemes();
@@ -219,7 +221,9 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         out = Logger.append(out);
         String timestamp = year() + "-" + month() + "-" + day() + "-" + hour() + "_" + minute() + "_" + second();
-        saveStrings(DATA_PATH + "saves" + FILE_SEPARATOR + timestamp + ".txt", out);
+        String file = DATA_PATH + "saves" + FILE_SEPARATOR + timestamp + ".txt";
+        saveStrings(file, out);
+        last_save = file;
     }
 
     void resetFramerateCooldown() {
@@ -475,6 +479,18 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         if(trump_suit > 6) {
             trump_suit = 0;
+        }
+    }
+
+    void openLatestSave() {
+        if(last_save == null) {
+            displayError("No save found");
+            return;
+        }
+        try {
+            java.awt.Desktop.getDesktop().open(new File(last_save));
+        } catch(Exception e) {
+            displayError("Cannot open file: " + e.getMessage());
         }
     }
 
@@ -747,7 +763,7 @@ public class OhHellScoreboardV2 extends PApplet {
                     }
                 }
             }
-        } else {
+        } else if(current_screen.usesGameTiles()) {
             textAlign(CENTER, CENTER);
             int total_bid = 0;
             int total_taken = 0;
@@ -814,11 +830,15 @@ public class OhHellScoreboardV2 extends PApplet {
                     image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() * 0.25f, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() * 0.25f, trump_suit_bounding_box.w() * 0.5f, trump_suit_bounding_box.h() * 0.5f);
                 }
             } else {
+                drawButton(statistics_button, "Statistics", 0.02f, true, true);
                 drawButton(restart_button, "Restart", 0.02f, true, true);
                 textSize(width * 0.05f);
                 fill(Theme.theme.text_color);
                 text("Game Over", width * 0.5f, height * 0.92f);
             }
+        } else if(current_screen == Screen.STATISTICS) {
+            drawButton(statistics_button, "Open Save", 0.02f, true, true);
+            drawButton(restart_button, "Restart", 0.02f, true, true);
         }
         if(error_frames > 0) {
             fill(Theme.theme.popup_background_color, 230);
@@ -896,7 +916,9 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
             }
         } else {
-            if(key == 's') {
+            if(key == 'b') {
+                trump_suit = 0;
+            } else if(key == 's') {
                 trump_suit = 1;
             } else if(key == 'c') {
                 trump_suit = 2;
@@ -904,7 +926,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 trump_suit = 3;
             } else if(key == 'd') {
                 trump_suit = 4;
-            } else if(key == 'o') {
+            } else if(key == '.') {
                 trump_suit = 5;
             } else if(key == 'x') {
                 trump_suit = 6;
@@ -964,6 +986,14 @@ public class OhHellScoreboardV2 extends PApplet {
         if(current_screen == Screen.GAME_OVER) {
             if(restart_button.mouseInTile()) {
                 setInitialValues();
+            } else if(statistics_button.mouseInTile()) {
+                current_screen = Screen.STATISTICS;
+            }
+        } else if(current_screen == Screen.STATISTICS) {
+            if(restart_button.mouseInTile()) {
+                setInitialValues();
+            } else if(statistics_button.mouseInTile()) {
+                openLatestSave();
             }
         } else if(current_screen.isSetup()) {
             if(current_window == Window.TRICKS) {

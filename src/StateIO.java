@@ -20,6 +20,7 @@ public class StateIO {
         state.add("hands_played:" + sc.hands_played);
         state.add("theme_file:" + Theme.theme.file);
         state.add("theme_directory:" + Theme.theme.directory);
+        state.add("last_save:" + sc.last_save);
         for(Player p : sc.players) {
             state.add("player:" + p.toString());
         }
@@ -48,6 +49,7 @@ public class StateIO {
                 case "theme_file" -> Theme.theme_file = value;
                 case "theme_directory" -> Theme.theme_directory = value;
                 case "player" -> sc.players.add(new Player().parse(value));
+                case "last_save" -> sc.last_save = value;
                 default -> System.err.println("Unrecognized label: " + label);
             }
         }
