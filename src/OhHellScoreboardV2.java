@@ -772,15 +772,8 @@ public class OhHellScoreboardV2 extends PApplet {
                 fill(p.display_color);
                 textSize(game_tiles[0].w() * 0.1f);
                 text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.cx(), p.tile.y() + p.tile.h() * 0.167f);
-                textSize(p.tile.h() * 0.6f);
-                if(p.score >= 0) {
-                    text(p.score, p.tile.cx(), p.tile.my() - 2 * p.tile.h() * 0.2f);
-                } else {
-                    text(-p.score, p.tile.cx() + p.tile.h() * 0.15f, p.tile.my() - 2 * p.tile.h() * 0.2f);
-                    noStroke();
-                    rect(p.tile.cx() + p.tile.h() * 0.16f - 0.5f * textWidth(String.valueOf(-p.score)), p.tile.y() + 0.55f * p.tile.h(), -p.tile.h() * 0.167f, p.tile.h() * 0.042f);
-                    stroke(Theme.theme.line_color);
-                }
+                textSize(p.tile.h() * 0.5f);
+                text(p.score, p.tile.cx(), p.tile.my() - p.tile.h() * 0.43f);
                 if(current_screen != Screen.GAME_OVER) {
                     textSize(game_tiles[0].w() * 0.04f);
                     text("Bid", p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.167f);
