@@ -31,6 +31,10 @@ v2.1
 * Fixed bid still showing on game over screen
 * Fixed error messages showing in the console on first launch
 
+v2.1-rc.4
+* Tweaked light and dark themes
+* Decreased line intensity on mono themes
+
 v2.1-rc.3
 * More light theme tweaks
 * Debug mode now runs in a 960x540 window rather than fullscreen

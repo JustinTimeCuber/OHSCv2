@@ -1,6 +1,6 @@
 background 0 0 0
 popupbackground 64 64 64
-line 255 255 255
+line 64 64 64
 text 255 255 255
 grayedtext 64 64 64
 errortext 255 255 255
