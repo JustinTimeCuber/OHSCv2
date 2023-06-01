@@ -1,3 +1,4 @@
+#!/bin/env python
 f = open("Changelog.txt", "r")
 g = open("Changelog-github.txt", "w")
 for l in f:
