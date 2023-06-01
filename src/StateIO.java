@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class StateIO {
     static OhHellScoreboardV2 sc;
+
     static void saveState(String filename) {
         if(sc.debug) {
             System.out.println("Saving state...");
@@ -19,7 +20,7 @@ public class StateIO {
         state.add("hands_played:" + sc.hands_played);
         state.add("theme_file:" + Theme.theme.file);
         state.add("theme_directory:" + Theme.theme.directory);
-        for (Player p : sc.players) {
+        for(Player p : sc.players) {
             state.add("player:" + p.toString());
         }
         sc.saveStrings(filename + ".ohsc", state.toArray(new String[]{}));
@@ -30,10 +31,10 @@ public class StateIO {
         String[] state = sc.loadStrings(filename + ".ohsc");
         Logger.read(filename + ".log");
         sc.players = new ArrayList<>();
-        for (String s : state) {
+        for(String s : state) {
             String label = s.split(":")[0];
             String value = s.substring(label.length() + 1);
-            switch (label) {
+            switch(label) {
                 case "selected_player" -> sc.selected_player = Integer.parseInt(value);
                 case "editing_name" -> sc.editing_name = Boolean.parseBoolean(value);
                 case "current_window" -> sc.current_window = Window.valueOf(value);

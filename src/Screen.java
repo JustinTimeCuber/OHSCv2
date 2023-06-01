@@ -4,6 +4,7 @@ public enum Screen {
     BIDDING,
     TAKING,
     GAME_OVER;
+
     boolean isSetup() {
         return this == SETUP_TO_BIDDING || this == SETUP_TO_TAKING;
     }
