@@ -429,13 +429,28 @@ public class OhHellScoreboardV2 extends PApplet {
                 p.total_bid += p.bid;
                 p.total_taken += p.taken;
                 if(p.taken < p.bid) {
-                    p.score += p.taken;
-                } else if(p.taken == p.bid) {
-                    p.score += p.taken + 10;
-                    p.bonuses++;
+                    if(Config.overbid_set) {
+                        p.score += Config.points_set * (Config.set_penalty_scales ? p.bid - p.taken : 1);
+                        if(!Config.set_prevents_trick_points) {
+                            p.score += Config.points_per_trick * p.taken;
+                        }
+                    } else {
+                        p.score += Config.points_per_trick * p.taken;
+                    }
+                } else if(p.taken > p.bid) {
+                    if(Config.underbid_set) {
+                        p.score += Config.points_set * (Config.set_penalty_scales ? p.taken - p.bid : 1);
+                        if(!Config.set_prevents_trick_points) {
+                            p.score += Config.points_per_trick * p.taken;
+                        }
+                    } else {
+                        p.score += Config.points_per_trick * p.taken;
+                    }
                 } else {
-                    p.score -= 10;
-                    p.times_set++;
+                    p.score += Config.points_bonus + Config.points_per_trick * p.taken;
+                }
+                if(p.score < 0 && !Config.negative_scores_allowed) {
+                    p.score = 0;
                 }
                 p.hands_played++;
                 Logger.write(p.name + " bid " + p.bid + " tricks and took " + p.taken + ". " + old + " --> " + p.score);
@@ -554,6 +569,7 @@ public class OhHellScoreboardV2 extends PApplet {
         Theme.sc = this;
         StateIO.sc = this;
         Player.sc = this;
+        Config.sc = this;
         frameRate(30);
         aspect_ratio = (float) width / height;
         setInitialValues();

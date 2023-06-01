@@ -53,6 +53,7 @@ public class StateIO {
                 default -> System.err.println("Unrecognized label: " + label);
             }
         }
+        Config.loadConfig();
         Theme.loadThemes();
         sc.updatePlayers(false);
     }

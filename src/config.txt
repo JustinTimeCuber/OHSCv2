@@ -1,0 +1,27 @@
+# To reset values to their defaults, delete this file
+
+# How many points to give for each trick
+points_per_trick: 1
+
+# How many additional points for matching bid
+points_bonus: 10
+
+# How many points to remove for getting set
+# Note that this should be a negative number, otherwise points will be added
+points_set: -10
+
+# Does underbidding (taking too many tricks) count as getting set?
+underbid_set: true
+
+# Does overbidding (taking too few tricks) count as getting set?
+overbid_set: false
+
+# Does getting set by a greater margin incur a greater penalty?
+# E.g. bid 2 & take 3 -> -10 points, bid 2 & take 4 -> -20 points
+set_penalty_scales: false
+
+# Does getting set preclude per-trick points from being granted?
+set_prevents_trick_points: true
+
+# Can player scores go below zero?
+negative_scores_allowed: true

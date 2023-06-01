@@ -2,6 +2,8 @@ v2.2-beta.1
 + Added statistics screen
     Currently just has a button to open the save file as well as the restart button
     Much more is planned
++ Added config.txt file
+    Currently only controls scoring, but may control more in the future
 + Tab now cycles to the next player
 + Trump can now be cleared with the "b" key
 * Reformatted code to be consistent
