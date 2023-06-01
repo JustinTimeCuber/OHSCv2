@@ -485,10 +485,11 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void handleTrumpButton() {
         trump_suit += mouseButton == LEFT ? 1 : -1;
+        int max = Config.extra_trump_suits ? 6 : 4;
         if(trump_suit < 0) {
-            trump_suit = 6;
+            trump_suit = max;
         }
-        if(trump_suit > 6) {
+        if(trump_suit > max) {
             trump_suit = 0;
         }
     }
@@ -931,10 +932,12 @@ public class OhHellScoreboardV2 extends PApplet {
                 trump_suit = 3;
             } else if(key == 'd') {
                 trump_suit = 4;
-            } else if(key == '.') {
-                trump_suit = 5;
-            } else if(key == 'x') {
-                trump_suit = 6;
+            } else if(Config.extra_trump_suits) {
+                if(key == '.') {
+                    trump_suit = 5;
+                } else if(key == 'x') {
+                    trump_suit = 6;
+                }
             }
             int i = Math.abs(getKeyValue(key));
             if(current_screen == Screen.BIDDING) {
