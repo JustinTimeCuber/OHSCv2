@@ -244,11 +244,7 @@ public class OhHellScoreboardV2 extends PApplet {
         } else if(p.bid > 0) {
             p.bid--;
         } else {
-            if(p.has_bid) {
-                displayError("Minimum bid is 0");
-            } else {
-                p.has_bid = true;
-            }
+            p.has_bid = !p.has_bid;
         }
     }
 

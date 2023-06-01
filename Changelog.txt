@@ -7,6 +7,7 @@ v2.2-beta.1
 * Reformatted code to be consistent
 * Fixed double usage of "o" key (dots trump / remove from player 9)
     Now, the "." key is used to select dots as trump
+* Decreasing the bid of a player whose bid is zero now removes the bid entirely instead of showing an error
 
 v2.1
 + Added themes and theme selector
