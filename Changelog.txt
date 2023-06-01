@@ -1,6 +1,6 @@
 v2.2-beta.1
-+ Tab now cycles to the next player in name edit mode
-* Reformat code to be consistent
++ Tab now cycles to the next player
+* Reformatted code to be consistent
 
 v2.1
 + Added themes and theme selector

@@ -859,6 +859,16 @@ public class OhHellScoreboardV2 extends PApplet {
         resetFramerateCooldown();
         if(current_screen.isSetup()) {
             if(current_window == Window.NONE) {
+                if(key == TAB) {
+                    selected_player++;
+                    if(selected_player >= players.size()) {
+                        selected_player = 0;
+                    }
+                    return;
+                } else if(key == ENTER && selected_player >= 0) {
+                    editing_name = !editing_name;
+                    return;
+                }
                 if(editing_name) {
                     String s = players.get(selected_player).name;
                     textSize(width * 0.05f);
@@ -867,13 +877,6 @@ public class OhHellScoreboardV2 extends PApplet {
                     } else if(key == BACKSPACE) {
                         if(s.length() > 0) {
                             players.get(selected_player).name = s.substring(0, s.length() - 1);
-                        }
-                    } else if(key == ENTER) {
-                        editing_name = false;
-                    } else if(key == TAB) {
-                        selected_player++;
-                        if(selected_player >= players.size()) {
-                            selected_player = 0;
                         }
                     } else if(textWidth(s + key) <= MAX_NAME_WIDTH * width) {
                         players.get(selected_player).name += key;
@@ -889,9 +892,6 @@ public class OhHellScoreboardV2 extends PApplet {
                         } else {
                             selected_player = i;
                         }
-                    }
-                    if(selected_player >= 0 && key == ENTER) {
-                        editing_name = true;
                     }
                 }
             }
