@@ -21,8 +21,8 @@ public class StateIO {
         state.add("theme_file:" + Theme.theme.file);
         state.add("theme_directory:" + Theme.theme.directory);
         state.add("last_save:" + sc.last_save);
-        state.add("sort_mode:" + sc.sort_mode);
-        state.add("sort_reverse:" + sc.sort_reverse);
+        state.add("sort_mode:" + StatisticsScreen.sort_mode);
+        state.add("sort_reverse:" + StatisticsScreen.sort_reverse);
         for(Player p : sc.players) {
             state.add("player:" + p.toString());
         }
@@ -51,8 +51,8 @@ public class StateIO {
                 case "theme_file" -> Theme.theme_file = value;
                 case "theme_directory" -> Theme.theme_directory = value;
                 case "last_save" -> sc.last_save = value;
-                case "sort_mode" -> sc.sort_mode = PlayerSortMode.valueOf(value);
-                case "sort_reverse" -> sc.sort_reverse = Boolean.parseBoolean(value);
+                case "sort_mode" -> StatisticsScreen.sort_mode = PlayerSortMode.valueOf(value);
+                case "sort_reverse" -> StatisticsScreen.sort_reverse = Boolean.parseBoolean(value);
                 case "player" -> sc.players.add(new Player().parse(value));
                 default -> System.err.println("Unrecognized label: " + label);
             }

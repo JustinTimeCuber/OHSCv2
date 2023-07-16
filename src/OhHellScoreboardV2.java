@@ -8,17 +8,13 @@ import java.util.ArrayList;
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
     ArrayList<Player> players = new ArrayList<>();
-    int[] sorted_player_indices;
-    PlayerSortMode sort_mode;
-    boolean sort_reverse;
-    Tile[] setup_tiles, game_tiles, statistics_tiles;
+    Tile[] setup_tiles, game_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile popup_window, close_popup_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile refresh_themes_button;
     Tile setup_button, change_bids_button, proceed_button, end_game_button, trump_suit_bounding_box;
     Tile restart_button, statistics_button;
-    Tile statistics_header;
     final int MAX_PLAYERS = 10;
     final float MAX_NAME_WIDTH = 0.42f;
     final int MAX_SUITS = 12;
@@ -76,7 +72,7 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void updatePlayers(boolean resetIndex) {
-        sortPlayers(sort_mode, sort_reverse);
+        StatisticsScreen.sortPlayers(players);
         Tile.setPlayerCountBasedTiles();
         if(current_screen.isSetup()) {
             for(int i = 0; i < players.size(); i++) {
@@ -118,45 +114,13 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
 
-    void sortPlayers(PlayerSortMode mode, boolean reverse) {
-        sort_mode = mode;
-        sort_reverse = reverse;
-        sorted_player_indices = new int[players.size()];
-        for(int i = 0; i < sorted_player_indices.length; i++) {
-            sorted_player_indices[i] = reverse ? sorted_player_indices.length - i - 1 : i;
-        }
-        if(mode == PlayerSortMode.NONE || sorted_player_indices.length < 2) {
-            return;
-        }
-        for(int i = 0; i < sorted_player_indices.length - 1; i++) {
-            for(int j = i + 1; j < sorted_player_indices.length; j++) {
-                Player p1 = players.get(sorted_player_indices[i]);
-                Player p2 = players.get(sorted_player_indices[j]);
-                boolean shouldSwap = false;
-                switch(mode) {
-                    case SCORE -> shouldSwap = p1.score < p2.score;
-                    case TAKEN -> shouldSwap = p1.total_taken < p2.total_taken;
-                    case BID -> shouldSwap = p1.total_bid < p2.total_bid;
-                    case BONUS -> shouldSwap = p1.bonuses < p2.bonuses;
-                    case SET -> shouldSwap = p1.times_set < p2.times_set;
-                }
-                if(reverse) shouldSwap = !shouldSwap;
-                if(shouldSwap) {
-                    int temp = sorted_player_indices[i];
-                    sorted_player_indices[i] = sorted_player_indices[j];
-                    sorted_player_indices[j] = temp;
-                }
-            }
-        }
-    }
-
     void setInitialValues() {
         selected_player = -1;
         error_message = "";
         error_frames = 0;
         players = new ArrayList<>();
-        sort_mode = PlayerSortMode.NONE;
-        sort_reverse = false;
+        StatisticsScreen.sort_mode = PlayerSortMode.NONE;
+        StatisticsScreen.sort_reverse = false;
         editing_name = false;
         current_window = Window.NONE;
         current_screen = Screen.SETUP_TO_BIDDING;
@@ -542,18 +506,6 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
 
-    void highlightStatsHeader(PlayerSortMode mode) {
-        if(sort_mode == mode) {
-            if(sort_reverse) {
-                fill(Theme.theme.grayed_text_color);
-            } else {
-                fill(Theme.theme.highlight_text_color);
-            }
-        } else {
-            fill(Theme.theme.text_color);
-        }
-    }
-
     // Approximate fix for vertically-centered text to seem slightly too low
     @Override
     public void text(String str, float x, float y) {
@@ -653,283 +605,15 @@ public class OhHellScoreboardV2 extends PApplet {
         stroke(Theme.theme.line_color);
         textAlign(CENTER, CENTER);
         if(current_screen.isSetup()) {
-            for(int i = 0; i < players.size(); i++) {
-                Player p = players.get(i);
-                noFill();
-                if(i == selected_player) {
-                    fill(p.display_color, 127);
-                }
-                rect(setup_tiles[i].x(), setup_tiles[i].y(), setup_tiles[i].w(), setup_tiles[i].h());
-                fill(p.display_color);
-                if(i == selected_player && editing_name) {
-                    resetFramerateCooldown();
-                    if((frc / 10) % 2 == 0) {
-                        fill(p.display_color, 127);
-                    }
-                }
-                textAlign(LEFT, CENTER);
-                textSize(width * 0.05f);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, setup_tiles[i].x() + width * 0.01f, setup_tiles[i].cy());
-                textAlign(CENTER, CENTER);
-                textSize(width * 0.03f);
-                fill(p.display_color);
-                text(p.score, setup_tiles[i].mx() - width * 0.04f, setup_tiles[i].cy());
-            }
-            boolean popup_shown = current_window != Window.NONE;
-            drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, players.size() < MAX_PLAYERS, !popup_shown);
-            drawButton(remove_player_button, "Remove Player", 0.02f, selected_player != -1 && players.size() > 2, !popup_shown);
-            drawButton(one_point_button, "Add/Remove 1 pt", 0.02f, selected_player != -1, !popup_shown);
-            drawButton(ten_point_button, "Add/Remove 10 pts", 0.02f, selected_player != -1, !popup_shown);
-            drawButton(custom_tricks_button, "Trick Options", 0.02f, true, !popup_shown);
-            drawButton(reset_button, "Reset", 0.02f, true, !popup_shown);
-            drawButton(theme_button, "Themes", 0.02f, true, !popup_shown);
-            drawButton(begin_game_button, "Begin Game", 0.02f, true, !popup_shown);
-            if(current_window == Window.TRICKS) {
-                fill(Theme.theme.popup_background_color, 230);
-                stroke(Theme.theme.line_color);
-                rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
-                drawButton(close_popup_button, "X", 0.02f, true, true);
-                fill(Theme.theme.text_color);
-                textSize(width * 0.05f);
-                text("Trick Customization", popup_window.cx(), popup_window.y() + height * 0.083f);
-                textAlign(CENTER, TOP);
-                textSize(width * 0.02f);
-                text("Number of suits: " + suits + "\nCards per suit: " + cards_per_suit + "\nTotal cards in deck: " + (suits * cards_per_suit) +
-                        "\nTrick mode: " + trickMode() + "\nPreview:", popup_window.cx(), popup_window.y() + width * 0.1f);
-                StringBuilder preview = new StringBuilder();
-                fill(Theme.theme.error_text_color);
-                if(trick_mode == 0) {
-                    preview = new StringBuilder("Trick sequence disabled; some checks will not function");
-                } else if(trick_mode == 6) {
-                    preview = new StringBuilder("Custom trick sequences are not currently available.");
-                } else {
-                    fill(Theme.theme.text_color);
-                    for(int i = 0; i < tricks.length; i++) {
-                        if(i == trick_index) {
-                            preview.append("*");
-                        }
-                        preview.append(tricks[i]);
-                        if(i < tricks.length - 1) {
-                            preview.append(", ");
-                        }
-                    }
-                }
-                if(textWidth(preview.toString()) > popup_window.w() * 0.9) {
-                    textSize(width * 0.02f * 0.9f * popup_window.w() / textWidth(preview.toString()));
-                }
-                textAlign(CENTER, CENTER);
-                text(preview.toString(), popup_window.cx(), popup_window.y() + width * 0.26f);
-                drawButton(number_suits_button, "Number of Suits", 0.015f, true, true);
-                drawButton(cards_per_suit_button, "Cards per Suit", 0.015f, true, true);
-                drawButton(trick_mode_button, "Trick Mode", 0.015f, true, true);
-                drawButton(starting_point_button, "Starting Point", 0.015f, true, true);
-            } else if(trick_mode == 6) {
-                trick_mode = 0;
-            }
-            if(current_window == Window.THEMES) {
-                fill(Theme.theme.popup_background_color, 230);
-                stroke(Theme.theme.line_color);
-                rect(popup_window.x(), popup_window.y(), popup_window.w(), popup_window.h());
-                drawButton(close_popup_button, "X", 0.02f, true, true);
-                drawButton(refresh_themes_button, "", 0.02f, true, true);
-                noFill();
-                stroke(Theme.theme.text_color);
-                strokeWeight(width * 0.002f);
-                arc(refresh_themes_button.cx(), refresh_themes_button.cy(), refresh_themes_button.w() * 0.4f, refresh_themes_button.w() * 0.4f, -5, 0);
-                noStroke();
-                fill(Theme.theme.text_color);
-                triangle(refresh_themes_button.cx() + refresh_themes_button.w() * 0.1f, refresh_themes_button.cy(),
-                        refresh_themes_button.cx() + refresh_themes_button.w() * 0.3f, refresh_themes_button.cy(),
-                        refresh_themes_button.cx() + refresh_themes_button.w() * 0.2f, refresh_themes_button.cy() + refresh_themes_button.h() * 0.2f);
-                textSize(width * 0.05f);
-                text("Theme Selector", popup_window.cx(), popup_window.y() + height * 0.083f);
-                float box_left = popup_window.x() + width * 0.05f;
-                float box_right = popup_window.mx() - width * 0.05f;
-                float box_width = box_right - box_left;
-                float box_top = popup_window.y() + height * 0.15f;
-                float row_height = width * 0.035f;
-                int rows = Theme.themes.size() + 1;
-                for(int i = 0; i < Theme.themes.size(); i++) {
-                    fill(Theme.themes.get(i).background_color);
-                    rect(box_left + box_width * 0.7f, box_top + row_height * (i + 1), box_width * 0.3f, row_height);
-                }
-                strokeWeight(2);
-                stroke(Theme.theme.line_color);
-                fill(Theme.theme.text_color);
-                for(int i = 0; i <= rows; i++) {
-                    line(box_left, box_top + i * row_height, box_right, box_top + i * row_height);
-                }
-                line(box_left, box_top, box_left, box_top + rows * row_height);
-                line(box_left + box_width * 0.3f, box_top, box_left + box_width * 0.3f, box_top + rows * row_height);
-                line(box_left + box_width * 0.7f, box_top, box_left + box_width * 0.7f, box_top + rows * row_height);
-                line(box_right, box_top, box_right, box_top + rows * row_height);
-                textSize(width * 0.02f);
-                text("Theme", box_left + box_width * 0.15f, box_top + row_height * 0.5f);
-                text("File", box_left + box_width * 0.5f, box_top + row_height * 0.5f);
-                text("Colors", box_left + box_width * 0.85f, box_top + row_height * 0.5f);
-                for(int i = 0; i < Theme.themes.size(); i++) {
-                    textSize(width * 0.02f);
-                    fill(Theme.theme_index == i ? Theme.theme.highlight_text_color : Theme.theme.text_color);
-                    Theme current = Theme.themes.get(i);
-                    text(current.name, box_left + box_width * 0.15f, box_top + row_height * (i + 1.5f));
-                    text(current.file, box_left + box_width * 0.5f, box_top + row_height * (i + 1.5f));
-                    for(int j = 0; j < MAX_PLAYERS; j++) {
-                        fill(current.getPlayerColor(j));
-                        stroke(current.line_color);
-                        rect(box_left + box_width * (0.75f + 0.02f * j), box_top + row_height * (i + 1.1f), box_width * 0.015f, box_width * 0.015f);
-                    }
-                    fill(current.overbid_color);
-                    textSize(width * 0.015f);
-                    text("+", box_left + box_width * 0.725f, box_top + row_height * (i + 1.2f));
-                    fill(current.underbid_color);
-                    text("-", box_left + box_width * 0.975f, box_top + row_height * (i + 1.2f));
-                    Tile popup_button = Tile.fromCoordinates(box_left + box_width * 0.72f, box_top + row_height * (i + 1.5f), box_left + box_width * 0.84f, box_top + row_height * (i + 1.9f));
-                    drawButton(current, popup_button, "Pop-up", 0.01f, true, true);
-                    Tile error_button = Tile.fromCoordinates(box_left + box_width * 0.86f, box_top + row_height * (i + 1.5f), box_left + box_width * 0.98f, box_top + row_height * (i + 1.9f));
-                    drawButton(current, error_button, "Error", 0.01f, false, false);
-                    if(mousePressed) {
-                        if(popup_button.mouseInTile()) {
-                            fill(current.popup_background_color, 230);
-                            stroke(current.line_color);
-                            rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
-                            fill(current.text_color);
-                            text("Pop-up Window", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
-                        } else if(error_button.mouseInTile()) {
-                            fill(current.popup_background_color, 230);
-                            stroke(current.line_color);
-                            rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
-                            fill(current.error_text_color);
-                            text("Error Message", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
-                        }
-                    }
-                }
-                for(int i = 0; i < Theme.themes.size(); i++) {
-                    Theme current = Theme.themes.get(i);
-                    if(mouseX > box_left + box_width * 0.3 && mouseX < box_left + box_width * 0.7 && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
-                        String file = current.directory + current.file;
-                        // Test whether file is in the jar
-                        if(!file.startsWith("/") && file.charAt(1) != ':') {
-                            file = "jar/" + file;
-                        }
-                        textSize(width * 0.015f);
-                        fill(Theme.theme.background_color);
-                        stroke(Theme.theme.line_color);
-                        float tw = textWidth(file);
-                        float px = (mouseX + tw < width * 0.98f) ? mouseX : (width * 0.98f - tw);
-                        rect(px, mouseY, tw + width * 0.02f, width * 0.03f);
-                        fill(Theme.theme.text_color);
-                        textAlign(LEFT, CENTER);
-                        text(file, px + width * 0.01f, mouseY + width * 0.015f);
-                        textAlign(CENTER, CENTER);
-                    }
-                }
-            }
-        } else if(current_screen.usesGameTiles()) {
-            textAlign(CENTER, CENTER);
-            int total_bid = 0;
-            int total_taken = 0;
-            for(int i = 0; i < players.size(); i++) {
-                Player p = players.get(i);
-                total_bid += p.bid;
-                total_taken += p.taken;
-                fill(Theme.theme.background_color);
-                rect(game_tiles[i].x(), game_tiles[i].y(), game_tiles[i].w(), game_tiles[i].h());
-                fill(p.display_color);
-                textSize(game_tiles[0].w() * 0.1f);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, game_tiles[i].cx(), game_tiles[i].y() + game_tiles[i].h() * 0.167f);
-                textSize(game_tiles[i].h() * 0.5f);
-                text(p.score, game_tiles[i].cx(), game_tiles[i].my() - game_tiles[i].h() * 0.43f);
-                if(current_screen != Screen.GAME_OVER) {
-                    textSize(game_tiles[0].w() * 0.04f);
-                    text("Bid", game_tiles[i].x() + game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.167f);
-                    if(p.has_bid) {
-                        textSize(game_tiles[0].w() * 0.1f);
-                        text(p.bid, game_tiles[i].x() + game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
-                    }
-                    if(current_screen == Screen.TAKING) {
-                        textSize(game_tiles[0].w() * 0.04f);
-                        text("Taken", game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.167f);
-                        textSize(game_tiles[0].w() * 0.1f);
-                        text(p.taken, game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
-                    }
-                }
-            }
-            if(current_screen != Screen.GAME_OVER) {
-                drawButton(setup_button, "Setup", 0.02f, true, true);
-                drawButton(change_bids_button, "Change Bids", 0.02f, current_screen == Screen.TAKING, true);
-                drawButton(proceed_button, "Proceed", 0.02f, trick_mode == 0 || (current_screen == Screen.BIDDING && total_bid != tricks[trick_index]) || (current_screen == Screen.TAKING && total_taken == tricks[trick_index]), true);
-                drawButton(end_game_button, "End Game", 0.02f, true, true);
-                textSize(width * 0.01f);
-                fill(Theme.theme.text_color);
-                text("Deal", width * 0.72f, height * 0.87f);
-                text("Bid", width * 0.8f, height * 0.87f);
-                text("Taken", width * 0.88f, height * 0.87f);
-                text("Trump", width * 0.96f, height * 0.87f);
-                textSize(width * 0.05f);
-                text(trick_mode == 0 ? "--" : String.valueOf(tricks[trick_index]), width * 0.72f, height * 0.93f);
-                if(current_screen == Screen.TAKING) {
-                    if(trick_mode != 0) {
-                        if(total_bid < tricks[trick_index]) {
-                            fill(Theme.theme.underbid_color);
-                        } else {
-                            fill(Theme.theme.overbid_color);
-                        }
-                    }
-                }
-                text(total_bid, width * 0.8f, height * 0.93f);
-                fill(Theme.theme.text_color);
-                text(total_taken, width * 0.88f, height * 0.93f);
-                PImage trump_icon = trumpIcon();
-                if(trump_icon != null) {
-                    image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() * 0.25f, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() * 0.25f, trump_suit_bounding_box.w() * 0.5f, trump_suit_bounding_box.h() * 0.5f);
-                }
-            } else {
-                drawButton(statistics_button, "Statistics", 0.02f, true, true);
-                drawButton(restart_button, "Restart", 0.02f, true, true);
-                textSize(width * 0.05f);
-                fill(Theme.theme.text_color);
-                text("Game Over", width * 0.5f, height * 0.92f);
-            }
+            SetupScreen.draw(this);
+        } else if(current_screen == Screen.BIDDING) {
+            BiddingScreen.draw(this);
+        } else if(current_screen == Screen.TAKING) {
+            TakingScreen.draw(this);
+        } else if(current_screen == Screen.GAME_OVER) {
+            GameOverScreen.draw(this);
         } else if(current_screen == Screen.STATISTICS) {
-            drawButton(statistics_button, "Open Save", 0.02f, true, true);
-            drawButton(restart_button, "Restart", 0.02f, true, true);
-            stroke(Theme.theme.line_color);
-            fill(Theme.theme.background_color);
-            rect(statistics_header.x(), statistics_header.y(), statistics_header.w(), statistics_header.h());
-            float[] vertical_lines = new float[]{0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
-            for(float x : vertical_lines) {
-                line(statistics_header.x(x), statistics_header.y(), statistics_header.x(x), statistics_tiles[players.size() - 1].my());
-            }
-            float[] text_positions = new float[]{0.01f, 0.325f, 0.475f, 0.625f, 0.775f, 0.925f};
-            fill(Theme.theme.text_color);
-            textSize(statistics_tiles[0].h() * 0.7f);
-            textAlign(LEFT, CENTER);
-            text("Name", statistics_header.x(text_positions[0]), statistics_header.cy());
-            textAlign(CENTER, CENTER);
-            highlightStatsHeader(PlayerSortMode.SCORE);
-            text("Score", statistics_header.x(text_positions[1]), statistics_header.cy());
-            highlightStatsHeader(PlayerSortMode.TAKEN);
-            text("Taken", statistics_header.x(text_positions[2]), statistics_header.cy());
-            highlightStatsHeader(PlayerSortMode.BID);
-            text("Bid", statistics_header.x(text_positions[3]), statistics_header.cy());
-            highlightStatsHeader(PlayerSortMode.BONUS);
-            text("Bonus", statistics_header.x(text_positions[4]), statistics_header.cy());
-            highlightStatsHeader(PlayerSortMode.SET);
-            text("Set", statistics_header.x(text_positions[5]), statistics_header.cy());
-            for(int i = 0; i < players.size(); i++) {
-                Player p = players.get(sorted_player_indices[i]);
-                noFill();
-                rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
-                fill(p.display_color);
-                textAlign(LEFT, CENTER);
-                text(p.name.equals("") ? ("Player " + (sorted_player_indices[i] + 1)) : p.name, statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());
-                textAlign(CENTER, CENTER);
-                text(p.score, statistics_tiles[i].x(text_positions[1]), statistics_tiles[i].cy());
-                text(p.total_taken, statistics_tiles[i].x(text_positions[2]), statistics_tiles[i].cy());
-                text(p.total_bid, statistics_tiles[i].x(text_positions[3]), statistics_tiles[i].cy());
-                text(p.bonuses, statistics_tiles[i].x(text_positions[4]), statistics_tiles[i].cy());
-                text(p.times_set, statistics_tiles[i].x(text_positions[5]), statistics_tiles[i].cy());
-            }
+            StatisticsScreen.draw(this);
         }
         if(error_frames > 0) {
             fill(Theme.theme.popup_background_color, 230);
@@ -1081,8 +765,8 @@ public class OhHellScoreboardV2 extends PApplet {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
                 current_screen = Screen.STATISTICS;
-                if(sort_mode == PlayerSortMode.NONE && !sort_reverse) {
-                    sortPlayers(PlayerSortMode.SCORE, false);
+                if(StatisticsScreen.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.sort_reverse) {
+                    StatisticsScreen.sortPlayers(PlayerSortMode.SCORE, false, players);
                 }
             }
         } else if(current_screen == Screen.STATISTICS) {
@@ -1090,27 +774,8 @@ public class OhHellScoreboardV2 extends PApplet {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
                 openLatestSave();
-            } else if(statistics_header.mouseInTile()) {
-                //TODO: Make this less scuffed
-                PlayerSortMode mode = PlayerSortMode.NONE;
-                float[] vertical_lines = new float[]{0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
-                if(mouseX > statistics_header.x(vertical_lines[0]) && mouseX < statistics_header.x(vertical_lines[1])) {
-                    mode = PlayerSortMode.SCORE;
-                } else if(mouseX > statistics_header.x(vertical_lines[1]) && mouseX < statistics_header.x(vertical_lines[2])) {
-                    mode = PlayerSortMode.TAKEN;
-                } else if(mouseX > statistics_header.x(vertical_lines[2]) && mouseX < statistics_header.x(vertical_lines[3])) {
-                    mode = PlayerSortMode.BID;
-                } else if(mouseX > statistics_header.x(vertical_lines[3]) && mouseX < statistics_header.x(vertical_lines[4])) {
-                    mode = PlayerSortMode.BONUS;
-                } else if(mouseX > statistics_header.x(vertical_lines[4])) {
-                    mode = PlayerSortMode.SET;
-                }
-                if(sort_mode == mode && sort_mode != PlayerSortMode.NONE) {
-                    sort_reverse = !sort_reverse;
-                } else {
-                    sort_reverse = false;
-                }
-                sortPlayers(mode, sort_reverse);
+            } else if(StatisticsScreen.statistics_header.mouseInTile()) {
+                StatisticsScreen.handleHeaderClick(this);
             }
         } else if(current_screen.isSetup()) {
             if(current_window == Window.TRICKS) {

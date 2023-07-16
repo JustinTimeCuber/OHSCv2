@@ -8,6 +8,7 @@ v2.2-beta.1
 + Trump can now be cleared with the "b" key
 * Dots and crosses are now disabled by default
 * Reformatted code to be consistent
+* Significant refactoring
 * Players no longer store a Tile and no longer have a setTile() method
 * Documented Tile methods and added x(double) and y(double) methods for accessing an arbitrary coordinate
 * Fixed double usage of "o" key (dots trump / remove from player 9)
