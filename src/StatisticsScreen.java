@@ -37,12 +37,12 @@ public class StatisticsScreen {
         } else {
             sort_reverse = false;
         }
-        sortPlayers(mode, sort_reverse, sc.players);
+        sortPlayers(mode, sort_reverse);
     }
-    static void sortPlayers(PlayerSortMode mode, boolean reverse, ArrayList<Player> players) {
+    static void sortPlayers(PlayerSortMode mode, boolean reverse) {
         sort_mode = mode;
         sort_reverse = reverse;
-        sorted_player_indices = new int[players.size()];
+        sorted_player_indices = new int[Player.count()];
         for(int i = 0; i < sorted_player_indices.length; i++) {
             sorted_player_indices[i] = reverse ? sorted_player_indices.length - i - 1 : i;
         }
@@ -51,8 +51,8 @@ public class StatisticsScreen {
         }
         for(int i = 0; i < sorted_player_indices.length - 1; i++) {
             for(int j = i + 1; j < sorted_player_indices.length; j++) {
-                Player p1 = players.get(sorted_player_indices[i]);
-                Player p2 = players.get(sorted_player_indices[j]);
+                Player p1 = Player.players.get(sorted_player_indices[i]);
+                Player p2 = Player.players.get(sorted_player_indices[j]);
                 boolean shouldSwap = false;
                 switch(mode) {
                     case SCORE -> shouldSwap = p1.score < p2.score;
@@ -70,8 +70,8 @@ public class StatisticsScreen {
             }
         }
     }
-    static void sortPlayers(ArrayList<Player> players) {
-        sortPlayers(sort_mode, sort_reverse, players);
+    static void sortPlayers() {
+        sortPlayers(sort_mode, sort_reverse);
     }
     static void draw(OhHellScoreboardV2 sc) {
         sc.drawButton(sc.statistics_button, "Open Save", 0.02f, true, true);
@@ -80,7 +80,7 @@ public class StatisticsScreen {
         sc.fill(Theme.theme.background_color);
         sc.rect(statistics_header.x(), statistics_header.y(), statistics_header.w(), statistics_header.h());
         for(float x : vertical_lines) {
-            sc.line(statistics_header.x(x), statistics_header.y(), statistics_header.x(x), statistics_tiles[sc.players.size() - 1].my());
+            sc.line(statistics_header.x(x), statistics_header.y(), statistics_header.x(x), statistics_tiles[Player.count() - 1].my());
         }
         float[] text_positions = new float[]{0.01f, 0.325f, 0.475f, 0.625f, 0.775f, 0.925f};
         sc.fill(Theme.theme.text_color);
@@ -98,8 +98,8 @@ public class StatisticsScreen {
         sc.text("Bonus", statistics_header.x(text_positions[4]), statistics_header.cy());
         highlightStatsHeader(PlayerSortMode.SET, sc);
         sc.text("Set", statistics_header.x(text_positions[5]), statistics_header.cy());
-        for(int i = 0; i < sc.players.size(); i++) {
-            Player p = sc.players.get(sorted_player_indices[i]);
+        for(int i = 0; i < Player.count(); i++) {
+            Player p = Player.players.get(sorted_player_indices[i]);
             sc.noFill();
             sc.rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
             sc.fill(p.display_color);

@@ -1,8 +1,8 @@
 public class SetupScreen {
     static void draw(OhHellScoreboardV2 sc) {
 
-        for(int i = 0; i < sc.players.size(); i++) {
-            Player p = sc.players.get(i);
+        for(int i = 0; i < Player.count(); i++) {
+            Player p = Player.players.get(i);
             sc.noFill();
             if(i == sc.selected_player) {
                 sc.fill(p.display_color, 127);
@@ -24,8 +24,8 @@ public class SetupScreen {
             sc.text(p.score, sc.setup_tiles[i].mx() - sc.width * 0.04f, sc.setup_tiles[i].cy());
         }
         boolean popup_shown = sc.current_window != Window.NONE;
-        sc.drawButton(sc.add_player_button, sc.selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, sc.players.size() < sc.MAX_PLAYERS, !popup_shown);
-        sc.drawButton(sc.remove_player_button, "Remove Player", 0.02f, sc.selected_player != -1 && sc.players.size() > 2, !popup_shown);
+        sc.drawButton(sc.add_player_button, sc.selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, Player.count() < sc.MAX_PLAYERS, !popup_shown);
+        sc.drawButton(sc.remove_player_button, "Remove Player", 0.02f, sc.selected_player != -1 && Player.count() > 2, !popup_shown);
         sc.drawButton(sc.one_point_button, "Add/Remove 1 pt", 0.02f, sc.selected_player != -1, !popup_shown);
         sc.drawButton(sc.ten_point_button, "Add/Remove 10 pts", 0.02f, sc.selected_player != -1, !popup_shown);
         sc.drawButton(sc.custom_tricks_button, "Trick Options", 0.02f, true, !popup_shown);

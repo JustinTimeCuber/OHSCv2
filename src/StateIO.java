@@ -23,7 +23,7 @@ public class StateIO {
         state.add("last_save:" + sc.last_save);
         state.add("sort_mode:" + StatisticsScreen.sort_mode);
         state.add("sort_reverse:" + StatisticsScreen.sort_reverse);
-        for(Player p : sc.players) {
+        for(Player p : Player.players) {
             state.add("player:" + p.toString());
         }
         sc.saveStrings(filename + ".ohsc", state.toArray(new String[]{}));
@@ -33,7 +33,7 @@ public class StateIO {
     static void loadState(String filename) {
         String[] state = sc.loadStrings(filename + ".ohsc");
         Logger.read(filename + ".log");
-        sc.players = new ArrayList<>();
+        Player.players = new ArrayList<>();
         for(String s : state) {
             String label = s.split(":")[0];
             String value = s.substring(label.length() + 1);
@@ -53,7 +53,7 @@ public class StateIO {
                 case "last_save" -> sc.last_save = value;
                 case "sort_mode" -> StatisticsScreen.sort_mode = PlayerSortMode.valueOf(value);
                 case "sort_reverse" -> StatisticsScreen.sort_reverse = Boolean.parseBoolean(value);
-                case "player" -> sc.players.add(new Player().parse(value));
+                case "player" -> new Player().parse(value);
                 default -> System.err.println("Unrecognized label: " + label);
             }
         }

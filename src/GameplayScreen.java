@@ -9,8 +9,8 @@ public class GameplayScreen {
         sc.textAlign(sc.CENTER, sc.CENTER);
         total_bid = 0;
         total_taken = 0;
-        for(int i = 0; i < sc.players.size(); i++) {
-            Player p = sc.players.get(i);
+        for(int i = 0; i < Player.count(); i++) {
+            Player p = Player.players.get(i);
             total_bid += p.bid;
             total_taken += p.taken;
             sc.fill(Theme.theme.background_color);

@@ -71,7 +71,7 @@ public class Tile {
     }
 
     static void setPlayerCountBasedTiles() {
-        int playerCount = sc.players.size();
+        int playerCount = Player.count();
         if(playerCount == 2) {
             sc.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.5, 0.833),

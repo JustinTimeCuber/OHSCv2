@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+
 class Player {
     static OhHellScoreboardV2 sc;
+    static ArrayList<Player> players = new ArrayList<>();
     int score = 0;
     int bid = 0;
     boolean has_bid = false;
@@ -13,6 +16,15 @@ class Player {
     String name = "";
 
     Player() {
+        players.add(this);
+    }
+
+    Player(int index) {
+        players.add(index, this);
+    }
+
+    static int count() {
+        return players.size();
     }
 
     Player setColor(int c) {

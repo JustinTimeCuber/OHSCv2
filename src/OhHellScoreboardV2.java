@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
-    ArrayList<Player> players = new ArrayList<>();
     Tile[] setup_tiles, game_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile popup_window, close_popup_button;
@@ -72,18 +71,18 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void updatePlayers(boolean resetIndex) {
-        StatisticsScreen.sortPlayers(players);
+        StatisticsScreen.sortPlayers();
         Tile.setPlayerCountBasedTiles();
         if(current_screen.isSetup()) {
-            for(int i = 0; i < players.size(); i++) {
-                players.get(i).setColor(Theme.theme.getPlayerColor(i));
+            for(int i = 0; i < Player.count(); i++) {
+                Player.players.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
         } else {
-            for(int i = 0; i < players.size(); i++) {
-                players.get(i).setColor(Theme.theme.getPlayerColor(i));
+            for(int i = 0; i < Player.count(); i++) {
+                Player.players.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
         }
-        int max_deal = suits * cards_per_suit / players.size();
+        int max_deal = suits * cards_per_suit / Player.count();
         if(trick_mode != 6 && trick_mode != 0) {
             int total_hands = (trick_mode == 1 || trick_mode == 3) ? 2 * max_deal - 1 : max_deal;
             tricks = new int[total_hands];
@@ -118,14 +117,14 @@ public class OhHellScoreboardV2 extends PApplet {
         selected_player = -1;
         error_message = "";
         error_frames = 0;
-        players = new ArrayList<>();
+        Player.players = new ArrayList<>();
         StatisticsScreen.sort_mode = PlayerSortMode.NONE;
         StatisticsScreen.sort_reverse = false;
         editing_name = false;
         current_window = Window.NONE;
         current_screen = Screen.SETUP_TO_BIDDING;
         for(int i = 0; i < 4; i++) {
-            players.add(new Player());
+            new Player();
         }
         hands_played = 0;
         suits = 4;
@@ -216,10 +215,10 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void saveRecord() {
-        String[] out = new String[players.size() + 1];
+        String[] out = new String[Player.count() + 1];
         out[0] = "Hands played: " + hands_played;
-        for(int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
+        for(int i = 0; i < Player.count(); i++) {
+            Player p = Player.players.get(i);
             out[i + 1] = p.name + ": score=" + p.score + " bid=" + p.total_bid + " taken=" + p.total_taken + " bonus=" + p.bonuses + " set=" + p.times_set + " hands=" + p.hands_played;
         }
         out = Logger.append(out);
@@ -332,12 +331,12 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void handleAddPlayer() {
-        if(players.size() < MAX_PLAYERS) {
+        if(Player.count() < MAX_PLAYERS) {
             if(selected_player == -1) {
-                players.add(new Player().setColor(Theme.theme.getPlayerColor(players.size())));
+                new Player();
                 updatePlayers(false);
             } else {
-                players.add(selected_player, new Player().setColor(Theme.theme.getPlayerColor(players.size())));
+                new Player(selected_player);
                 selected_player++;
                 updatePlayers(false);
             }
@@ -348,11 +347,11 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void handleRemovePlayer() {
-        if(players.size() > 2) {
+        if(Player.count() > 2) {
             if(selected_player == -1) {
                 displayError("Must select a player to remove");
             } else {
-                players.remove(selected_player);
+                Player.players.remove(selected_player);
                 selected_player--;
                 updatePlayers(false);
             }
@@ -365,7 +364,7 @@ public class OhHellScoreboardV2 extends PApplet {
         if(selected_player == -1) {
             displayError("Must select a player to change score");
         } else {
-            players.get(selected_player).score += (direction ? amount : -amount);
+            Player.players.get(selected_player).score += (direction ? amount : -amount);
         }
     }
 
@@ -397,7 +396,7 @@ public class OhHellScoreboardV2 extends PApplet {
     void handleFinishBidding() {
         int total_bid = 0;
         boolean all_players_bid = true;
-        for(Player p : players) {
+        for(Player p : Player.players) {
             total_bid += p.bid;
             all_players_bid &= p.has_bid;
         }
@@ -414,14 +413,14 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void handleFinishRound() {
         int total_taken = 0;
-        for(Player player : players) {
+        for(Player player : Player.players) {
             total_taken += player.taken;
         }
         if(trick_mode == 0 || total_taken == tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
             hands_played++;
             Logger.write("--------------------------------");
             Logger.write("Hand #" + hands_played + " - Tricks: " + tricks[trick_index]);
-            for(Player p : players) {
+            for(Player p : Player.players) {
                 int old = p.score;
                 p.total_bid += p.bid;
                 p.total_taken += p.taken;
@@ -656,7 +655,7 @@ public class OhHellScoreboardV2 extends PApplet {
             if(current_window == Window.NONE) {
                 if(key == TAB) {
                     selected_player++;
-                    if(selected_player >= players.size()) {
+                    if(selected_player >= Player.count()) {
                         selected_player = 0;
                     }
                     return;
@@ -665,22 +664,22 @@ public class OhHellScoreboardV2 extends PApplet {
                     return;
                 }
                 if(editing_name) {
-                    String s = players.get(selected_player).name;
+                    String s = Player.players.get(selected_player).name;
                     textSize(width * 0.05f);
                     if(key == ',') {
                         displayError("That character conflicts with the OHSC v2.0 autosave format");
                     } else if(key == BACKSPACE) {
                         if(s.length() > 0) {
-                            players.get(selected_player).name = s.substring(0, s.length() - 1);
+                            Player.players.get(selected_player).name = s.substring(0, s.length() - 1);
                         }
                     } else if(textWidth(s + key) <= MAX_NAME_WIDTH * width) {
-                        players.get(selected_player).name += key;
+                        Player.players.get(selected_player).name += key;
                     } else {
                         displayError("The maximum name width is " + round(MAX_NAME_WIDTH * width) + " pixels");
                     }
                 } else {
                     int i = Math.abs(getKeyValue(key));
-                    if(i != 0 && i - 1 < players.size()) {
+                    if(i != 0 && i - 1 < Player.count()) {
                         i--;
                         if(selected_player == i) {
                             editing_name = true;
@@ -710,15 +709,15 @@ public class OhHellScoreboardV2 extends PApplet {
             }
             int i = Math.abs(getKeyValue(key));
             if(current_screen == Screen.BIDDING) {
-                if(i != 0 && i - 1 < players.size()) {
+                if(i != 0 && i - 1 < Player.count()) {
                     i--;
-                    Player p = players.get(i);
+                    Player p = Player.players.get(i);
                     handleBidChange(p, getKeyValue(key) > 0);
                 }
             } else {
-                if(i != 0 && i - 1 < players.size()) {
+                if(i != 0 && i - 1 < Player.count()) {
                     i--;
-                    Player p = players.get(i);
+                    Player p = Player.players.get(i);
                     handleTakenChange(p, getKeyValue(key) > 0);
                 }
             }
@@ -766,7 +765,7 @@ public class OhHellScoreboardV2 extends PApplet {
             } else if(statistics_button.mouseInTile()) {
                 current_screen = Screen.STATISTICS;
                 if(StatisticsScreen.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.sort_reverse) {
-                    StatisticsScreen.sortPlayers(PlayerSortMode.SCORE, false, players);
+                    StatisticsScreen.sortPlayers(PlayerSortMode.SCORE, false);
                 }
             }
         } else if(current_screen == Screen.STATISTICS) {
@@ -841,7 +840,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 } else if(begin_game_button.mouseInTile()) {
                     handleBeginGame();
                 } else {
-                    for(int i = 0; i < players.size(); i++) {
+                    for(int i = 0; i < Player.count(); i++) {
                         if(setup_tiles[i].mouseInTile()) {
                             clicked_player = true;
                             if(selected_player == i) {
@@ -862,12 +861,12 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
             }
         } else {
-            for(int i = 0; i < players.size(); i++) {
+            for(int i = 0; i < Player.count(); i++) {
                 if(game_tiles[i].mouseInTile()) {
                     if(current_screen == Screen.BIDDING) {
-                        handleBidChange(players.get(i), mouseButton == LEFT);
+                        handleBidChange(Player.players.get(i), mouseButton == LEFT);
                     } else {
-                        handleTakenChange(players.get(i), mouseButton == LEFT);
+                        handleTakenChange(Player.players.get(i), mouseButton == LEFT);
                     }
                     break;
                 }
