@@ -146,7 +146,7 @@ class Theme {
         theme_file = theme.file;
         theme_directory = theme.directory;
         sc.updatePlayers(false);
-        StateIO.saveState(sc.DATA_PATH + "latest");
+        StateIO.saveState(sc.DATA_PATH + "latest", sc);
     }
 }
 

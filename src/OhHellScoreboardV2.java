@@ -75,11 +75,11 @@ public class OhHellScoreboardV2 extends PApplet {
         Tile.setPlayerCountBasedTiles();
         if(current_screen.isSetup()) {
             for(int i = 0; i < Player.count(); i++) {
-                Player.players.get(i).setColor(Theme.theme.getPlayerColor(i));
+                Player.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
         } else {
             for(int i = 0; i < Player.count(); i++) {
-                Player.players.get(i).setColor(Theme.theme.getPlayerColor(i));
+                Player.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
         }
         int max_deal = suits * cards_per_suit / Player.count();
@@ -218,7 +218,7 @@ public class OhHellScoreboardV2 extends PApplet {
         String[] out = new String[Player.count() + 1];
         out[0] = "Hands played: " + hands_played;
         for(int i = 0; i < Player.count(); i++) {
-            Player p = Player.players.get(i);
+            Player p = Player.get(i);
             out[i + 1] = p.name + ": score=" + p.score + " bid=" + p.total_bid + " taken=" + p.total_taken + " bonus=" + p.bonuses + " set=" + p.times_set + " hands=" + p.hands_played;
         }
         out = Logger.append(out);
@@ -364,7 +364,7 @@ public class OhHellScoreboardV2 extends PApplet {
         if(selected_player == -1) {
             displayError("Must select a player to change score");
         } else {
-            Player.players.get(selected_player).score += (direction ? amount : -amount);
+            Player.get(selected_player).score += (direction ? amount : -amount);
         }
     }
 
@@ -413,8 +413,8 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void handleFinishRound() {
         int total_taken = 0;
-        for(Player player : Player.players) {
-            total_taken += player.taken;
+        for(Player p : Player.players) {
+            total_taken += p.taken;
         }
         if(trick_mode == 0 || total_taken == tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
             hands_played++;
@@ -565,20 +565,16 @@ public class OhHellScoreboardV2 extends PApplet {
             System.getProperties().list(System.out);
         }
         Tile.sc = this;
-        Logger.sc = this;
         Theme.sc = this;
-        StateIO.sc = this;
-        Player.sc = this;
-        Config.sc = this;
         frameRate(30);
         aspect_ratio = (float) width / height;
         setInitialValues();
         try {
-            StateIO.loadState(DATA_PATH + "latest");
+            StateIO.loadState(DATA_PATH + "latest", this);
         } catch(Exception e) {
             System.err.println("Exception loading save: " + e);
             setInitialValues();
-            StateIO.saveState(DATA_PATH + "latest");
+            StateIO.saveState(DATA_PATH + "latest", this);
         }
         spades = loadImage("assets/spades.png");
         hearts = loadImage("assets/hearts.png");
@@ -664,16 +660,16 @@ public class OhHellScoreboardV2 extends PApplet {
                     return;
                 }
                 if(editing_name) {
-                    String s = Player.players.get(selected_player).name;
+                    String s = Player.get(selected_player).name;
                     textSize(width * 0.05f);
                     if(key == ',') {
                         displayError("That character conflicts with the OHSC v2.0 autosave format");
                     } else if(key == BACKSPACE) {
                         if(s.length() > 0) {
-                            Player.players.get(selected_player).name = s.substring(0, s.length() - 1);
+                            Player.get(selected_player).name = s.substring(0, s.length() - 1);
                         }
                     } else if(textWidth(s + key) <= MAX_NAME_WIDTH * width) {
-                        Player.players.get(selected_player).name += key;
+                        Player.get(selected_player).name += key;
                     } else {
                         displayError("The maximum name width is " + round(MAX_NAME_WIDTH * width) + " pixels");
                     }
@@ -711,18 +707,18 @@ public class OhHellScoreboardV2 extends PApplet {
             if(current_screen == Screen.BIDDING) {
                 if(i != 0 && i - 1 < Player.count()) {
                     i--;
-                    Player p = Player.players.get(i);
+                    Player p = Player.get(i);
                     handleBidChange(p, getKeyValue(key) > 0);
                 }
             } else {
                 if(i != 0 && i - 1 < Player.count()) {
                     i--;
-                    Player p = Player.players.get(i);
+                    Player p = Player.get(i);
                     handleTakenChange(p, getKeyValue(key) > 0);
                 }
             }
         }
-        StateIO.saveState(DATA_PATH + "latest");
+        StateIO.saveState(DATA_PATH + "latest", this);
     }
 
     int getKeyValue(char k) {
@@ -864,9 +860,9 @@ public class OhHellScoreboardV2 extends PApplet {
             for(int i = 0; i < Player.count(); i++) {
                 if(game_tiles[i].mouseInTile()) {
                     if(current_screen == Screen.BIDDING) {
-                        handleBidChange(Player.players.get(i), mouseButton == LEFT);
+                        handleBidChange(Player.get(i), mouseButton == LEFT);
                     } else {
-                        handleTakenChange(Player.players.get(i), mouseButton == LEFT);
+                        handleTakenChange(Player.get(i), mouseButton == LEFT);
                     }
                     break;
                 }
@@ -887,6 +883,6 @@ public class OhHellScoreboardV2 extends PApplet {
                 handleTrumpButton();
             }
         }
-        StateIO.saveState(DATA_PATH + "latest");
+        StateIO.saveState(DATA_PATH + "latest", this);
     }
 }

@@ -2,7 +2,7 @@ public class SetupScreen {
     static void draw(OhHellScoreboardV2 sc) {
 
         for(int i = 0; i < Player.count(); i++) {
-            Player p = Player.players.get(i);
+            Player p = Player.get(i);
             sc.noFill();
             if(i == sc.selected_player) {
                 sc.fill(p.display_color, 127);

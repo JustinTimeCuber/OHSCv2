@@ -3,7 +3,7 @@ public class TakingScreen extends GameplayScreen {
         GameplayScreen.draw(sc);
         sc.textAlign(sc.CENTER, sc.CENTER);
         for(int i = 0; i < Player.count(); i++) {
-            Player p = Player.players.get(i);
+            Player p = Player.get(i);
             total_bid += p.bid;
             sc.fill(p.display_color);
             sc.textSize(sc.game_tiles[0].w() * 0.04f);

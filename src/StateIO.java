@@ -1,9 +1,8 @@
 import java.util.ArrayList;
 
 public class StateIO {
-    static OhHellScoreboardV2 sc;
 
-    static void saveState(String filename) {
+    static void saveState(String filename, OhHellScoreboardV2 sc) {
         if(sc.debug) {
             System.out.println("Saving state...");
         }
@@ -27,12 +26,12 @@ public class StateIO {
             state.add("player:" + p.toString());
         }
         sc.saveStrings(filename + ".ohsc", state.toArray(new String[]{}));
-        Logger.save(filename + ".log");
+        Logger.save(filename + ".log", sc);
     }
 
-    static void loadState(String filename) {
+    static void loadState(String filename, OhHellScoreboardV2 sc) {
         String[] state = sc.loadStrings(filename + ".ohsc");
-        Logger.read(filename + ".log");
+        Logger.read(filename + ".log", sc);
         Player.players = new ArrayList<>();
         for(String s : state) {
             String label = s.split(":")[0];
@@ -57,7 +56,7 @@ public class StateIO {
                 default -> System.err.println("Unrecognized label: " + label);
             }
         }
-        Config.loadConfig();
+        Config.loadConfig(sc);
         Theme.loadThemes();
         sc.updatePlayers(false);
     }

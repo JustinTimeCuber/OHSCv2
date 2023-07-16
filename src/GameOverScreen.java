@@ -2,7 +2,7 @@ public class GameOverScreen {
     static void draw(OhHellScoreboardV2 sc) {
         sc.textAlign(sc.CENTER, sc.CENTER);
         for(int i = 0; i < Player.count(); i++) {
-            Player p = Player.players.get(i);
+            Player p = Player.get(i);
             sc.fill(Theme.theme.background_color);
             sc.rect(sc.game_tiles[i].x(), sc.game_tiles[i].y(), sc.game_tiles[i].w(), sc.game_tiles[i].h());
             sc.fill(p.display_color);

@@ -51,8 +51,8 @@ public class StatisticsScreen {
         }
         for(int i = 0; i < sorted_player_indices.length - 1; i++) {
             for(int j = i + 1; j < sorted_player_indices.length; j++) {
-                Player p1 = Player.players.get(sorted_player_indices[i]);
-                Player p2 = Player.players.get(sorted_player_indices[j]);
+                Player p1 = Player.get(sorted_player_indices[i]);
+                Player p2 = Player.get(sorted_player_indices[j]);
                 boolean shouldSwap = false;
                 switch(mode) {
                     case SCORE -> shouldSwap = p1.score < p2.score;
@@ -99,7 +99,7 @@ public class StatisticsScreen {
         highlightStatsHeader(PlayerSortMode.SET, sc);
         sc.text("Set", statistics_header.x(text_positions[5]), statistics_header.cy());
         for(int i = 0; i < Player.count(); i++) {
-            Player p = Player.players.get(sorted_player_indices[i]);
+            Player p = Player.get(sorted_player_indices[i]);
             sc.noFill();
             sc.rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
             sc.fill(p.display_color);

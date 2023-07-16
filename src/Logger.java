@@ -1,5 +1,4 @@
 public class Logger {
-    static OhHellScoreboardV2 sc;
     static String[] log = new String[0];
 
     static void write(String out) {
@@ -10,7 +9,7 @@ public class Logger {
         System.out.println("[LOGGER] " + out);
     }
 
-    static void read(String file) {
+    static void read(String file, OhHellScoreboardV2 sc) {
         try {
             log = sc.loadStrings(file);
         } catch(Exception e) {
@@ -20,7 +19,7 @@ public class Logger {
         }
     }
 
-    static void save(String file) {
+    static void save(String file, OhHellScoreboardV2 sc) {
         sc.saveStrings(file, log);
     }
 

@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 class Player {
-    static OhHellScoreboardV2 sc;
     static ArrayList<Player> players = new ArrayList<>();
     int score = 0;
     int bid = 0;
@@ -12,7 +11,7 @@ class Player {
     int bonuses = 0;
     int times_set = 0;
     int hands_played = 0;
-    int display_color = sc.color(255);
+    int display_color = -1; // White
     String name = "";
 
     Player() {
@@ -25,6 +24,10 @@ class Player {
 
     static int count() {
         return players.size();
+    }
+
+    static Player get(int index) {
+        return players.get(index);
     }
 
     void setColor(int c) {

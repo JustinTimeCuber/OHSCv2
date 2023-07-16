@@ -1,5 +1,4 @@
 public class Config {
-    static OhHellScoreboardV2 sc;
     static int points_per_trick = 1;
     static int points_bonus = 10;
     static int points_set = -10;
@@ -10,7 +9,7 @@ public class Config {
     static boolean negative_scores_allowed = true;
     static boolean extra_trump_suits = false;
 
-    static void loadConfig() {
+    static void loadConfig(OhHellScoreboardV2 sc) {
         try {
             String[] config = sc.loadStrings(sc.DATA_PATH + "config.txt");
             if(config == null) {
