@@ -8,6 +8,9 @@ import java.util.ArrayList;
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
     ArrayList<Player> players = new ArrayList<>();
+    int[] sorted_player_indices;
+    PlayerSortMode sort_mode;
+    boolean sort_reverse;
     Tile[] setup_tiles, game_tiles, statistics_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile popup_window, close_popup_button;
@@ -73,6 +76,7 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void updatePlayers(boolean resetIndex) {
+        sortPlayers(sort_mode, sort_reverse);
         Tile.setPlayerCountBasedTiles();
         if(current_screen.isSetup()) {
             for(int i = 0; i < players.size(); i++) {
@@ -114,11 +118,45 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
 
+    void sortPlayers(PlayerSortMode mode, boolean reverse) {
+        sort_mode = mode;
+        sort_reverse = reverse;
+        sorted_player_indices = new int[players.size()];
+        for(int i = 0; i < sorted_player_indices.length; i++) {
+            sorted_player_indices[i] = reverse ? sorted_player_indices.length - i - 1 : i;
+        }
+        if(mode == PlayerSortMode.NONE || sorted_player_indices.length < 2) {
+            return;
+        }
+        for(int i = 0; i < sorted_player_indices.length - 1; i++) {
+            for(int j = i + 1; j < sorted_player_indices.length; j++) {
+                Player p1 = players.get(sorted_player_indices[i]);
+                Player p2 = players.get(sorted_player_indices[j]);
+                boolean shouldSwap = false;
+                switch(mode) {
+                    case SCORE -> shouldSwap = p1.score < p2.score;
+                    case TAKEN -> shouldSwap = p1.total_taken < p2.total_taken;
+                    case BID -> shouldSwap = p1.total_bid < p2.total_bid;
+                    case BONUS -> shouldSwap = p1.bonuses < p2.bonuses;
+                    case SET -> shouldSwap = p1.times_set < p2.times_set;
+                }
+                if(reverse) shouldSwap = !shouldSwap;
+                if(shouldSwap) {
+                    int temp = sorted_player_indices[i];
+                    sorted_player_indices[i] = sorted_player_indices[j];
+                    sorted_player_indices[j] = temp;
+                }
+            }
+        }
+    }
+
     void setInitialValues() {
         selected_player = -1;
         error_message = "";
         error_frames = 0;
         players = new ArrayList<>();
+        sort_mode = PlayerSortMode.NONE;
+        sort_reverse = false;
         editing_name = false;
         current_window = Window.NONE;
         current_screen = Screen.SETUP_TO_BIDDING;
@@ -504,6 +542,18 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
 
+    void highlightStatsHeader(PlayerSortMode mode) {
+        if(sort_mode == mode) {
+            if(sort_reverse) {
+                fill(Theme.theme.grayed_text_color);
+            } else {
+                fill(Theme.theme.highlight_text_color);
+            }
+        } else {
+            fill(Theme.theme.text_color);
+        }
+    }
+
     // Approximate fix for vertically-centered text to seem slightly too low
     @Override
     public void text(String str, float x, float y) {
@@ -856,18 +906,23 @@ public class OhHellScoreboardV2 extends PApplet {
             textAlign(LEFT, CENTER);
             text("Name", statistics_header.x(text_positions[0]), statistics_header.cy());
             textAlign(CENTER, CENTER);
+            highlightStatsHeader(PlayerSortMode.SCORE);
             text("Score", statistics_header.x(text_positions[1]), statistics_header.cy());
+            highlightStatsHeader(PlayerSortMode.TAKEN);
             text("Taken", statistics_header.x(text_positions[2]), statistics_header.cy());
+            highlightStatsHeader(PlayerSortMode.BID);
             text("Bid", statistics_header.x(text_positions[3]), statistics_header.cy());
+            highlightStatsHeader(PlayerSortMode.BONUS);
             text("Bonus", statistics_header.x(text_positions[4]), statistics_header.cy());
+            highlightStatsHeader(PlayerSortMode.SET);
             text("Set", statistics_header.x(text_positions[5]), statistics_header.cy());
             for(int i = 0; i < players.size(); i++) {
-                Player p = players.get(i);
+                Player p = players.get(sorted_player_indices[i]);
                 noFill();
                 rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
                 fill(p.display_color);
                 textAlign(LEFT, CENTER);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());
+                text(p.name.equals("") ? ("Player " + (sorted_player_indices[i] + 1)) : p.name, statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());
                 textAlign(CENTER, CENTER);
                 text(p.score, statistics_tiles[i].x(text_positions[1]), statistics_tiles[i].cy());
                 text(p.total_taken, statistics_tiles[i].x(text_positions[2]), statistics_tiles[i].cy());
@@ -1026,12 +1081,36 @@ public class OhHellScoreboardV2 extends PApplet {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
                 current_screen = Screen.STATISTICS;
+                if(sort_mode == PlayerSortMode.NONE && !sort_reverse) {
+                    sortPlayers(PlayerSortMode.SCORE, false);
+                }
             }
         } else if(current_screen == Screen.STATISTICS) {
             if(restart_button.mouseInTile()) {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
                 openLatestSave();
+            } else if(statistics_header.mouseInTile()) {
+                //TODO: Make this less scuffed
+                PlayerSortMode mode = PlayerSortMode.NONE;
+                float[] vertical_lines = new float[]{0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
+                if(mouseX > statistics_header.x(vertical_lines[0]) && mouseX < statistics_header.x(vertical_lines[1])) {
+                    mode = PlayerSortMode.SCORE;
+                } else if(mouseX > statistics_header.x(vertical_lines[1]) && mouseX < statistics_header.x(vertical_lines[2])) {
+                    mode = PlayerSortMode.TAKEN;
+                } else if(mouseX > statistics_header.x(vertical_lines[2]) && mouseX < statistics_header.x(vertical_lines[3])) {
+                    mode = PlayerSortMode.BID;
+                } else if(mouseX > statistics_header.x(vertical_lines[3]) && mouseX < statistics_header.x(vertical_lines[4])) {
+                    mode = PlayerSortMode.BONUS;
+                } else if(mouseX > statistics_header.x(vertical_lines[4])) {
+                    mode = PlayerSortMode.SET;
+                }
+                if(sort_mode == mode && sort_mode != PlayerSortMode.NONE) {
+                    sort_reverse = !sort_reverse;
+                } else {
+                    sort_reverse = false;
+                }
+                sortPlayers(mode, sort_reverse);
             }
         } else if(current_screen.isSetup()) {
             if(current_window == Window.TRICKS) {
