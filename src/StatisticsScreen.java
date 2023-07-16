@@ -1,13 +1,13 @@
-import java.util.ArrayList;
-
 public class StatisticsScreen {
-    static Tile statistics_header;
-    static Tile[] statistics_tiles;
-    static PlayerSortMode sort_mode;
-    static boolean sort_reverse;
-    static int[] sorted_player_indices;
-    static float[] vertical_lines = new float[] {0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
-    static void highlightStatsHeader(PlayerSortMode mode, OhHellScoreboardV2 sc) {
+    static final StatisticsScreen INSTANCE = new StatisticsScreen();
+    private StatisticsScreen() {}
+    Tile statistics_header;
+    Tile[] statistics_tiles;
+    PlayerSortMode sort_mode;
+    boolean sort_reverse;
+    int[] sorted_player_indices;
+    final float[] vertical_lines = new float[] {0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
+    void highlightStatsHeader(PlayerSortMode mode, OhHellScoreboardV2 sc) {
         if(sort_mode == mode) {
             if(sort_reverse) {
                 sc.fill(Theme.theme.grayed_text_color);
@@ -18,7 +18,7 @@ public class StatisticsScreen {
             sc.fill(Theme.theme.text_color);
         }
     }
-    static void handleHeaderClick(OhHellScoreboardV2 sc) {
+    void handleHeaderClick(OhHellScoreboardV2 sc) {
         //TODO: Make this less scuffed
         PlayerSortMode mode = PlayerSortMode.NONE;
         if(sc.mouseX > statistics_header.x(vertical_lines[0]) && sc.mouseX < statistics_header.x(vertical_lines[1])) {
@@ -39,7 +39,7 @@ public class StatisticsScreen {
         }
         sortPlayers(mode, sort_reverse);
     }
-    static void sortPlayers(PlayerSortMode mode, boolean reverse) {
+    void sortPlayers(PlayerSortMode mode, boolean reverse) {
         sort_mode = mode;
         sort_reverse = reverse;
         sorted_player_indices = new int[Player.count()];
@@ -70,10 +70,10 @@ public class StatisticsScreen {
             }
         }
     }
-    static void sortPlayers() {
+    void sortPlayers() {
         sortPlayers(sort_mode, sort_reverse);
     }
-    static void draw(OhHellScoreboardV2 sc) {
+    void draw(OhHellScoreboardV2 sc) {
         sc.drawButton(sc.statistics_button, "Open Save", 0.02f, true, true);
         sc.drawButton(sc.restart_button, "Restart", 0.02f, true, true);
         sc.stroke(Theme.theme.line_color);

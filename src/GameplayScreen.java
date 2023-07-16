@@ -1,11 +1,11 @@
 import processing.core.PImage;
 
-public class GameplayScreen {
+public abstract class GameplayScreen {
 
     static int total_bid;
     static int total_taken;
 
-    static void draw(OhHellScoreboardV2 sc) {
+    void draw(OhHellScoreboardV2 sc) {
         sc.textAlign(sc.CENTER, sc.CENTER);
         total_bid = 0;
         total_taken = 0;

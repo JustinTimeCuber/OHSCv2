@@ -1,6 +1,8 @@
 public class TakingScreen extends GameplayScreen {
-    static void draw(OhHellScoreboardV2 sc) {
-        GameplayScreen.draw(sc);
+    static final TakingScreen INSTANCE = new TakingScreen();
+    private TakingScreen() {}
+    void draw(OhHellScoreboardV2 sc) {
+        super.draw(sc);
         sc.textAlign(sc.CENTER, sc.CENTER);
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);

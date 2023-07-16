@@ -600,15 +600,15 @@ public class OhHellScoreboardV2 extends PApplet {
         stroke(Theme.theme.line_color);
         textAlign(CENTER, CENTER);
         if(current_screen.isSetup()) {
-            SetupScreen.draw(this);
+            SetupScreen.INSTANCE.draw(this);
         } else if(current_screen == Screen.BIDDING) {
-            BiddingScreen.draw(this);
+            BiddingScreen.INSTANCE.draw(this);
         } else if(current_screen == Screen.TAKING) {
-            TakingScreen.draw(this);
+            TakingScreen.INSTANCE.draw(this);
         } else if(current_screen == Screen.GAME_OVER) {
-            GameOverScreen.draw(this);
+            GameOverScreen.INSTANCE.draw(this);
         } else if(current_screen == Screen.STATISTICS) {
-            StatisticsScreen.draw(this);
+            StatisticsScreen.INSTANCE.draw(this);
         }
         if(error_frames > 0) {
             fill(Theme.theme.popup_background_color, 230);

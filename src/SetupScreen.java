@@ -1,5 +1,7 @@
 public class SetupScreen {
-    static void draw(OhHellScoreboardV2 sc) {
+    static final SetupScreen INSTANCE = new SetupScreen();
+    private SetupScreen() {}
+    void draw(OhHellScoreboardV2 sc) {
 
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);
