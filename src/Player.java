@@ -27,9 +27,8 @@ class Player {
         return players.size();
     }
 
-    Player setColor(int c) {
+    void setColor(int c) {
         display_color = c;
-        return this;
     }
 
     @Override
@@ -37,7 +36,7 @@ class Player {
         return score + "," + (has_bid ? bid : "X") + "," + taken + "," + total_bid + "," + total_taken + "," + bonuses + "," + times_set + "," + hands_played + "," + name;
     }
 
-    Player parse(String in) {
+    void parse(String in) {
         String[] inputs = in.split(",");
         score = Integer.parseInt(inputs[0]);
         if(inputs[1].equals("X")) {
@@ -56,6 +55,5 @@ class Player {
         if(inputs.length > 8) {
             name = inputs[8];
         }
-        return this;
     }
 }
