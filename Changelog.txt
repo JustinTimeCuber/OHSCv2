@@ -1,13 +1,15 @@
 v2.2-beta.1
 + Added statistics screen
-    Currently just has a button to open the save file as well as the restart button
-    Much more is planned
+    Shows certain statistics about each player such as total bid, taken, bonuses, and times set.
+    Currently only accessible at the end of the game
 + Added config.txt file
     Currently has options for scoring as well as a toggle for the extra suits (dots and crosses)
 + Tab now cycles to the next player
 + Trump can now be cleared with the "b" key
 * Dots and crosses are now disabled by default
 * Reformatted code to be consistent
+* Players no longer store a Tile and no longer have a setTile() method
+* Documented Tile methods and added x(double) and y(double) methods for accessing an arbitrary coordinate
 * Fixed double usage of "o" key (dots trump / remove from player 9)
     Now, the "." key is used to select dots as trump
 * Decreasing the bid of a player whose bid is zero now removes the bid entirely instead of showing an error

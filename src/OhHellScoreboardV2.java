@@ -8,13 +8,14 @@ import java.util.ArrayList;
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
     ArrayList<Player> players = new ArrayList<>();
-    Tile[] setup_tiles, game_tiles;
+    Tile[] setup_tiles, game_tiles, statistics_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile popup_window, close_popup_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile refresh_themes_button;
     Tile setup_button, change_bids_button, proceed_button, end_game_button, trump_suit_bounding_box;
     Tile restart_button, statistics_button;
+    Tile statistics_header;
     final int MAX_PLAYERS = 10;
     final float MAX_NAME_WIDTH = 0.42f;
     final int MAX_SUITS = 12;
@@ -72,14 +73,14 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void updatePlayers(boolean resetIndex) {
-        Tile.setGameTiles();
+        Tile.setPlayerCountBasedTiles();
         if(current_screen.isSetup()) {
             for(int i = 0; i < players.size(); i++) {
-                players.get(i).setColor(Theme.theme.getPlayerColor(i)).setTile(setup_tiles[i]);
+                players.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
         } else {
             for(int i = 0; i < players.size(); i++) {
-                players.get(i).setColor(Theme.theme.getPlayerColor(i)).setTile(game_tiles[i]);
+                players.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
         }
         int max_deal = suits * cards_per_suit / players.size();
@@ -331,10 +332,10 @@ public class OhHellScoreboardV2 extends PApplet {
     void handleAddPlayer() {
         if(players.size() < MAX_PLAYERS) {
             if(selected_player == -1) {
-                players.add(new Player().setColor(Theme.theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+                players.add(new Player().setColor(Theme.theme.getPlayerColor(players.size())));
                 updatePlayers(false);
             } else {
-                players.add(selected_player, new Player().setColor(Theme.theme.getPlayerColor(players.size())).setTile(setup_tiles[players.size()]));
+                players.add(selected_player, new Player().setColor(Theme.theme.getPlayerColor(players.size())));
                 selected_player++;
                 updatePlayers(false);
             }
@@ -372,9 +373,6 @@ public class OhHellScoreboardV2 extends PApplet {
         } else if(current_screen == Screen.SETUP_TO_TAKING) {
             current_screen = Screen.TAKING;
         }
-        for(int i = 0; i < players.size(); i++) {
-            players.get(i).setTile(game_tiles[i]);
-        }
         selected_player = -1;
     }
 
@@ -383,9 +381,6 @@ public class OhHellScoreboardV2 extends PApplet {
             current_screen = Screen.SETUP_TO_BIDDING;
         } else if(current_screen == Screen.TAKING) {
             current_screen = Screen.SETUP_TO_TAKING;
-        }
-        for(int i = 0; i < players.size(); i++) {
-            players.get(i).setTile(setup_tiles[i]);
         }
     }
 
@@ -430,6 +425,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 p.total_taken += p.taken;
                 if(p.taken < p.bid) {
                     if(Config.overbid_set) {
+                        p.times_set++;
                         p.score += Config.points_set * (Config.set_penalty_scales ? p.bid - p.taken : 1);
                         if(!Config.set_prevents_trick_points) {
                             p.score += Config.points_per_trick * p.taken;
@@ -439,6 +435,7 @@ public class OhHellScoreboardV2 extends PApplet {
                     }
                 } else if(p.taken > p.bid) {
                     if(Config.underbid_set) {
+                        p.times_set++;
                         p.score += Config.points_set * (Config.set_penalty_scales ? p.taken - p.bid : 1);
                         if(!Config.set_prevents_trick_points) {
                             p.score += Config.points_per_trick * p.taken;
@@ -447,6 +444,7 @@ public class OhHellScoreboardV2 extends PApplet {
                         p.score += Config.points_per_trick * p.taken;
                     }
                 } else {
+                    p.bonuses++;
                     p.score += Config.points_bonus + Config.points_per_trick * p.taken;
                 }
                 if(p.score < 0 && !Config.negative_scores_allowed) {
@@ -611,7 +609,7 @@ public class OhHellScoreboardV2 extends PApplet {
                 if(i == selected_player) {
                     fill(p.display_color, 127);
                 }
-                rect(p.tile.x(), p.tile.y(), p.tile.w(), p.tile.h());
+                rect(setup_tiles[i].x(), setup_tiles[i].y(), setup_tiles[i].w(), setup_tiles[i].h());
                 fill(p.display_color);
                 if(i == selected_player && editing_name) {
                     resetFramerateCooldown();
@@ -621,11 +619,11 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
                 textAlign(LEFT, CENTER);
                 textSize(width * 0.05f);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.x() + width * 0.01f, p.tile.cy());
+                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, setup_tiles[i].x() + width * 0.01f, setup_tiles[i].cy());
                 textAlign(CENTER, CENTER);
                 textSize(width * 0.03f);
                 fill(p.display_color);
-                text(p.score, p.tile.mx() - width * 0.04f, p.tile.cy());
+                text(p.score, setup_tiles[i].mx() - width * 0.04f, setup_tiles[i].cy());
             }
             boolean popup_shown = current_window != Window.NONE;
             drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, players.size() < MAX_PLAYERS, !popup_shown);
@@ -785,24 +783,24 @@ public class OhHellScoreboardV2 extends PApplet {
                 total_bid += p.bid;
                 total_taken += p.taken;
                 fill(Theme.theme.background_color);
-                rect(p.tile.x(), p.tile.y(), p.tile.w(), p.tile.h());
+                rect(game_tiles[i].x(), game_tiles[i].y(), game_tiles[i].w(), game_tiles[i].h());
                 fill(p.display_color);
                 textSize(game_tiles[0].w() * 0.1f);
-                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, p.tile.cx(), p.tile.y() + p.tile.h() * 0.167f);
-                textSize(p.tile.h() * 0.5f);
-                text(p.score, p.tile.cx(), p.tile.my() - p.tile.h() * 0.43f);
+                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, game_tiles[i].cx(), game_tiles[i].y() + game_tiles[i].h() * 0.167f);
+                textSize(game_tiles[i].h() * 0.5f);
+                text(p.score, game_tiles[i].cx(), game_tiles[i].my() - game_tiles[i].h() * 0.43f);
                 if(current_screen != Screen.GAME_OVER) {
                     textSize(game_tiles[0].w() * 0.04f);
-                    text("Bid", p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.167f);
+                    text("Bid", game_tiles[i].x() + game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.167f);
                     if(p.has_bid) {
                         textSize(game_tiles[0].w() * 0.1f);
-                        text(p.bid, p.tile.x() + p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.1f);
+                        text(p.bid, game_tiles[i].x() + game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
                     }
                     if(current_screen == Screen.TAKING) {
                         textSize(game_tiles[0].w() * 0.04f);
-                        text("Taken", p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.167f);
+                        text("Taken", game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.167f);
                         textSize(game_tiles[0].w() * 0.1f);
-                        text(p.taken, p.tile.mx() - p.tile.w() * 0.125f, p.tile.my() - game_tiles[0].w() * 0.1f);
+                        text(p.taken, game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
                     }
                 }
             }
@@ -845,6 +843,38 @@ public class OhHellScoreboardV2 extends PApplet {
         } else if(current_screen == Screen.STATISTICS) {
             drawButton(statistics_button, "Open Save", 0.02f, true, true);
             drawButton(restart_button, "Restart", 0.02f, true, true);
+            stroke(Theme.theme.line_color);
+            fill(Theme.theme.background_color);
+            rect(statistics_header.x(), statistics_header.y(), statistics_header.w(), statistics_header.h());
+            float[] vertical_lines = new float[]{0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
+            for(float x : vertical_lines) {
+                line(statistics_header.x(x), statistics_header.y(), statistics_header.x(x), statistics_tiles[players.size() - 1].my());
+            }
+            float[] text_positions = new float[]{0.01f, 0.325f, 0.475f, 0.625f, 0.775f, 0.925f};
+            fill(Theme.theme.text_color);
+            textSize(statistics_tiles[0].h() * 0.7f);
+            textAlign(LEFT, CENTER);
+            text("Name", statistics_header.x(text_positions[0]), statistics_header.cy());
+            textAlign(CENTER, CENTER);
+            text("Score", statistics_header.x(text_positions[1]), statistics_header.cy());
+            text("Taken", statistics_header.x(text_positions[2]), statistics_header.cy());
+            text("Bid", statistics_header.x(text_positions[3]), statistics_header.cy());
+            text("Bonus", statistics_header.x(text_positions[4]), statistics_header.cy());
+            text("Set", statistics_header.x(text_positions[5]), statistics_header.cy());
+            for(int i = 0; i < players.size(); i++) {
+                Player p = players.get(i);
+                noFill();
+                rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
+                fill(p.display_color);
+                textAlign(LEFT, CENTER);
+                text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());
+                textAlign(CENTER, CENTER);
+                text(p.score, statistics_tiles[i].x(text_positions[1]), statistics_tiles[i].cy());
+                text(p.total_taken, statistics_tiles[i].x(text_positions[2]), statistics_tiles[i].cy());
+                text(p.total_bid, statistics_tiles[i].x(text_positions[3]), statistics_tiles[i].cy());
+                text(p.bonuses, statistics_tiles[i].x(text_positions[4]), statistics_tiles[i].cy());
+                text(p.times_set, statistics_tiles[i].x(text_positions[5]), statistics_tiles[i].cy());
+            }
         }
         if(error_frames > 0) {
             fill(Theme.theme.popup_background_color, 230);
@@ -1068,7 +1098,7 @@ public class OhHellScoreboardV2 extends PApplet {
                     handleBeginGame();
                 } else {
                     for(int i = 0; i < players.size(); i++) {
-                        if(players.get(i).tile.mouseInTile()) {
+                        if(setup_tiles[i].mouseInTile()) {
                             clicked_player = true;
                             if(selected_player == i) {
                                 editing_name = !editing_name;
@@ -1088,12 +1118,12 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
             }
         } else {
-            for(Player p : players) {
-                if(p.tile.mouseInTile()) {
+            for(int i = 0; i < players.size(); i++) {
+                if(game_tiles[i].mouseInTile()) {
                     if(current_screen == Screen.BIDDING) {
-                        handleBidChange(p, mouseButton == LEFT);
+                        handleBidChange(players.get(i), mouseButton == LEFT);
                     } else {
-                        handleTakenChange(p, mouseButton == LEFT);
+                        handleTakenChange(players.get(i), mouseButton == LEFT);
                     }
                     break;
                 }

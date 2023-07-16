@@ -10,7 +10,6 @@ class Player {
     int times_set = 0;
     int hands_played = 0;
     int display_color = sc.color(255);
-    Tile tile = new Tile(0, 0, 0, 0);
     String name = "";
 
     Player() {
@@ -18,11 +17,6 @@ class Player {
 
     Player setColor(int c) {
         display_color = c;
-        return this;
-    }
-
-    Player setTile(Tile t) {
-        tile = t;
         return this;
     }
 
