@@ -703,6 +703,13 @@ public class OhHellScoreboardV2 extends PApplet {
                     trump_suit = 6;
                 }
             }
+            if(key == ENTER) {
+                if(current_screen == Screen.BIDDING) {
+                    handleFinishBidding();
+                } else if(current_screen == Screen.TAKING){
+                    handleFinishRound();
+                }
+            }
             int i = Math.abs(getKeyValue(key));
             if(current_screen == Screen.BIDDING) {
                 if(i != 0 && i - 1 < Player.count()) {
