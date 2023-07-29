@@ -163,10 +163,10 @@ public class Tile {
             };
         }
         double statsTileHeight = playerCount <= 7 ? 0.1 : 0.833/(playerCount + 1);
-        StatisticsScreen.statistics_tiles = new Tile[playerCount];
-        StatisticsScreen.statistics_header = new Tile(0, 0, 1, statsTileHeight);
+        StatisticsScreen.INSTANCE.statistics_tiles = new Tile[playerCount];
+        StatisticsScreen.INSTANCE.statistics_header = new Tile(0, 0, 1, statsTileHeight);
         for(int i = 0; i < playerCount; i++) {
-            StatisticsScreen.statistics_tiles[i] = new Tile(0, (i+1)*statsTileHeight, 1, (i+2)*statsTileHeight);
+            StatisticsScreen.INSTANCE.statistics_tiles[i] = new Tile(0, (i+1)*statsTileHeight, 1, (i+2)*statsTileHeight);
         }
     }
 }

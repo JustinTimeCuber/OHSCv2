@@ -71,7 +71,7 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void updatePlayers(boolean resetIndex) {
-        StatisticsScreen.sortPlayers();
+        StatisticsScreen.INSTANCE.sortPlayers();
         Tile.setPlayerCountBasedTiles();
         if(current_screen.isSetup()) {
             for(int i = 0; i < Player.count(); i++) {
@@ -118,8 +118,8 @@ public class OhHellScoreboardV2 extends PApplet {
         error_message = "";
         error_frames = 0;
         Player.players = new ArrayList<>();
-        StatisticsScreen.sort_mode = PlayerSortMode.NONE;
-        StatisticsScreen.sort_reverse = false;
+        StatisticsScreen.INSTANCE.sort_mode = PlayerSortMode.NONE;
+        StatisticsScreen.INSTANCE.sort_reverse = false;
         editing_name = false;
         current_window = Window.NONE;
         current_screen = Screen.SETUP_TO_BIDDING;
@@ -767,8 +767,8 @@ public class OhHellScoreboardV2 extends PApplet {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
                 current_screen = Screen.STATISTICS;
-                if(StatisticsScreen.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.sort_reverse) {
-                    StatisticsScreen.sortPlayers(PlayerSortMode.SCORE, false);
+                if(StatisticsScreen.INSTANCE.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.INSTANCE.sort_reverse) {
+                    StatisticsScreen.INSTANCE.sortPlayers(PlayerSortMode.SCORE, false);
                 }
             }
         } else if(current_screen == Screen.STATISTICS) {
@@ -776,8 +776,8 @@ public class OhHellScoreboardV2 extends PApplet {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
                 openLatestSave();
-            } else if(StatisticsScreen.statistics_header.mouseInTile()) {
-                StatisticsScreen.handleHeaderClick(this);
+            } else if(StatisticsScreen.INSTANCE.statistics_header.mouseInTile()) {
+                StatisticsScreen.INSTANCE.handleHeaderClick(this);
             }
         } else if(current_screen.isSetup()) {
             if(current_window == Window.TRICKS) {
