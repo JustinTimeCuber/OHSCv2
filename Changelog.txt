@@ -9,8 +9,10 @@ v2.2-beta.1
 * Dots and crosses are now disabled by default
 * Reformatted code to be consistent
 * Significant refactoring
+    Main file is now far shorter than it was before (>50% reduction in lines of code)
 * Screen is now an interface, which is implemented by a class for each screen
     Screen.draw() is called by the main draw method
+    Screen.mousePressed() is called by the main mousePressed method
 * Added ScreenManager class, which manages a stack of Screens
     This removes the need for explicitly defining states such as SETUP_TO_BIDDING and SETUP_TO_TAKING
 * Players no longer store a Tile and no longer have a setTile() method

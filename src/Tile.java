@@ -73,20 +73,20 @@ public class Tile {
     static void setPlayerCountBasedTiles() {
         int playerCount = Player.count();
         if(playerCount == 2) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.5, 0.833),
                     new Tile(0.5, 0, 1, 0.833)
             };
         }
         if(playerCount == 3) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.333, 0.833),
                     new Tile(0.333, 0, 0.667, 0.833),
                     new Tile(0.667, 0, 1, 0.833)
             };
         }
         if(playerCount == 4) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.5, 0.417),
                     new Tile(0.5, 0, 1, 0.417),
                     new Tile(0, 0.417, 0.5, 0.833),
@@ -94,7 +94,7 @@ public class Tile {
             };
         }
         if(playerCount == 5) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.333, 0.417),
                     new Tile(0.333, 0, 0.667, 0.417),
                     new Tile(0.667, 0, 1, 0.417),
@@ -103,7 +103,7 @@ public class Tile {
             };
         }
         if(playerCount == 6) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.333, 0.417),
                     new Tile(0.333, 0, 0.667, 0.417),
                     new Tile(0.667, 0, 1, 0.417),
@@ -113,7 +113,7 @@ public class Tile {
             };
         }
         if(playerCount == 7) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.25, 0.417),
                     new Tile(0.25, 0, 0.5, 0.417),
                     new Tile(0.5, 0, 0.75, 0.417),
@@ -124,7 +124,7 @@ public class Tile {
             };
         }
         if(playerCount == 8) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.25, 0.417),
                     new Tile(0.25, 0, 0.5, 0.417),
                     new Tile(0.5, 0, 0.75, 0.417),
@@ -136,7 +136,7 @@ public class Tile {
             };
         }
         if(playerCount == 9) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.333, 0.278),
                     new Tile(0.333, 0, 0.667, 0.278),
                     new Tile(0.667, 0, 1, 0.278),
@@ -149,7 +149,7 @@ public class Tile {
             };
         }
         if(playerCount == 10) {
-            sc.game_tiles = new Tile[]{
+            GameplayScreen.game_tiles = new Tile[]{
                     new Tile(0, 0, 0.25, 0.278),
                     new Tile(0.25, 0, 0.5, 0.278),
                     new Tile(0.5, 0, 0.75, 0.278),

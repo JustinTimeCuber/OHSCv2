@@ -7,13 +7,6 @@ import java.util.ArrayList;
 
 public class OhHellScoreboardV2 extends PApplet {
     int frc = 0;
-    Tile[] setup_tiles, game_tiles;
-    Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
-    Tile popup_window, close_popup_button;
-    Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
-    Tile refresh_themes_button;
-    Tile setup_button, change_bids_button, proceed_button, end_game_button, trump_suit_bounding_box;
-    Tile restart_button, statistics_button;
     final int MAX_PLAYERS = 10;
     final float MAX_NAME_WIDTH = 0.42f;
     final int MAX_SUITS = 12;
@@ -21,11 +14,8 @@ public class OhHellScoreboardV2 extends PApplet {
     final String FILE_SEPARATOR = System.getProperty("file.separator");
     final String DATA_PATH = getOSSpecificDataPath() + FILE_SEPARATOR + "OHSCv2" + FILE_SEPARATOR;
     String last_save = null;
-    int selected_player;
     String error_message;
     int error_frames;
-    boolean editing_name;
-    Window current_window = Window.NONE;
     int hands_played;
     int suits;
     int cards_per_suit;
@@ -113,58 +103,23 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void setInitialValues() {
-        selected_player = -1;
         error_message = "";
         error_frames = 0;
         Player.players = new ArrayList<>();
-        StatisticsScreen.INSTANCE.sort_mode = PlayerSortMode.NONE;
-        StatisticsScreen.INSTANCE.sort_reverse = false;
-        editing_name = false;
-        current_window = Window.NONE;
-        ScreenManager.initDefault();
         for(int i = 0; i < 4; i++) {
             new Player();
         }
+        ScreenManager.initDefault();
+        for(Screen s : ScreenManager.all_screens) {
+            s.init(this);
+        }
+        Window.init(this);
         hands_played = 0;
         suits = 4;
         cards_per_suit = 13;
         trick_mode = 1;
         trump_suit = 0;
         low_framerate_cooldown = 60;
-        setup_tiles = new Tile[]{
-                new Tile(0, 0, 0.5, 0.125),
-                new Tile(0.5, 0, 1., 0.125),
-                new Tile(0, 0.125, 0.5, 0.25),
-                new Tile(0.5, 0.125, 1, 0.25),
-                new Tile(0, 0.25, 0.5, 0.375),
-                new Tile(0.5, 0.25, 1, 0.375),
-                new Tile(0, 0.375, 0.5, 0.5),
-                new Tile(0.5, 0.375, 1, 0.5),
-                new Tile(0, 0.5, 0.5, 0.625),
-                new Tile(0.5, 0.5, 1, 0.625)
-        };
-        add_player_button = new Tile(0.04, 0.875, 0.24, 0.958);
-        remove_player_button = new Tile(0.28, 0.875, 0.48, 0.958);
-        one_point_button = new Tile(0.04, 0.75, 0.24, 0.833);
-        ten_point_button = new Tile(0.28, 0.75, 0.48, 0.833);
-        custom_tricks_button = new Tile(0.52, 0.75, 0.72, 0.833);
-        reset_button = new Tile(0.76, 0.75, 0.96, 0.833);
-        theme_button = new Tile(0.52, 0.875, 0.72, 0.958);
-        begin_game_button = new Tile(0.76, 0.875, 0.96, 0.958);
-        popup_window = new Tile(0.167, 0.167, 0.833, 0.833);
-        close_popup_button = new Tile(0.783, 0.167 * (1 + aspect_ratio * 0.1), 0.817, 0.167 * (1 + aspect_ratio * 0.3));
-        number_suits_button = new Tile(0.193, 0.708, 0.327, 0.792);
-        cards_per_suit_button = new Tile(0.353, 0.708, 0.487, 0.792);
-        trick_mode_button = new Tile(0.513, 0.708, 0.647, 0.792);
-        starting_point_button = new Tile(0.673, 0.708, 0.807, 0.792);
-        refresh_themes_button = new Tile(0.733, 0.167 * (1 + aspect_ratio * 0.1), 0.767, 0.167 * (1 + aspect_ratio * 0.3));
-        setup_button = new Tile(0.04, 0.875, 0.16, 0.958);
-        change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);
-        proceed_button = new Tile(0.36, 0.875, 0.48, 0.958);
-        end_game_button = new Tile(0.52, 0.875, 0.64, 0.958);
-        statistics_button = new Tile(0.08, 0.875, 0.28, 0.958);
-        restart_button = new Tile(0.72, 0.875, 0.92, 0.958);
-        trump_suit_bounding_box = new Tile(0.92, 1 - aspect_ratio * 0.08, 1, 1);
         Theme.loadThemes();
         updatePlayers(true);
         Logger.reset();
@@ -230,37 +185,6 @@ public class OhHellScoreboardV2 extends PApplet {
     void resetFramerateCooldown() {
         low_framerate_cooldown = 60;
         frameRate(30);
-    }
-
-    void handleBidChange(Player p, boolean pos) {
-        if(pos) {
-            if(p.bid <= tricks[trick_index] || trick_mode == 0) {
-                if(!p.has_bid) {
-                    p.has_bid = true;
-                }
-                p.bid++;
-            } else {
-                displayError("Maximum bid for this hand is " + (tricks[trick_index] + 1));
-            }
-        } else if(p.bid > 0) {
-            p.bid--;
-        } else {
-            p.has_bid = !p.has_bid;
-        }
-    }
-
-    void handleTakenChange(Player p, boolean pos) {
-        if(pos) {
-            if(p.taken < tricks[trick_index] || trick_mode == 0) {
-                p.taken++;
-            } else {
-                displayError("Cannot take more tricks than were dealt");
-            }
-        } else if(p.taken > 0) {
-            p.taken--;
-        } else {
-            displayError("Tricks taken must be greater than zero");
-        }
     }
 
     void handleSuitsChange(boolean direction) {
@@ -329,163 +253,8 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
 
-    void handleAddPlayer() {
-        if(Player.count() < MAX_PLAYERS) {
-            if(selected_player == -1) {
-                new Player();
-                updatePlayers(false);
-            } else {
-                new Player(selected_player);
-                selected_player++;
-                updatePlayers(false);
-            }
-            ScreenManager.popScreen();
-            ScreenManager.setScreen(BiddingScreen.INSTANCE);
-            ScreenManager.pushScreen(SetupScreen.INSTANCE);
-        } else {
-            displayError("The maximum number of players is " + MAX_PLAYERS);
-        }
-    }
-
-    void handleRemovePlayer() {
-        if(Player.count() > 2) {
-            if(selected_player == -1) {
-                displayError("Must select a player to remove");
-            } else {
-                Player.players.remove(selected_player);
-                selected_player--;
-                updatePlayers(false);
-            }
-        } else {
-            displayError("The minimum number of players is 2");
-        }
-    }
-
-    void handleChangeScore(boolean direction, int amount) {
-        if(selected_player == -1) {
-            displayError("Must select a player to change score");
-        } else {
-            Player.get(selected_player).score += (direction ? amount : -amount);
-        }
-    }
-
-    void handleBeginGame() {
-        if(ScreenManager.currentScreen() instanceof SetupScreen) {
-            ScreenManager.popScreen();
-        }
-        selected_player = -1;
-    }
-
-    void handleSetup() {
-        ScreenManager.pushScreen(SetupScreen.INSTANCE);
-    }
-
-    void handleChangeBids() {
-        if(ScreenManager.currentScreen() instanceof BiddingScreen) {
-            displayError("Already changing bids");
-        } else {
-            ScreenManager.setScreen(BiddingScreen.INSTANCE);
-        }
-    }
-
-    void handleFinishBidding() {
-        int total_bid = 0;
-        boolean all_players_bid = true;
-        for(Player p : Player.players) {
-            total_bid += p.bid;
-            all_players_bid &= p.has_bid;
-        }
-        if(all_players_bid) {
-            if(trick_mode == 0 || total_bid != tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
-                ScreenManager.setScreen(TakingScreen.INSTANCE);
-            } else {
-                displayError("Tricks bid can't equal tricks dealt - override with enter + right click");
-            }
-        } else {
-            displayError("Not all players have a bid entered");
-        }
-    }
-
-    void handleFinishRound() {
-        int total_taken = 0;
-        for(Player p : Player.players) {
-            total_taken += p.taken;
-        }
-        if(trick_mode == 0 || total_taken == tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
-            hands_played++;
-            Logger.write("--------------------------------");
-            Logger.write("Hand #" + hands_played + " - Tricks: " + tricks[trick_index]);
-            for(Player p : Player.players) {
-                int old = p.score;
-                p.total_bid += p.bid;
-                p.total_taken += p.taken;
-                if(p.taken < p.bid) {
-                    if(Config.overbid_set) {
-                        p.times_set++;
-                        p.score += Config.points_set * (Config.set_penalty_scales ? p.bid - p.taken : 1);
-                        if(!Config.set_prevents_trick_points) {
-                            p.score += Config.points_per_trick * p.taken;
-                        }
-                    } else {
-                        p.score += Config.points_per_trick * p.taken;
-                    }
-                } else if(p.taken > p.bid) {
-                    if(Config.underbid_set) {
-                        p.times_set++;
-                        p.score += Config.points_set * (Config.set_penalty_scales ? p.taken - p.bid : 1);
-                        if(!Config.set_prevents_trick_points) {
-                            p.score += Config.points_per_trick * p.taken;
-                        }
-                    } else {
-                        p.score += Config.points_per_trick * p.taken;
-                    }
-                } else {
-                    p.bonuses++;
-                    p.score += Config.points_bonus + Config.points_per_trick * p.taken;
-                }
-                if(p.score < 0 && !Config.negative_scores_allowed) {
-                    p.score = 0;
-                }
-                p.hands_played++;
-                Logger.write(p.name + " bid " + p.bid + " tricks and took " + p.taken + ". " + old + " --> " + p.score);
-                p.bid = 0;
-                p.has_bid = false;
-                p.taken = 0;
-            }
-            if(trick_mode != 0) {
-                trick_index++;
-                if(trick_index >= tricks.length) {
-                    ScreenManager.setScreen(GameOverScreen.INSTANCE);
-                    saveRecord();
-                    trick_index--;
-                    return;
-                }
-            }
-            trump_suit = 0;
-            ScreenManager.setScreen(BiddingScreen.INSTANCE);
-        } else {
-            displayError("Tricks taken must equal tricks dealt - override with enter + right click");
-        }
-    }
-
-    void handleEndGame() {
-        if(keyPressed && key == ENTER && mouseButton == RIGHT) {
-            ScreenManager.setScreen(GameOverScreen.INSTANCE);
-            saveRecord();
-        } else {
-            displayError("End game? Confirm with enter + right click");
-        }
-    }
-
-    void handleTrumpButton() {
-        trump_suit += mouseButton == LEFT ? 1 : -1;
-        int max = Config.extra_trump_suits ? 6 : 4;
-        if(trump_suit < 0) {
-            trump_suit = max;
-        }
-        if(trump_suit > max) {
-            trump_suit = 0;
-        }
+    boolean enterRightClick() {
+        return keyPressed && key == ENTER && mouseButton == RIGHT;
     }
 
     void openLatestSave() {
@@ -633,28 +402,28 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         resetFramerateCooldown();
         if(ScreenManager.currentScreen() instanceof SetupScreen) {
-            if(current_window == Window.NONE) {
+            if(Window.current == Window.NONE) {
                 if(key == TAB) {
-                    selected_player++;
-                    if(selected_player >= Player.count()) {
-                        selected_player = 0;
+                    SetupScreen.INSTANCE.selected_player++;
+                    if(SetupScreen.INSTANCE.selected_player >= Player.count()) {
+                        SetupScreen.INSTANCE.selected_player = 0;
                     }
                     return;
-                } else if(key == ENTER && selected_player >= 0) {
-                    editing_name = !editing_name;
+                } else if(key == ENTER && SetupScreen.INSTANCE.selected_player >= 0) {
+                    SetupScreen.INSTANCE.editing_name = !SetupScreen.INSTANCE.editing_name;
                     return;
                 }
-                if(editing_name) {
-                    String s = Player.get(selected_player).name;
+                if(SetupScreen.INSTANCE.editing_name) {
+                    String s = Player.get(SetupScreen.INSTANCE.selected_player).name;
                     textSize(width * 0.05f);
                     if(key == ',') {
                         displayError("That character conflicts with the OHSC v2.0 autosave format");
                     } else if(key == BACKSPACE) {
                         if(s.length() > 0) {
-                            Player.get(selected_player).name = s.substring(0, s.length() - 1);
+                            Player.get(SetupScreen.INSTANCE.selected_player).name = s.substring(0, s.length() - 1);
                         }
                     } else if(textWidth(s + key) <= MAX_NAME_WIDTH * width) {
-                        Player.get(selected_player).name += key;
+                        Player.get(SetupScreen.INSTANCE.selected_player).name += key;
                     } else {
                         displayError("The maximum name width is " + round(MAX_NAME_WIDTH * width) + " pixels");
                     }
@@ -662,10 +431,10 @@ public class OhHellScoreboardV2 extends PApplet {
                     int i = Math.abs(getKeyValue(key));
                     if(i != 0 && i - 1 < Player.count()) {
                         i--;
-                        if(selected_player == i) {
-                            editing_name = true;
+                        if(SetupScreen.INSTANCE.selected_player == i) {
+                            SetupScreen.INSTANCE.editing_name = true;
                         } else {
-                            selected_player = i;
+                            SetupScreen.INSTANCE.selected_player = i;
                         }
                     }
                 }
@@ -690,9 +459,9 @@ public class OhHellScoreboardV2 extends PApplet {
             }
             if(key == ENTER) {
                 if(ScreenManager.currentScreen() instanceof BiddingScreen) {
-                    handleFinishBidding();
+                    BiddingScreen.INSTANCE.handleFinishBidding(this);
                 } else if(ScreenManager.currentScreen() instanceof TakingScreen) {
-                    handleFinishRound();
+                    TakingScreen.INSTANCE.handleFinishRound(this);
                 }
             }
             int i = Math.abs(getKeyValue(key));
@@ -700,13 +469,13 @@ public class OhHellScoreboardV2 extends PApplet {
                 if(i != 0 && i - 1 < Player.count()) {
                     i--;
                     Player p = Player.get(i);
-                    handleBidChange(p, getKeyValue(key) > 0);
+                    BiddingScreen.INSTANCE.handleBidChange(p, getKeyValue(key) > 0, this);
                 }
             } else {
                 if(i != 0 && i - 1 < Player.count()) {
                     i--;
                     Player p = Player.get(i);
-                    handleTakenChange(p, getKeyValue(key) > 0);
+                    TakingScreen.INSTANCE.handleTakenChange(p, getKeyValue(key) > 0, this);
                 }
             }
         }
@@ -747,134 +516,7 @@ public class OhHellScoreboardV2 extends PApplet {
     @Override
     public void mousePressed() {
         resetFramerateCooldown();
-        if(ScreenManager.currentScreen() instanceof GameOverScreen) {
-            if(restart_button.mouseInTile()) {
-                setInitialValues();
-            } else if(statistics_button.mouseInTile()) {
-                ScreenManager.pushScreen(StatisticsScreen.INSTANCE);
-                if(StatisticsScreen.INSTANCE.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.INSTANCE.sort_reverse) {
-                    StatisticsScreen.INSTANCE.sortPlayers(PlayerSortMode.SCORE, false);
-                }
-            }
-        } else if(ScreenManager.currentScreen() instanceof StatisticsScreen) {
-            if(restart_button.mouseInTile()) {
-                setInitialValues();
-            } else if(statistics_button.mouseInTile()) {
-                openLatestSave();
-            } else if(StatisticsScreen.INSTANCE.statistics_header.mouseInTile()) {
-                StatisticsScreen.INSTANCE.handleHeaderClick(this);
-            }
-        } else if(ScreenManager.currentScreen() instanceof SetupScreen) {
-            if(current_window == Window.TRICKS) {
-                if(close_popup_button.mouseInTile()) {
-                    current_window = Window.NONE;
-                } else if(number_suits_button.mouseInTile()) {
-                    handleSuitsChange(mouseButton == LEFT);
-                } else if(cards_per_suit_button.mouseInTile()) {
-                    handleCardsPerSuitChange(mouseButton == LEFT);
-                } else if(trick_mode_button.mouseInTile()) {
-                    handleTrickModeChange(mouseButton == LEFT);
-                } else if(starting_point_button.mouseInTile()) {
-                    handleStartingPointChange(mouseButton == LEFT);
-                }
-            } else if(current_window == Window.THEMES) {
-                if(close_popup_button.mouseInTile()) {
-                    current_window = Window.NONE;
-                } else if(refresh_themes_button.mouseInTile()) {
-                    Theme.themes = null;
-                    Theme.loadThemes();
-                } else {
-                    for(int i = 0; i < Theme.themes.size(); i++) {
-                        Theme current = Theme.themes.get(i);
-                        float box_left = popup_window.x() + width * 0.05f;
-                        float box_right = popup_window.mx() - width * 0.05f;
-                        float box_width = box_right - box_left;
-                        float box_top = popup_window.y() + height * 0.15f;
-                        float row_height = width * 0.035f;
-                        if(mouseX > box_left + box_width * 0.3 && mouseX < box_left + box_width * 0.7 && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
-                            String file = current.directory + current.file;
-                            // Test whether file is in the jar
-                            if(!file.startsWith("/") && file.charAt(1) != ':') {
-                                displayError("Cannot edit internal file within program jar");
-                                break;
-                            }
-                            try {
-                                java.awt.Desktop.getDesktop().open(new File(file));
-                            } catch(Exception e) {
-                                displayError("Cannot open file: " + e.getMessage());
-                            }
-                            break;
-                        } else if(mouseX > box_left && mouseX < box_left + box_width * 0.3f && mouseY > box_top + row_height * (i + 1) && mouseY < box_top + row_height * (i + 2)) {
-                            Theme.setTheme(i);
-                        }
-                    }
-                }
-            } else {
-                boolean clicked_player = false;
-                if(add_player_button.mouseInTile()) {
-                    handleAddPlayer();
-                } else if(remove_player_button.mouseInTile()) {
-                    handleRemovePlayer();
-                } else if(one_point_button.mouseInTile()) {
-                    handleChangeScore(mouseButton == LEFT, 1);
-                } else if(ten_point_button.mouseInTile()) {
-                    handleChangeScore(mouseButton == LEFT, 10);
-                } else if(custom_tricks_button.mouseInTile()) {
-                    current_window = Window.TRICKS;
-                } else if(reset_button.mouseInTile()) {
-                    setInitialValues();
-                } else if(theme_button.mouseInTile()) {
-                    current_window = Window.THEMES;
-                } else if(begin_game_button.mouseInTile()) {
-                    handleBeginGame();
-                } else {
-                    for(int i = 0; i < Player.count(); i++) {
-                        if(setup_tiles[i].mouseInTile()) {
-                            clicked_player = true;
-                            if(selected_player == i) {
-                                editing_name = !editing_name;
-                            } else {
-                                selected_player = i;
-                                editing_name = false;
-                            }
-                            break;
-                        }
-                    }
-                    if(!clicked_player) {
-                        selected_player = -1;
-                    }
-                }
-                if(!clicked_player) {
-                    editing_name = false;
-                }
-            }
-        } else {
-            for(int i = 0; i < Player.count(); i++) {
-                if(game_tiles[i].mouseInTile()) {
-                    if(ScreenManager.currentScreen() instanceof BiddingScreen) {
-                        handleBidChange(Player.get(i), mouseButton == LEFT);
-                    } else {
-                        handleTakenChange(Player.get(i), mouseButton == LEFT);
-                    }
-                    break;
-                }
-            }
-            if(setup_button.mouseInTile()) {
-                handleSetup();
-            } else if(change_bids_button.mouseInTile()) {
-                handleChangeBids();
-            } else if(proceed_button.mouseInTile()) {
-                if(ScreenManager.currentScreen() instanceof BiddingScreen) {
-                    handleFinishBidding();
-                } else {
-                    handleFinishRound();
-                }
-            } else if(end_game_button.mouseInTile()) {
-                handleEndGame();
-            } else if(trump_suit_bounding_box.mouseInTile()) {
-                handleTrumpButton();
-            }
-        }
+        ScreenManager.currentScreen().mousePressed(this);
         StateIO.saveState(DATA_PATH + "latest", this);
     }
 }

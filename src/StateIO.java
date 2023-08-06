@@ -1,4 +1,3 @@
-import javax.script.ScriptEngine;
 import java.util.ArrayList;
 
 public class StateIO {
@@ -8,9 +7,9 @@ public class StateIO {
             System.out.println("Saving state...");
         }
         ArrayList<String> state = new ArrayList<>();
-        state.add("selected_player:" + sc.selected_player);
-        state.add("editing_name:" + sc.editing_name);
-        state.add("current_window:" + sc.current_window);
+        state.add("selected_player:" + SetupScreen.INSTANCE.selected_player);
+        state.add("editing_name:" + SetupScreen.INSTANCE.editing_name);
+        state.add("current_window:" + Window.current);
         state.add("current_screen_stack:" + ScreenManager.stateToString());
         state.add("suits:" + sc.suits);
         state.add("cards_per_suit:" + sc.cards_per_suit);
@@ -38,9 +37,9 @@ public class StateIO {
             String label = s.split(":")[0];
             String value = s.substring(label.length() + 1);
             switch(label) {
-                case "selected_player" -> sc.selected_player = Integer.parseInt(value);
-                case "editing_name" -> sc.editing_name = Boolean.parseBoolean(value);
-                case "current_window" -> sc.current_window = Window.valueOf(value);
+                case "selected_player" -> SetupScreen.INSTANCE.selected_player = Integer.parseInt(value);
+                case "editing_name" -> SetupScreen.INSTANCE.editing_name = Boolean.parseBoolean(value);
+                case "current_window" -> Window.current = Window.valueOf(value);
                 case "current_screen_stack" -> ScreenManager.setStateFromString(value);
                 case "suits" -> sc.suits = Integer.parseInt(value);
                 case "cards_per_suit" -> sc.cards_per_suit = Integer.parseInt(value);

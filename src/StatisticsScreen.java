@@ -73,9 +73,12 @@ public class StatisticsScreen implements Screen {
     void sortPlayers() {
         sortPlayers(sort_mode, sort_reverse);
     }
+
+    @Override
     public void draw(OhHellScoreboardV2 sc) {
-        sc.drawButton(sc.statistics_button, "Open Save", 0.02f, true, true);
-        sc.drawButton(sc.restart_button, "Restart", 0.02f, true, true);
+        //TODO: create separate buttons
+        sc.drawButton(GameOverScreen.INSTANCE.statistics_button, "Open Save", 0.02f, true, true);
+        sc.drawButton(GameOverScreen.INSTANCE.restart_button, "Restart", 0.02f, true, true);
         sc.stroke(Theme.theme.line_color);
         sc.fill(Theme.theme.background_color);
         sc.rect(statistics_header.x(), statistics_header.y(), statistics_header.w(), statistics_header.h());
@@ -112,5 +115,23 @@ public class StatisticsScreen implements Screen {
             sc.text(p.bonuses, statistics_tiles[i].x(text_positions[4]), statistics_tiles[i].cy());
             sc.text(p.times_set, statistics_tiles[i].x(text_positions[5]), statistics_tiles[i].cy());
         }
+    }
+
+    @Override
+    public void mousePressed(OhHellScoreboardV2 sc) {
+        //TODO: rewrite
+        if(GameOverScreen.INSTANCE.restart_button.mouseInTile()) {
+            sc.setInitialValues();
+        } else if(GameOverScreen.INSTANCE.statistics_button.mouseInTile()) {
+            sc.openLatestSave();
+        } else if(statistics_header.mouseInTile()) {
+            handleHeaderClick(sc);
+        }
+    }
+    
+    @Override
+    public void init(OhHellScoreboardV2 sc) {
+        sort_mode = PlayerSortMode.NONE;
+        sort_reverse = false;
     }
 }

@@ -1,6 +1,13 @@
 import java.util.Stack;
 
 public class ScreenManager {
+    public final static Screen[] all_screens = new Screen[]{
+        SetupScreen.INSTANCE,
+        BiddingScreen.INSTANCE,
+        TakingScreen.INSTANCE,
+        GameOverScreen.INSTANCE,
+        StatisticsScreen.INSTANCE
+    };
     private final static Stack<Screen> screen_stack = new Stack<>();
     static String stateToString() {
         StringBuilder out = new StringBuilder();
