@@ -5,6 +5,7 @@ public class GameOverScreen implements Screen {
     private GameOverScreen() {
     }
 
+    @Override
     public void draw(OhHellScoreboardV2 sc) {
         sc.textAlign(sc.CENTER, sc.CENTER);
         for(int i = 0; i < Player.count(); i++) {
@@ -24,6 +25,7 @@ public class GameOverScreen implements Screen {
         sc.text("Game Over", sc.width * 0.5f, sc.height * 0.92f);
     }
 
+    @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
         if(restart_button.mouseInTile()) {
             sc.setInitialValues();
@@ -35,6 +37,7 @@ public class GameOverScreen implements Screen {
         }
     }
 
+    @Override
     public void init(OhHellScoreboardV2 sc) {
         statistics_button = new Tile(0.08, 0.875, 0.28, 0.958);
         restart_button = new Tile(0.72, 0.875, 0.92, 0.958);

@@ -107,6 +107,7 @@ public class TakingScreen extends GameplayScreen {
         sc.text(total_bid, sc.width * 0.8f, sc.height * 0.93f);
     }
 
+    @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
         for(int i = 0; i < Player.count(); i++) {
             if(game_tiles[i].mouseInTile()) {

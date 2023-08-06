@@ -59,6 +59,7 @@ public class SetupScreen implements Screen {
         selected_player = -1;
     }
 
+    @Override
     public void draw(OhHellScoreboardV2 sc) {
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);
@@ -233,6 +234,7 @@ public class SetupScreen implements Screen {
         }
     }
 
+    @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
         if(Window.current == Window.TRICKS) {
             if(Window.close_button.mouseInTile()) {
@@ -319,6 +321,7 @@ public class SetupScreen implements Screen {
         }
     }
 
+    @Override
     public void init(OhHellScoreboardV2 sc) {
         setup_tiles = new Tile[]{
                 new Tile(0, 0, 0.5, 0.125),

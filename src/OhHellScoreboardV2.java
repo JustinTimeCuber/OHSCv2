@@ -316,6 +316,7 @@ public class OhHellScoreboardV2 extends PApplet {
         PApplet.main("OhHellScoreboardV2");
     }
 
+    @Override
     public void settings() {
         if(debug) {
             size(960, 540);

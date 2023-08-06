@@ -85,6 +85,7 @@ public abstract class GameplayScreen implements Screen {
         }
     }
 
+    @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
         if(setup_button.mouseInTile()) {
             handleSetup();
@@ -97,6 +98,7 @@ public abstract class GameplayScreen implements Screen {
         }
     }
 
+    @Override
     public void init(OhHellScoreboardV2 sc) {
         setup_button = new Tile(0.04, 0.875, 0.16, 0.958);
         change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);
