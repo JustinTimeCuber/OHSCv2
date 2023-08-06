@@ -1,7 +1,8 @@
 public class TakingScreen extends GameplayScreen {
     static final TakingScreen INSTANCE = new TakingScreen();
     private TakingScreen() {}
-    void draw(OhHellScoreboardV2 sc) {
+    @Override
+    public void draw(OhHellScoreboardV2 sc) {
         super.draw(sc);
         sc.textAlign(sc.CENTER, sc.CENTER);
         for(int i = 0; i < Player.count(); i++) {

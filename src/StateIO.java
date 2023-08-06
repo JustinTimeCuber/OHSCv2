@@ -1,3 +1,4 @@
+import javax.script.ScriptEngine;
 import java.util.ArrayList;
 
 public class StateIO {
@@ -10,7 +11,7 @@ public class StateIO {
         state.add("selected_player:" + sc.selected_player);
         state.add("editing_name:" + sc.editing_name);
         state.add("current_window:" + sc.current_window);
-        state.add("current_screen:" + sc.current_screen);
+        state.add("current_screen_stack:" + ScreenManager.stateToString());
         state.add("suits:" + sc.suits);
         state.add("cards_per_suit:" + sc.cards_per_suit);
         state.add("trick_mode:" + sc.trick_mode);
@@ -40,7 +41,7 @@ public class StateIO {
                 case "selected_player" -> sc.selected_player = Integer.parseInt(value);
                 case "editing_name" -> sc.editing_name = Boolean.parseBoolean(value);
                 case "current_window" -> sc.current_window = Window.valueOf(value);
-                case "current_screen" -> sc.current_screen = Screen.valueOf(value);
+                case "current_screen_stack" -> ScreenManager.setStateFromString(value);
                 case "suits" -> sc.suits = Integer.parseInt(value);
                 case "cards_per_suit" -> sc.cards_per_suit = Integer.parseInt(value);
                 case "trick_mode" -> sc.trick_mode = Integer.parseInt(value);

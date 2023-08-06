@@ -1,4 +1,4 @@
-public class StatisticsScreen {
+public class StatisticsScreen implements Screen {
     static final StatisticsScreen INSTANCE = new StatisticsScreen();
     private StatisticsScreen() {}
     Tile statistics_header;
@@ -73,7 +73,7 @@ public class StatisticsScreen {
     void sortPlayers() {
         sortPlayers(sort_mode, sort_reverse);
     }
-    void draw(OhHellScoreboardV2 sc) {
+    public void draw(OhHellScoreboardV2 sc) {
         sc.drawButton(sc.statistics_button, "Open Save", 0.02f, true, true);
         sc.drawButton(sc.restart_button, "Restart", 0.02f, true, true);
         sc.stroke(Theme.theme.line_color);

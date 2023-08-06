@@ -1,7 +1,7 @@
-public class SetupScreen {
+public class SetupScreen implements Screen {
     static final SetupScreen INSTANCE = new SetupScreen();
     private SetupScreen() {}
-    void draw(OhHellScoreboardV2 sc) {
+    public void draw(OhHellScoreboardV2 sc) {
 
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);

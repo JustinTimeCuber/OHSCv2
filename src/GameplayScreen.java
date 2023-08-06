@@ -1,11 +1,11 @@
 import processing.core.PImage;
 
-public abstract class GameplayScreen {
+public abstract class GameplayScreen implements Screen {
 
     static int total_bid;
     static int total_taken;
 
-    void draw(OhHellScoreboardV2 sc) {
+    public void draw(OhHellScoreboardV2 sc) {
         sc.textAlign(sc.CENTER, sc.CENTER);
         total_bid = 0;
         total_taken = 0;
@@ -26,7 +26,7 @@ public abstract class GameplayScreen {
                 sc.textSize(sc.game_tiles[0].w() * 0.1f);
                 sc.text(p.bid, sc.game_tiles[i].x() + sc.game_tiles[i].w() * 0.125f, sc.game_tiles[i].my() - sc.game_tiles[0].w() * 0.1f);
             }
-            if(sc.current_screen == Screen.TAKING) {
+            if(ScreenManager.currentScreen() instanceof TakingScreen) {
                 sc.textSize(sc.game_tiles[0].w() * 0.04f);
                 sc.text("Taken", sc.game_tiles[i].mx() - sc.game_tiles[i].w() * 0.125f, sc.game_tiles[i].my() - sc.game_tiles[0].w() * 0.167f);
                 sc.textSize(sc.game_tiles[0].w() * 0.1f);
@@ -43,7 +43,7 @@ public abstract class GameplayScreen {
         sc.text("Trump", sc.width * 0.96f, sc.height * 0.87f);
         sc.textSize(sc.width * 0.05f);
         sc.text(sc.trick_mode == 0 ? "--" : String.valueOf(sc.tricks[sc.trick_index]), sc.width * 0.72f, sc.height * 0.93f);
-        if(sc.current_screen == Screen.TAKING) {
+        if(ScreenManager.currentScreen() instanceof TakingScreen) {
             if(sc.trick_mode != 0) {
                 if(total_bid < sc.tricks[sc.trick_index]) {
                     sc.fill(Theme.theme.underbid_color);

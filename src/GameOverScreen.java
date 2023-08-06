@@ -1,7 +1,7 @@
-public class GameOverScreen {
+public class GameOverScreen implements Screen {
     static final GameOverScreen INSTANCE = new GameOverScreen();
     private GameOverScreen() {}
-    void draw(OhHellScoreboardV2 sc) {
+    public void draw(OhHellScoreboardV2 sc) {
         sc.textAlign(sc.CENTER, sc.CENTER);
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);

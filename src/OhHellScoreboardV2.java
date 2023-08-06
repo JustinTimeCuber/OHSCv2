@@ -26,7 +26,6 @@ public class OhHellScoreboardV2 extends PApplet {
     int error_frames;
     boolean editing_name;
     Window current_window = Window.NONE;
-    Screen current_screen = Screen.SETUP_TO_BIDDING;
     int hands_played;
     int suits;
     int cards_per_suit;
@@ -73,7 +72,7 @@ public class OhHellScoreboardV2 extends PApplet {
     void updatePlayers(boolean resetIndex) {
         StatisticsScreen.INSTANCE.sortPlayers();
         Tile.setPlayerCountBasedTiles();
-        if(current_screen.isSetup()) {
+        if(ScreenManager.currentScreen() instanceof SetupScreen) {
             for(int i = 0; i < Player.count(); i++) {
                 Player.get(i).setColor(Theme.theme.getPlayerColor(i));
             }
@@ -122,7 +121,7 @@ public class OhHellScoreboardV2 extends PApplet {
         StatisticsScreen.INSTANCE.sort_reverse = false;
         editing_name = false;
         current_window = Window.NONE;
-        current_screen = Screen.SETUP_TO_BIDDING;
+        ScreenManager.initDefault();
         for(int i = 0; i < 4; i++) {
             new Player();
         }
@@ -340,7 +339,9 @@ public class OhHellScoreboardV2 extends PApplet {
                 selected_player++;
                 updatePlayers(false);
             }
-            current_screen = Screen.SETUP_TO_BIDDING;
+            ScreenManager.popScreen();
+            ScreenManager.setScreen(BiddingScreen.INSTANCE);
+            ScreenManager.pushScreen(SetupScreen.INSTANCE);
         } else {
             displayError("The maximum number of players is " + MAX_PLAYERS);
         }
@@ -369,27 +370,21 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void handleBeginGame() {
-        if(current_screen == Screen.SETUP_TO_BIDDING) {
-            current_screen = Screen.BIDDING;
-        } else if(current_screen == Screen.SETUP_TO_TAKING) {
-            current_screen = Screen.TAKING;
+        if(ScreenManager.currentScreen() instanceof SetupScreen) {
+            ScreenManager.popScreen();
         }
         selected_player = -1;
     }
 
     void handleSetup() {
-        if(current_screen == Screen.BIDDING) {
-            current_screen = Screen.SETUP_TO_BIDDING;
-        } else if(current_screen == Screen.TAKING) {
-            current_screen = Screen.SETUP_TO_TAKING;
-        }
+        ScreenManager.pushScreen(SetupScreen.INSTANCE);
     }
 
     void handleChangeBids() {
-        if(current_screen == Screen.BIDDING) {
+        if(ScreenManager.currentScreen() instanceof BiddingScreen) {
             displayError("Already changing bids");
         } else {
-            current_screen = Screen.BIDDING;
+            ScreenManager.setScreen(BiddingScreen.INSTANCE);
         }
     }
 
@@ -402,7 +397,7 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         if(all_players_bid) {
             if(trick_mode == 0 || total_bid != tricks[trick_index] || (keyPressed && key == ENTER && mouseButton == RIGHT)) {
-                current_screen = Screen.TAKING;
+                ScreenManager.setScreen(TakingScreen.INSTANCE);
             } else {
                 displayError("Tricks bid can't equal tricks dealt - override with enter + right click");
             }
@@ -460,14 +455,14 @@ public class OhHellScoreboardV2 extends PApplet {
             if(trick_mode != 0) {
                 trick_index++;
                 if(trick_index >= tricks.length) {
-                    current_screen = Screen.GAME_OVER;
+                    ScreenManager.setScreen(GameOverScreen.INSTANCE);
                     saveRecord();
                     trick_index--;
                     return;
                 }
             }
             trump_suit = 0;
-            current_screen = Screen.BIDDING;
+            ScreenManager.setScreen(BiddingScreen.INSTANCE);
         } else {
             displayError("Tricks taken must equal tricks dealt - override with enter + right click");
         }
@@ -475,7 +470,7 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void handleEndGame() {
         if(keyPressed && key == ENTER && mouseButton == RIGHT) {
-            current_screen = Screen.GAME_OVER;
+            ScreenManager.setScreen(GameOverScreen.INSTANCE);
             saveRecord();
         } else {
             displayError("End game? Confirm with enter + right click");
@@ -599,17 +594,7 @@ public class OhHellScoreboardV2 extends PApplet {
         strokeWeight(2);
         stroke(Theme.theme.line_color);
         textAlign(CENTER, CENTER);
-        if(current_screen.isSetup()) {
-            SetupScreen.INSTANCE.draw(this);
-        } else if(current_screen == Screen.BIDDING) {
-            BiddingScreen.INSTANCE.draw(this);
-        } else if(current_screen == Screen.TAKING) {
-            TakingScreen.INSTANCE.draw(this);
-        } else if(current_screen == Screen.GAME_OVER) {
-            GameOverScreen.INSTANCE.draw(this);
-        } else if(current_screen == Screen.STATISTICS) {
-            StatisticsScreen.INSTANCE.draw(this);
-        }
+        ScreenManager.currentScreen().draw(this);
         if(error_frames > 0) {
             fill(Theme.theme.popup_background_color, 230);
             stroke(Theme.theme.line_color);
@@ -647,7 +632,7 @@ public class OhHellScoreboardV2 extends PApplet {
             return;
         }
         resetFramerateCooldown();
-        if(current_screen.isSetup()) {
+        if(ScreenManager.currentScreen() instanceof SetupScreen) {
             if(current_window == Window.NONE) {
                 if(key == TAB) {
                     selected_player++;
@@ -704,14 +689,14 @@ public class OhHellScoreboardV2 extends PApplet {
                 }
             }
             if(key == ENTER) {
-                if(current_screen == Screen.BIDDING) {
+                if(ScreenManager.currentScreen() instanceof BiddingScreen) {
                     handleFinishBidding();
-                } else if(current_screen == Screen.TAKING){
+                } else if(ScreenManager.currentScreen() instanceof TakingScreen) {
                     handleFinishRound();
                 }
             }
             int i = Math.abs(getKeyValue(key));
-            if(current_screen == Screen.BIDDING) {
+            if(ScreenManager.currentScreen() instanceof BiddingScreen) {
                 if(i != 0 && i - 1 < Player.count()) {
                     i--;
                     Player p = Player.get(i);
@@ -762,16 +747,16 @@ public class OhHellScoreboardV2 extends PApplet {
     @Override
     public void mousePressed() {
         resetFramerateCooldown();
-        if(current_screen == Screen.GAME_OVER) {
+        if(ScreenManager.currentScreen() instanceof GameOverScreen) {
             if(restart_button.mouseInTile()) {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
-                current_screen = Screen.STATISTICS;
+                ScreenManager.pushScreen(StatisticsScreen.INSTANCE);
                 if(StatisticsScreen.INSTANCE.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.INSTANCE.sort_reverse) {
                     StatisticsScreen.INSTANCE.sortPlayers(PlayerSortMode.SCORE, false);
                 }
             }
-        } else if(current_screen == Screen.STATISTICS) {
+        } else if(ScreenManager.currentScreen() instanceof StatisticsScreen) {
             if(restart_button.mouseInTile()) {
                 setInitialValues();
             } else if(statistics_button.mouseInTile()) {
@@ -779,7 +764,7 @@ public class OhHellScoreboardV2 extends PApplet {
             } else if(StatisticsScreen.INSTANCE.statistics_header.mouseInTile()) {
                 StatisticsScreen.INSTANCE.handleHeaderClick(this);
             }
-        } else if(current_screen.isSetup()) {
+        } else if(ScreenManager.currentScreen() instanceof SetupScreen) {
             if(current_window == Window.TRICKS) {
                 if(close_popup_button.mouseInTile()) {
                     current_window = Window.NONE;
@@ -866,7 +851,7 @@ public class OhHellScoreboardV2 extends PApplet {
         } else {
             for(int i = 0; i < Player.count(); i++) {
                 if(game_tiles[i].mouseInTile()) {
-                    if(current_screen == Screen.BIDDING) {
+                    if(ScreenManager.currentScreen() instanceof BiddingScreen) {
                         handleBidChange(Player.get(i), mouseButton == LEFT);
                     } else {
                         handleTakenChange(Player.get(i), mouseButton == LEFT);
@@ -879,7 +864,7 @@ public class OhHellScoreboardV2 extends PApplet {
             } else if(change_bids_button.mouseInTile()) {
                 handleChangeBids();
             } else if(proceed_button.mouseInTile()) {
-                if(current_screen == Screen.BIDDING) {
+                if(ScreenManager.currentScreen() instanceof BiddingScreen) {
                     handleFinishBidding();
                 } else {
                     handleFinishRound();
