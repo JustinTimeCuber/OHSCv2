@@ -20,52 +20,72 @@ public class Tile {
         return sc.mouseX > x1 * sc.width && sc.mouseX < x2 * sc.width && sc.mouseY > y1 * sc.height && sc.mouseY < y2 * sc.height;
     }
 
-    /** The x coordinate of the left side of the tile. */
+    /**
+     * The x coordinate of the left side of the tile.
+     */
     float x() {
         return sc.width * x1;
     }
 
-    /** The y coordinate of the top of the tile. */
+    /**
+     * The y coordinate of the top of the tile.
+     */
     float y() {
         return sc.height * y1;
     }
 
-    /** The x coordinate at a position within the tile, where 0 is left and 1 is right. */
+    /**
+     * The x coordinate at a position within the tile, where 0 is left and 1 is right.
+     */
     float x(double pos) {
         return (float) (sc.width * (x1 + pos * (x2 - x1)));
     }
 
-    /** The y coordinate at a position within the tile, where 0 is top and 1 is bottom. */
+    /**
+     * The y coordinate at a position within the tile, where 0 is top and 1 is bottom.
+     */
     float y(double pos) {
         return (float) (sc.height * (y1 + pos * (y2 - y1)));
     }
 
-    /** The width of the tile. */
+    /**
+     * The width of the tile.
+     */
     float w() {
         return sc.width * (x2 - x1);
     }
 
-    /** The height of the tile. */
+    /**
+     * The height of the tile.
+     */
     float h() {
         return sc.height * (y2 - y1);
     }
 
-    /** The x coordinate of the center of the tile. */
+    /**
+     * The x coordinate of the center of the tile.
+     */
     float cx() {
         return x(0.5);
     }
 
-    /** The y coordinate of the center of the tile. */
+    /**
+     * The y coordinate of the center of the tile.
+     */
     float cy() {
         return y(0.5);
     }
 
-    /** The x coordinate of the right side of the tile. */
+    /**
+     * The x coordinate of the right side of the tile.
+     */
     float mx() {
         return sc.width * x2;
     }
 
-    /** The y coordinate of the bottom of the tile. */
+    /**
+     * The y coordinate of the bottom of the tile.
+     */
     float my() {
         return sc.height * y2;
     }
@@ -162,11 +182,11 @@ public class Tile {
                     new Tile(0.667, 0.556, 1, 0.833)
             };
         }
-        double statsTileHeight = playerCount <= 7 ? 0.1 : 0.833/(playerCount + 1);
+        double statsTileHeight = playerCount <= 7 ? 0.1 : 0.833 / (playerCount + 1);
         StatisticsScreen.INSTANCE.statistics_tiles = new Tile[playerCount];
         StatisticsScreen.INSTANCE.statistics_header = new Tile(0, 0, 1, statsTileHeight);
         for(int i = 0; i < playerCount; i++) {
-            StatisticsScreen.INSTANCE.statistics_tiles[i] = new Tile(0, (i+1)*statsTileHeight, 1, (i+2)*statsTileHeight);
+            StatisticsScreen.INSTANCE.statistics_tiles[i] = new Tile(0, (i + 1) * statsTileHeight, 1, (i + 2) * statsTileHeight);
         }
     }
 }

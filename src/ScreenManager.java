@@ -2,13 +2,14 @@ import java.util.Stack;
 
 public class ScreenManager {
     public final static Screen[] all_screens = new Screen[]{
-        SetupScreen.INSTANCE,
-        BiddingScreen.INSTANCE,
-        TakingScreen.INSTANCE,
-        GameOverScreen.INSTANCE,
-        StatisticsScreen.INSTANCE
+            SetupScreen.INSTANCE,
+            BiddingScreen.INSTANCE,
+            TakingScreen.INSTANCE,
+            GameOverScreen.INSTANCE,
+            StatisticsScreen.INSTANCE
     };
     private final static Stack<Screen> screen_stack = new Stack<>();
+
     static String stateToString() {
         StringBuilder out = new StringBuilder();
         for(Screen s : screen_stack) {
@@ -16,6 +17,7 @@ public class ScreenManager {
         }
         return out.toString();
     }
+
     static void setStateFromString(String state) {
         reset();
         String[] screens = state.split(",");
@@ -28,6 +30,7 @@ public class ScreenManager {
             pushScreen(screen);
         }
     }
+
     static Screen screenFromString(String s) {
         return switch(s) {
             case "SetupScreen" -> SetupScreen.INSTANCE;
@@ -38,29 +41,35 @@ public class ScreenManager {
             default -> null;
         };
     }
+
     static void reset() {
         screen_stack.clear();
     }
+
     static void initDefault() {
         reset();
         pushScreen(BiddingScreen.INSTANCE);
         pushScreen(SetupScreen.INSTANCE);
     }
+
     static void setScreen(Screen s) {
         if(!screen_stack.empty()) {
             screen_stack.pop();
         }
         screen_stack.push(s);
     }
+
     static void pushScreen(Screen s) {
         screen_stack.push(s);
     }
+
     static void popScreen() {
         if(screen_stack.empty()) {
             return;
         }
         screen_stack.pop();
     }
+
     static Screen currentScreen() {
         return screen_stack.peek();
     }

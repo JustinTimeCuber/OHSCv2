@@ -1,6 +1,8 @@
 public class BiddingScreen extends GameplayScreen {
     static final BiddingScreen INSTANCE = new BiddingScreen();
-    private BiddingScreen() {}
+
+    private BiddingScreen() {
+    }
 
     void handleBidChange(Player p, boolean pos, OhHellScoreboardV2 sc) {
         if(pos) {
@@ -36,6 +38,7 @@ public class BiddingScreen extends GameplayScreen {
             sc.displayError("Not all players have a bid entered");
         }
     }
+
     @Override
     public void draw(OhHellScoreboardV2 sc) {
         super.draw(sc);
@@ -45,6 +48,7 @@ public class BiddingScreen extends GameplayScreen {
         sc.textSize(sc.width * 0.05f);
         sc.text(total_bid, sc.width * 0.8f, sc.height * 0.93f);
     }
+
     public void mousePressed(OhHellScoreboardV2 sc) {
         for(int i = 0; i < Player.count(); i++) {
             if(game_tiles[i].mouseInTile()) {

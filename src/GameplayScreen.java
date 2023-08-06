@@ -38,6 +38,7 @@ public abstract class GameplayScreen implements Screen {
             sc.trump_suit = 0;
         }
     }
+
     @Override
     public void draw(OhHellScoreboardV2 sc) {
         sc.textAlign(sc.CENTER, sc.CENTER);
@@ -83,6 +84,7 @@ public abstract class GameplayScreen implements Screen {
             sc.image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() * 0.25f, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() * 0.25f, trump_suit_bounding_box.w() * 0.5f, trump_suit_bounding_box.h() * 0.5f);
         }
     }
+
     public void mousePressed(OhHellScoreboardV2 sc) {
         if(setup_button.mouseInTile()) {
             handleSetup();
@@ -94,6 +96,7 @@ public abstract class GameplayScreen implements Screen {
             handleTrumpButton(sc);
         }
     }
+
     public void init(OhHellScoreboardV2 sc) {
         setup_button = new Tile(0.04, 0.875, 0.16, 0.958);
         change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);

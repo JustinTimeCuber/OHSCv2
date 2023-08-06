@@ -1,6 +1,9 @@
 public class TakingScreen extends GameplayScreen {
     static final TakingScreen INSTANCE = new TakingScreen();
-    private TakingScreen() {}
+
+    private TakingScreen() {
+    }
+
     void handleTakenChange(Player p, boolean pos, OhHellScoreboardV2 sc) {
         if(pos) {
             if(p.taken < sc.tricks[sc.trick_index] || sc.trick_mode == 0) {
@@ -14,6 +17,7 @@ public class TakingScreen extends GameplayScreen {
             sc.displayError("Tricks taken must be greater than zero");
         }
     }
+
     void handleFinishRound(OhHellScoreboardV2 sc) {
         int total_taken = 0;
         for(Player p : Player.players) {
@@ -75,6 +79,7 @@ public class TakingScreen extends GameplayScreen {
             sc.displayError("Tricks taken must equal tricks dealt - override with enter + right click");
         }
     }
+
     @Override
     public void draw(OhHellScoreboardV2 sc) {
         super.draw(sc);
@@ -101,6 +106,7 @@ public class TakingScreen extends GameplayScreen {
         sc.textSize(sc.width * 0.05f);
         sc.text(total_bid, sc.width * 0.8f, sc.height * 0.93f);
     }
+
     public void mousePressed(OhHellScoreboardV2 sc) {
         for(int i = 0; i < Player.count(); i++) {
             if(game_tiles[i].mouseInTile()) {

@@ -1,12 +1,16 @@
 public class StatisticsScreen implements Screen {
     static final StatisticsScreen INSTANCE = new StatisticsScreen();
-    private StatisticsScreen() {}
+
+    private StatisticsScreen() {
+    }
+
     Tile statistics_header;
     Tile[] statistics_tiles;
     PlayerSortMode sort_mode;
     boolean sort_reverse;
     int[] sorted_player_indices;
-    final float[] vertical_lines = new float[] {0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
+    final float[] vertical_lines = new float[]{0.25f, 0.4f, 0.55f, 0.7f, 0.85f};
+
     void highlightStatsHeader(PlayerSortMode mode, OhHellScoreboardV2 sc) {
         if(sort_mode == mode) {
             if(sort_reverse) {
@@ -18,6 +22,7 @@ public class StatisticsScreen implements Screen {
             sc.fill(Theme.theme.text_color);
         }
     }
+
     void handleHeaderClick(OhHellScoreboardV2 sc) {
         //TODO: Make this less scuffed
         PlayerSortMode mode = PlayerSortMode.NONE;
@@ -39,6 +44,7 @@ public class StatisticsScreen implements Screen {
         }
         sortPlayers(mode, sort_reverse);
     }
+
     void sortPlayers(PlayerSortMode mode, boolean reverse) {
         sort_mode = mode;
         sort_reverse = reverse;
@@ -70,6 +76,7 @@ public class StatisticsScreen implements Screen {
             }
         }
     }
+
     void sortPlayers() {
         sortPlayers(sort_mode, sort_reverse);
     }
@@ -128,7 +135,7 @@ public class StatisticsScreen implements Screen {
             handleHeaderClick(sc);
         }
     }
-    
+
     @Override
     public void init(OhHellScoreboardV2 sc) {
         sort_mode = PlayerSortMode.NONE;
