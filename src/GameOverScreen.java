@@ -31,9 +31,6 @@ public class GameOverScreen implements Screen {
             sc.setInitialValues();
         } else if(statistics_button.mouseInTile()) {
             ScreenManager.pushScreen(StatisticsScreen.INSTANCE);
-            if(StatisticsScreen.INSTANCE.sort_mode == PlayerSortMode.NONE && !StatisticsScreen.INSTANCE.sort_reverse) {
-                StatisticsScreen.INSTANCE.sortPlayers(PlayerSortMode.SCORE, false);
-            }
         }
     }
 

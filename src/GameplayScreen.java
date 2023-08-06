@@ -4,12 +4,8 @@ public abstract class GameplayScreen implements Screen {
 
     int total_bid;
     int total_taken;
-    Tile setup_button, change_bids_button, proceed_button, end_game_button, trump_suit_bounding_box;
+    Tile setup_button, edit_bids_button, proceed_button, statistics_button, end_game_button, trump_suit_bounding_box;
     static Tile[] game_tiles;
-
-    void handleSetup() {
-        ScreenManager.pushScreen(SetupScreen.INSTANCE);
-    }
 
     void handleChangeBids(OhHellScoreboardV2 sc) {
         if(ScreenManager.currentScreen() instanceof BiddingScreen) {
@@ -69,6 +65,7 @@ public abstract class GameplayScreen implements Screen {
             }
         }
         sc.drawButton(setup_button, "Setup", 0.02f, true, true);
+        sc.drawButton(statistics_button, "Statistics", 0.02f, true, true);
         sc.drawButton(end_game_button, "End Game", 0.02f, true, true);
         sc.textSize(sc.width * 0.01f);
         sc.fill(Theme.theme.text_color);
@@ -88,9 +85,11 @@ public abstract class GameplayScreen implements Screen {
     @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
         if(setup_button.mouseInTile()) {
-            handleSetup();
-        } else if(change_bids_button.mouseInTile()) {
+            ScreenManager.pushScreen(SetupScreen.INSTANCE);
+        } else if(edit_bids_button.mouseInTile()) {
             handleChangeBids(sc);
+        } else if(statistics_button.mouseInTile()) {
+            ScreenManager.pushScreen(StatisticsScreen.INSTANCE);
         } else if(end_game_button.mouseInTile()) {
             handleEndGame(sc);
         } else if(trump_suit_bounding_box.mouseInTile()) {
@@ -100,10 +99,11 @@ public abstract class GameplayScreen implements Screen {
 
     @Override
     public void init(OhHellScoreboardV2 sc) {
-        setup_button = new Tile(0.04, 0.875, 0.16, 0.958);
-        change_bids_button = new Tile(0.2, 0.875, 0.32, 0.958);
-        proceed_button = new Tile(0.36, 0.875, 0.48, 0.958);
-        end_game_button = new Tile(0.52, 0.875, 0.64, 0.958);
+        setup_button = new Tile(0.02, 0.875, 0.14, 0.958);
+        edit_bids_button = new Tile(0.15, 0.875, 0.27, 0.958);
+        proceed_button = new Tile(0.28, 0.875, 0.40, 0.958);
+        statistics_button = new Tile(0.41, 0.875, 0.53, 0.958);
+        end_game_button = new Tile(0.54, 0.875, 0.66, 0.958);
         trump_suit_bounding_box = new Tile(0.92, 1 - sc.aspect_ratio * 0.08, 1, 1);
     }
 }

@@ -6,6 +6,7 @@ public class StatisticsScreen implements Screen {
 
     Tile statistics_header;
     Tile[] statistics_tiles;
+    Tile open_save_button, return_button;
     PlayerSortMode sort_mode;
     boolean sort_reverse;
     int[] sorted_player_indices;
@@ -83,9 +84,8 @@ public class StatisticsScreen implements Screen {
 
     @Override
     public void draw(OhHellScoreboardV2 sc) {
-        //TODO: create separate buttons
-        sc.drawButton(GameOverScreen.INSTANCE.statistics_button, "Open Save", 0.02f, true, true);
-        sc.drawButton(GameOverScreen.INSTANCE.restart_button, "Restart", 0.02f, true, true);
+        sc.drawButton(open_save_button, "Open Save", 0.02f, true, true);
+        sc.drawButton(return_button, "Return", 0.02f, true, true);
         sc.stroke(Theme.theme.line_color);
         sc.fill(Theme.theme.background_color);
         sc.rect(statistics_header.x(), statistics_header.y(), statistics_header.w(), statistics_header.h());
@@ -126,10 +126,9 @@ public class StatisticsScreen implements Screen {
 
     @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
-        //TODO: rewrite
-        if(GameOverScreen.INSTANCE.restart_button.mouseInTile()) {
-            sc.setInitialValues();
-        } else if(GameOverScreen.INSTANCE.statistics_button.mouseInTile()) {
+        if(return_button.mouseInTile()) {
+            ScreenManager.popScreen();
+        } else if(open_save_button.mouseInTile()) {
             sc.openLatestSave();
         } else if(statistics_header.mouseInTile()) {
             handleHeaderClick(sc);
@@ -140,5 +139,14 @@ public class StatisticsScreen implements Screen {
     public void init(OhHellScoreboardV2 sc) {
         sort_mode = PlayerSortMode.NONE;
         sort_reverse = false;
+        open_save_button = new Tile(0.08, 0.875, 0.28, 0.958);
+        return_button = new Tile(0.72, 0.875, 0.92, 0.958);
+    }
+
+    @Override
+    public void onLoad(OhHellScoreboardV2 sc) {
+        if(sort_mode == PlayerSortMode.NONE && !sort_reverse) {
+            sortPlayers(PlayerSortMode.SCORE, false);
+        }
     }
 }

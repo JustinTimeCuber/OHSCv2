@@ -333,6 +333,7 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         Tile.sc = this;
         Theme.sc = this;
+        ScreenManager.sc = this;
         frameRate(30);
         aspect_ratio = (float) width / height;
         setInitialValues();

@@ -1,6 +1,7 @@
 import java.util.Stack;
 
 public class ScreenManager {
+    public static OhHellScoreboardV2 sc;
     public final static Screen[] all_screens = new Screen[]{
             SetupScreen.INSTANCE,
             BiddingScreen.INSTANCE,
@@ -29,6 +30,7 @@ public class ScreenManager {
             }
             pushScreen(screen);
         }
+        screen_stack.peek().onLoad(sc);
     }
 
     static Screen screenFromString(String s) {
@@ -50,6 +52,7 @@ public class ScreenManager {
         reset();
         pushScreen(BiddingScreen.INSTANCE);
         pushScreen(SetupScreen.INSTANCE);
+        SetupScreen.INSTANCE.onLoad(sc);
     }
 
     static void setScreen(Screen s) {
@@ -57,10 +60,12 @@ public class ScreenManager {
             screen_stack.pop();
         }
         screen_stack.push(s);
+        s.onLoad(sc);
     }
 
     static void pushScreen(Screen s) {
         screen_stack.push(s);
+        s.onLoad(sc);
     }
 
     static void popScreen() {
@@ -68,6 +73,7 @@ public class ScreenManager {
             return;
         }
         screen_stack.pop();
+        screen_stack.peek().onLoad(sc);
     }
 
     static Screen currentScreen() {

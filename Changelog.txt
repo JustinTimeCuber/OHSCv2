@@ -1,7 +1,7 @@
 v2.2-beta.1
 + Added statistics screen
     Shows certain statistics about each player such as total bid, taken, bonuses, and times set.
-    Currently only accessible at the end of the game
+    Accessible at the end of the game or during the game, but not from the setup screen
 + Added config.txt file
     Currently has options for scoring as well as a toggle for the extra suits (dots and crosses)
 + Tab now cycles to the next player
@@ -20,6 +20,7 @@ v2.2-beta.1
 * Fixed double usage of "o" key (dots trump / remove from player 9)
     Now, the "." key is used to select dots as trump
 * Decreasing the bid of a player whose bid is zero now removes the bid entirely instead of showing an error
+* Renamed "Change Bids" button to "Edit Bids"
 * Tweaked text alignment and size
 
 v2.1

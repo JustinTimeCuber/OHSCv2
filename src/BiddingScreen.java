@@ -42,7 +42,7 @@ public class BiddingScreen extends GameplayScreen {
     @Override
     public void draw(OhHellScoreboardV2 sc) {
         super.draw(sc);
-        sc.drawButton(change_bids_button, "Change Bids", 0.02f, false, true);
+        sc.drawButton(edit_bids_button, "Edit Bids", 0.02f, false, true);
         sc.drawButton(proceed_button, "Proceed", 0.02f, sc.trick_mode == 0 || total_bid != sc.tricks[sc.trick_index], true);
         sc.fill(Theme.theme.text_color);
         sc.textSize(sc.width * 0.05f);

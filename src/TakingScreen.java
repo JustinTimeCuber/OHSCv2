@@ -93,7 +93,7 @@ public class TakingScreen extends GameplayScreen {
             sc.text(p.taken, game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
         }
 
-        sc.drawButton(change_bids_button, "Change Bids", 0.02f, true, true);
+        sc.drawButton(edit_bids_button, "Edit Bids", 0.02f, true, true);
         sc.drawButton(proceed_button, "Proceed", 0.02f, sc.trick_mode == 0 || total_taken == sc.tricks[sc.trick_index], true);
 
         if(sc.trick_mode != 0) {
