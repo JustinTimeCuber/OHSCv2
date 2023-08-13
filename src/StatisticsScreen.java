@@ -147,6 +147,8 @@ public class StatisticsScreen implements Screen {
     public void onLoad(OhHellScoreboardV2 sc) {
         if(sort_mode == PlayerSortMode.NONE && !sort_reverse) {
             sortPlayers(PlayerSortMode.SCORE, false);
+        } else {
+            sortPlayers();
         }
     }
 }
