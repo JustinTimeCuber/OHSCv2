@@ -1,3 +1,7 @@
+v2.2-beta.2
+* Fixed statistics screen not re-sorting after re-opening
+* Added a white outline to black suit icons to improve legibility
+
 v2.2-beta.1
 + Added statistics screen
     Shows certain statistics about each player such as total bid, taken, bonuses, and times set.
