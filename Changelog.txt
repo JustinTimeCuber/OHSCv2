@@ -1,6 +1,10 @@
 v2.2-beta.2
 * Fixed statistics screen not re-sorting after re-opening
 * Added a white outline to black suit icons to improve legibility
+* Improved theme selector
+    Added button to open folder
+    Vertical overflow no longer occurs with too many themes, instead up and down scroll buttons will appear
+* Improved error handling in theme loading to reduce likelihood of crashes
 
 v2.2-beta.1
 + Added statistics screen

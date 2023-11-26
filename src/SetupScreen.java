@@ -5,9 +5,11 @@ public class SetupScreen implements Screen {
     Tile[] setup_tiles;
     Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
-    Tile refresh_themes_button;
+    Tile theme_folder_button, refresh_themes_button, theme_scroll_up_button, theme_scroll_down_button;
     int selected_player;
+    int theme_scroll_offset;
     boolean editing_name;
+    final int MAX_THEME_ROWS = 6;
 
     private SetupScreen() {
     }
@@ -140,15 +142,16 @@ public class SetupScreen implements Screen {
             sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             sc.drawButton(refresh_themes_button, "", 0.02f, true, true);
+            sc.drawButton(theme_folder_button, "F", 0.02f, true, true);
             sc.noFill();
             sc.stroke(Theme.theme.text_color);
             sc.strokeWeight(sc.width * 0.002f);
             sc.arc(refresh_themes_button.cx(), refresh_themes_button.cy(), refresh_themes_button.w() * 0.4f, refresh_themes_button.w() * 0.4f, -5, 0);
             sc.noStroke();
             sc.fill(Theme.theme.text_color);
-            sc.triangle(refresh_themes_button.cx() + refresh_themes_button.w() * 0.1f, refresh_themes_button.cy(),
-                    refresh_themes_button.cx() + refresh_themes_button.w() * 0.3f, refresh_themes_button.cy(),
-                    refresh_themes_button.cx() + refresh_themes_button.w() * 0.2f, refresh_themes_button.cy() + refresh_themes_button.h() * 0.2f);
+            sc.triangle(refresh_themes_button.x(0.6), refresh_themes_button.cy(),
+                    refresh_themes_button.x(0.8), refresh_themes_button.cy(),
+                    refresh_themes_button.x(0.7), refresh_themes_button.y(0.7));
             sc.textSize(sc.width * 0.05f);
             sc.text("Theme Selector", Window.tile.cx(), Window.tile.y() + sc.height * 0.083f);
             float box_left = Window.tile.x() + sc.width * 0.05f;
@@ -156,10 +159,25 @@ public class SetupScreen implements Screen {
             float box_width = box_right - box_left;
             float box_top = Window.tile.y() + sc.height * 0.15f;
             float row_height = sc.width * 0.035f;
-            int rows = Theme.themes.size() + 1;
-            for(int i = 0; i < Theme.themes.size(); i++) {
+            int rows = Math.min(MAX_THEME_ROWS, Theme.themes.size()) + 1;
+            for(int i = theme_scroll_offset; i < Math.min(MAX_THEME_ROWS + theme_scroll_offset, Theme.themes.size()); i++) {
+                int t = i - theme_scroll_offset;
                 sc.fill(Theme.themes.get(i).background_color);
-                sc.rect(box_left + box_width * 0.7f, box_top + row_height * (i + 1), box_width * 0.3f, row_height);
+                sc.rect(box_left + box_width * 0.7f, box_top + row_height * (t + 1), box_width * 0.3f, row_height);
+            }
+            if(theme_scroll_offset > 0) {
+                sc.drawButton(theme_scroll_up_button, "", 0.02f, true, true);
+                sc.noStroke();
+                sc.triangle(theme_scroll_up_button.x(0.2), theme_scroll_up_button.y(0.75),
+                        theme_scroll_up_button.x(0.8), theme_scroll_up_button.y(0.75),
+                        theme_scroll_up_button.x(0.5), theme_scroll_up_button.y(0.25));
+            }
+            if(theme_scroll_offset < Theme.themes.size() - MAX_THEME_ROWS) {
+                sc.drawButton(theme_scroll_down_button, "", 0.02f, true, true);
+                sc.noStroke();
+                sc.triangle(theme_scroll_down_button.x(0.2), theme_scroll_down_button.y(0.25),
+                        theme_scroll_down_button.x(0.8), theme_scroll_down_button.y(0.25),
+                        theme_scroll_down_button.x(0.5), theme_scroll_down_button.y(0.75));
             }
             sc.strokeWeight(2);
             sc.stroke(Theme.theme.line_color);
@@ -175,45 +193,60 @@ public class SetupScreen implements Screen {
             sc.text("Theme", box_left + box_width * 0.15f, box_top + row_height * 0.5f);
             sc.text("File", box_left + box_width * 0.5f, box_top + row_height * 0.5f);
             sc.text("Colors", box_left + box_width * 0.85f, box_top + row_height * 0.5f);
-            for(int i = 0; i < Theme.themes.size(); i++) {
+            for(int i = theme_scroll_offset; i < Math.min(MAX_THEME_ROWS + theme_scroll_offset, Theme.themes.size()); i++) {
+                int t = i - theme_scroll_offset;
                 sc.textSize(sc.width * 0.02f);
                 sc.fill(Theme.theme_index == i ? Theme.theme.highlight_text_color : Theme.theme.text_color);
                 Theme current = Theme.themes.get(i);
-                sc.text(current.name, box_left + box_width * 0.15f, box_top + row_height * (i + 1.5f));
-                sc.text(current.file, box_left + box_width * 0.5f, box_top + row_height * (i + 1.5f));
+                sc.text(current.name, box_left + box_width * 0.15f, box_top + row_height * (t + 1.5f));
+                sc.text(current.file, box_left + box_width * 0.5f, box_top + row_height * (t + 1.5f));
                 for(int j = 0; j < sc.MAX_PLAYERS; j++) {
                     sc.fill(current.getPlayerColor(j));
                     sc.stroke(current.line_color);
-                    sc.rect(box_left + box_width * (0.75f + 0.02f * j), box_top + row_height * (i + 1.1f), box_width * 0.015f, box_width * 0.015f);
+                    sc.rect(box_left + box_width * (0.75f + 0.02f * j), box_top + row_height * (t + 1.1f), box_width * 0.015f, box_width * 0.015f);
                 }
                 sc.fill(current.overbid_color);
                 sc.textSize(sc.width * 0.015f);
-                sc.text("+", box_left + box_width * 0.725f, box_top + row_height * (i + 1.2f));
+                sc.text("+", box_left + box_width * 0.725f, box_top + row_height * (t + 1.2f));
                 sc.fill(current.underbid_color);
-                sc.text("-", box_left + box_width * 0.975f, box_top + row_height * (i + 1.2f));
-                Tile popup_button = Tile.fromCoordinates(box_left + box_width * 0.72f, box_top + row_height * (i + 1.5f), box_left + box_width * 0.84f, box_top + row_height * (i + 1.9f));
+                sc.text("-", box_left + box_width * 0.975f, box_top + row_height * (t + 1.2f));
+                Tile popup_button = Tile.fromCoordinates(box_left + box_width * 0.72f, box_top + row_height * (t + 1.5f), box_left + box_width * 0.84f, box_top + row_height * (t + 1.9f));
                 sc.drawButton(current, popup_button, "Pop-up", 0.01f, true, true);
-                Tile error_button = Tile.fromCoordinates(box_left + box_width * 0.86f, box_top + row_height * (i + 1.5f), box_left + box_width * 0.98f, box_top + row_height * (i + 1.9f));
+                Tile error_button = Tile.fromCoordinates(box_left + box_width * 0.86f, box_top + row_height * (t + 1.5f), box_left + box_width * 0.98f, box_top + row_height * (t + 1.9f));
                 sc.drawButton(current, error_button, "Error", 0.01f, false, false);
                 if(sc.mousePressed) {
                     if(popup_button.mouseInTile()) {
                         sc.fill(current.popup_background_color, 230);
                         sc.stroke(current.line_color);
-                        sc.rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
+                        sc.rect(box_left + box_width * 0.75f, box_top + row_height * (t + 1.1f), box_width * 0.2f, row_height * 0.8f);
                         sc.fill(current.text_color);
-                        sc.text("Pop-up Window", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
+                        sc.text("Pop-up Window", box_left + box_width * 0.85f, box_top + row_height * (t + 1.5f));
                     } else if(error_button.mouseInTile()) {
                         sc.fill(current.popup_background_color, 230);
                         sc.stroke(current.line_color);
-                        sc.rect(box_left + box_width * 0.75f, box_top + row_height * (i + 1.1f), box_width * 0.2f, row_height * 0.8f);
+                        sc.rect(box_left + box_width * 0.75f, box_top + row_height * (t + 1.1f), box_width * 0.2f, row_height * 0.8f);
                         sc.fill(current.error_text_color);
-                        sc.text("Error Message", box_left + box_width * 0.85f, box_top + row_height * (i + 1.5f));
+                        sc.text("Error Message", box_left + box_width * 0.85f, box_top + row_height * (t + 1.5f));
                     }
                 }
             }
-            for(int i = 0; i < Theme.themes.size(); i++) {
+            if(theme_folder_button.mouseInTile()) {
+                String dir = sc.DATA_PATH + "themes";
+                sc.textSize(sc.width * 0.015f);
+                sc.fill(Theme.theme.background_color);
+                sc.stroke(Theme.theme.line_color);
+                float tw = sc.textWidth(dir);
+                float px = (sc.mouseX + tw < sc.width * 0.98f) ? sc.mouseX : (sc.width * 0.98f - tw);
+                sc.rect(px, sc.mouseY, tw + sc.width * 0.02f, sc.width * 0.03f);
+                sc.fill(Theme.theme.text_color);
+                sc.textAlign(sc.LEFT, sc.CENTER);
+                sc.text(dir, px + sc.width * 0.01f, sc.mouseY + sc.width * 0.015f);
+                sc.textAlign(sc.CENTER, sc.CENTER);
+            }
+            for(int i = theme_scroll_offset; i < Math.min(MAX_THEME_ROWS + theme_scroll_offset, Theme.themes.size()); i++) {
+                int t = i - theme_scroll_offset;
                 Theme current = Theme.themes.get(i);
-                if(sc.mouseX > box_left + box_width * 0.3 && sc.mouseX < box_left + box_width * 0.7 && sc.mouseY > box_top + row_height * (i + 1) && sc.mouseY < box_top + row_height * (i + 2)) {
+                if(sc.mouseX > box_left + box_width * 0.3 && sc.mouseX < box_left + box_width * 0.7 && sc.mouseY > box_top + row_height * (t + 1) && sc.mouseY < box_top + row_height * (t + 2)) {
                     String file = current.directory + current.file;
                     // Test whether file is in the jar
                     if(!file.startsWith("/") && file.charAt(1) != ':') {
@@ -254,15 +287,27 @@ public class SetupScreen implements Screen {
             } else if(refresh_themes_button.mouseInTile()) {
                 Theme.themes = null;
                 Theme.loadThemes();
+                theme_scroll_offset = 0;
+            } else if(theme_folder_button.mouseInTile()) {
+                try {
+                    java.awt.Desktop.getDesktop().open(new File(sc.DATA_PATH + "themes"));
+                } catch(Exception e) {
+                    sc.displayError("Cannot open folder: " + e.getMessage());
+                }
+            } else if(theme_scroll_up_button.mouseInTile() && theme_scroll_offset > 0) {
+                theme_scroll_offset--;
+            } else if(theme_scroll_down_button.mouseInTile() && theme_scroll_offset < Theme.themes.size() - MAX_THEME_ROWS) {
+                theme_scroll_offset++;
             } else {
-                for(int i = 0; i < Theme.themes.size(); i++) {
+                for(int i = theme_scroll_offset; i < Math.min(MAX_THEME_ROWS + theme_scroll_offset, Theme.themes.size()); i++) {
+                    int t = i - theme_scroll_offset;
                     Theme current = Theme.themes.get(i);
                     float box_left = Window.tile.x() + sc.width * 0.05f;
                     float box_right = Window.tile.mx() - sc.width * 0.05f;
                     float box_width = box_right - box_left;
                     float box_top = Window.tile.y() + sc.height * 0.15f;
                     float row_height = sc.width * 0.035f;
-                    if(sc.mouseX > box_left + box_width * 0.3 && sc.mouseX < box_left + box_width * 0.7 && sc.mouseY > box_top + row_height * (i + 1) && sc.mouseY < box_top + row_height * (i + 2)) {
+                    if(sc.mouseX > box_left + box_width * 0.3 && sc.mouseX < box_left + box_width * 0.7 && sc.mouseY > box_top + row_height * (t + 1) && sc.mouseY < box_top + row_height * (t + 2)) {
                         String file = current.directory + current.file;
                         // Test whether file is in the jar
                         if(!file.startsWith("/") && file.charAt(1) != ':') {
@@ -275,7 +320,7 @@ public class SetupScreen implements Screen {
                             sc.displayError("Cannot open file: " + e.getMessage());
                         }
                         break;
-                    } else if(sc.mouseX > box_left && sc.mouseX < box_left + box_width * 0.3f && sc.mouseY > box_top + row_height * (i + 1) && sc.mouseY < box_top + row_height * (i + 2)) {
+                    } else if(sc.mouseX > box_left && sc.mouseX < box_left + box_width * 0.3f && sc.mouseY > box_top + row_height * (t + 1) && sc.mouseY < box_top + row_height * (t + 2)) {
                         Theme.setTheme(i);
                     }
                 }
@@ -347,8 +392,17 @@ public class SetupScreen implements Screen {
         cards_per_suit_button = new Tile(0.353, 0.708, 0.487, 0.792);
         trick_mode_button = new Tile(0.513, 0.708, 0.647, 0.792);
         starting_point_button = new Tile(0.673, 0.708, 0.807, 0.792);
-        refresh_themes_button = new Tile(0.733, 0.167 * (1 + sc.aspect_ratio * 0.1), 0.767, 0.167 * (1 + sc.aspect_ratio * 0.3));
+        theme_folder_button = Tile.fromCoordinates(Window.tile.x(0.81), Window.tile.y() + Window.tile.w()*0.02f, Window.tile.x(0.86), Window.tile.y() + Window.tile.w()*0.07f);
+        refresh_themes_button = Tile.fromCoordinates(Window.tile.x(0.87), Window.tile.y() + Window.tile.w()*0.02f, Window.tile.x(0.92), Window.tile.y() + Window.tile.w()*0.07f);
+        theme_scroll_up_button = Tile.fromCoordinates(Window.tile.x(0.1), Window.tile.y(0.21) - Window.tile.w()*0.05f, Window.tile.x(0.15), Window.tile.y(0.21));
+        theme_scroll_down_button = Tile.fromCoordinates(Window.tile.x(0.1), Window.tile.y(0.89), Window.tile.x(0.15), Window.tile.y(0.89) + Window.tile.w()*0.05f);
         editing_name = false;
         selected_player = -1;
+        theme_scroll_offset = 0;
+    }
+
+    @Override
+    public void onLoad(OhHellScoreboardV2 sc) {
+        theme_scroll_offset = 0;
     }
 }

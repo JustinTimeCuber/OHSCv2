@@ -112,10 +112,10 @@ public class OhHellScoreboardV2 extends PApplet {
             new Player();
         }
         ScreenManager.initDefault();
+        Window.init(this);
         for(Screen s : ScreenManager.all_screens) {
             s.init(this);
         }
-        Window.init(this);
         hands_played = 0;
         suits = 4;
         cards_per_suit = 13;

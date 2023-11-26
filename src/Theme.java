@@ -116,11 +116,18 @@ class Theme {
             }
             int offset = themes.size();
             for(int i = 0; i < themes_list_ext.length; i++) {
-                String file = themes_list_ext[i].split(":")[0];
-                String name = themes_list_ext[i].split(":")[1];
-                themes.add(new Theme(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR, file, name));
-                if(file.equals(theme_file) && theme_directory.equals(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR)) {
-                    theme_index = i + offset;
+                if(themes_list_ext[i].isBlank()) {
+                    continue;
+                }
+                try {
+                    String file = themes_list_ext[i].split(":")[0];
+                    String name = themes_list_ext[i].split(":")[1];
+                    themes.add(new Theme(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR, file, name));
+                    if(file.equals(theme_file) && theme_directory.equals(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR)) {
+                        theme_index = i + offset;
+                    }
+                } catch(Exception e) {
+                    System.err.println("Problem with external_themes.txt on line " + i + ": " + e);
                 }
             }
         } else {
