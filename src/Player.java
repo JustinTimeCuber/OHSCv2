@@ -59,4 +59,8 @@ class Player {
             name = inputs[8];
         }
     }
+
+    public String getName(int i) {
+        return name.equals("") ? ("Player " + (i + 1)) : name;
+    }
 }

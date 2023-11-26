@@ -3,11 +3,12 @@ import java.io.File;
 public class SetupScreen implements Screen {
     static final SetupScreen INSTANCE = new SetupScreen();
     Tile[] setup_tiles;
-    Tile add_player_button, remove_player_button, one_point_button, ten_point_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
+    Tile add_player_button, remove_player_button, edit_score_button, settings_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile theme_folder_button, refresh_themes_button, theme_scroll_up_button, theme_scroll_down_button;
     int selected_player;
     int theme_scroll_offset;
+    String new_score;
     boolean editing_name;
     final int MAX_THEME_ROWS = 6;
 
@@ -79,7 +80,7 @@ public class SetupScreen implements Screen {
             }
             sc.textAlign(sc.LEFT, sc.CENTER);
             sc.textSize(sc.width * 0.05f);
-            sc.text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, setup_tiles[i].x() + sc.width * 0.01f, setup_tiles[i].cy());
+            sc.text(p.getName(i), setup_tiles[i].x() + sc.width * 0.01f, setup_tiles[i].cy());
             sc.textAlign(sc.CENTER, sc.CENTER);
             sc.textSize(sc.width * 0.03f);
             sc.fill(p.display_color);
@@ -88,8 +89,8 @@ public class SetupScreen implements Screen {
         boolean popup_shown = Window.current != Window.NONE;
         sc.drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, Player.count() < sc.MAX_PLAYERS, !popup_shown);
         sc.drawButton(remove_player_button, "Remove Player", 0.02f, selected_player != -1 && Player.count() > 2, !popup_shown);
-        sc.drawButton(one_point_button, "Add/Remove 1 pt", 0.02f, selected_player != -1, !popup_shown);
-        sc.drawButton(ten_point_button, "Add/Remove 10 pts", 0.02f, selected_player != -1, !popup_shown);
+        sc.drawButton(edit_score_button, "Edit score", 0.02f, selected_player != -1, !popup_shown);
+        sc.drawButton(settings_button, "Settings", 0.02f, false, !popup_shown);
         sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, !popup_shown);
         sc.drawButton(reset_button, "Reset", 0.02f, true, !popup_shown);
         sc.drawButton(theme_button, "Themes", 0.02f, true, !popup_shown);
@@ -264,6 +265,34 @@ public class SetupScreen implements Screen {
                     sc.textAlign(sc.CENTER, sc.CENTER);
                 }
             }
+        } else if(Window.current == Window.SCORE_EDITOR) {
+            if(selected_player == -1) {
+                selected_player = 0;
+            }
+            Player p = Player.get(selected_player);
+            if(new_score == null) {
+                new_score = String.valueOf(p.score);
+            }
+            sc.fill(Theme.theme.popup_background_color, 230);
+            sc.stroke(Theme.theme.line_color);
+            sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
+            sc.drawButton(Window.close_button, "X", 0.02f, true, true);
+            String a = "Editing score for: ";
+            String b = p.getName(selected_player);
+            sc.textSize(sc.width * 0.03f);
+            float tw = sc.textWidth(a + b);
+            float tw1 = sc.textWidth(a);
+            float pos = Window.tile.cx() - tw/2;
+            sc.textAlign(sc.LEFT, sc.CENTER);
+            sc.fill(Theme.theme.text_color);
+            sc.text(a, pos, Window.tile.y(0.2));
+            sc.fill(Theme.theme.getPlayerColor(selected_player));
+            sc.text(b, pos + tw1, Window.tile.y(0.2));
+            sc.textAlign(sc.CENTER, sc.CENTER);
+            sc.fill(Theme.theme.text_color);
+            sc.text("Current score: " + p.score, Window.tile.cx(), Window.tile.y(0.4));
+            sc.text("New score: " + new_score, Window.tile.cx(), Window.tile.y(0.6));
+            sc.text("Press Enter to confirm.", Window.tile.cx(), Window.tile.y(0.8));
         }
     }
 
@@ -325,16 +354,26 @@ public class SetupScreen implements Screen {
                     }
                 }
             }
+        } else if(Window.current == Window.SCORE_EDITOR) {
+            if(Window.close_button.mouseInTile()) {
+                Window.current = Window.NONE;
+            }
         } else {
             boolean clicked_player = false;
             if(add_player_button.mouseInTile()) {
                 handleAddPlayer(sc);
             } else if(remove_player_button.mouseInTile()) {
                 handleRemovePlayer(sc);
-            } else if(one_point_button.mouseInTile()) {
-                handleChangeScore(sc.mouseButton == sc.LEFT, 1, sc);
-            } else if(ten_point_button.mouseInTile()) {
-                handleChangeScore(sc.mouseButton == sc.LEFT, 10, sc);
+            } else if(edit_score_button.mouseInTile()) {
+                if(selected_player != -1) {
+                    Window.current = Window.SCORE_EDITOR;
+                    new_score = String.valueOf(Player.get(selected_player).score);
+                } else {
+                    sc.displayError("Must select a player to edit score");
+                }
+            } else if(settings_button.mouseInTile()) {
+                sc.displayError("Not yet implemented");
+                //TODO: Add settings button in place
             } else if(custom_tricks_button.mouseInTile()) {
                 Window.current = Window.TRICKS;
             } else if(reset_button.mouseInTile()) {
@@ -382,8 +421,8 @@ public class SetupScreen implements Screen {
         };
         add_player_button = new Tile(0.04, 0.875, 0.24, 0.958);
         remove_player_button = new Tile(0.28, 0.875, 0.48, 0.958);
-        one_point_button = new Tile(0.04, 0.75, 0.24, 0.833);
-        ten_point_button = new Tile(0.28, 0.75, 0.48, 0.833);
+        edit_score_button = new Tile(0.04, 0.75, 0.24, 0.833);
+        settings_button = new Tile(0.28, 0.75, 0.48, 0.833);
         custom_tricks_button = new Tile(0.52, 0.75, 0.72, 0.833);
         reset_button = new Tile(0.76, 0.75, 0.96, 0.833);
         theme_button = new Tile(0.52, 0.875, 0.72, 0.958);

@@ -27,7 +27,8 @@ public class TakingScreen extends GameplayScreen {
             sc.hands_played++;
             Logger.write("--------------------------------");
             Logger.write("Hand #" + sc.hands_played + " - Tricks: " + sc.tricks[sc.trick_index]);
-            for(Player p : Player.players) {
+            for(int i = 0; i < Player.count(); i++) {
+                Player p = Player.get(i);
                 int old = p.score;
                 p.total_bid += p.bid;
                 p.total_taken += p.taken;
@@ -59,7 +60,7 @@ public class TakingScreen extends GameplayScreen {
                     p.score = 0;
                 }
                 p.hands_played++;
-                Logger.write(p.name + " bid " + p.bid + " tricks and took " + p.taken + ". " + old + " --> " + p.score);
+                Logger.write(p.getName(i) + " bid " + p.bid + " tricks and took " + p.taken + ". " + old + " --> " + p.score);
                 p.bid = 0;
                 p.has_bid = false;
                 p.taken = 0;

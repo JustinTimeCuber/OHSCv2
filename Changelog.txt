@@ -1,10 +1,15 @@
 v2.2-beta.2
++ Added score editing window
+    Removed 1 and 10 point buttons
++ Added settings button
+    Currently does nothing
 * Fixed statistics screen not re-sorting after re-opening
 * Added a white outline to black suit icons to improve legibility
 * Improved theme selector
     Added button to open folder
     Vertical overflow no longer occurs with too many themes, instead up and down scroll buttons will appear
 * Improved error handling in theme loading to reduce likelihood of crashes
+* Improved consistency when empty names are treated as "Player 1", etc.
 
 v2.2-beta.1
 + Added statistics screen

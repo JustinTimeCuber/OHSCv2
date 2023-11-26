@@ -48,7 +48,7 @@ public abstract class GameplayScreen implements Screen {
             sc.rect(game_tiles[i].x(), game_tiles[i].y(), game_tiles[i].w(), game_tiles[i].h());
             sc.fill(p.display_color);
             sc.textSize(game_tiles[0].w() * 0.1f);
-            sc.text(p.name.equals("") ? ("Player " + (i + 1)) : p.name, game_tiles[i].cx(), game_tiles[i].y() + game_tiles[i].h() * 0.167f);
+            sc.text(p.getName(i), game_tiles[i].cx(), game_tiles[i].y() + game_tiles[i].h() * 0.167f);
             sc.textSize(game_tiles[i].h() * 0.5f);
             sc.text(p.score, game_tiles[i].cx(), game_tiles[i].my() - game_tiles[i].h() * 0.43f);
             sc.textSize(game_tiles[0].w() * 0.04f);

@@ -114,7 +114,7 @@ public class StatisticsScreen implements Screen {
             sc.rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
             sc.fill(p.display_color);
             sc.textAlign(sc.LEFT, sc.CENTER);
-            sc.text(p.name.equals("") ? ("Player " + (sorted_player_indices[i] + 1)) : p.name, statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());
+            sc.text(p.getName(sorted_player_indices[i]), statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());
             sc.textAlign(sc.CENTER, sc.CENTER);
             sc.text(p.score, statistics_tiles[i].x(text_positions[1]), statistics_tiles[i].cy());
             sc.text(p.total_taken, statistics_tiles[i].x(text_positions[2]), statistics_tiles[i].cy());

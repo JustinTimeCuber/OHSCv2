@@ -175,7 +175,7 @@ public class OhHellScoreboardV2 extends PApplet {
         out[0] = "Hands played: " + hands_played;
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);
-            out[i + 1] = p.name + ": score=" + p.score + " bid=" + p.total_bid + " taken=" + p.total_taken + " bonus=" + p.bonuses + " set=" + p.times_set + " hands=" + p.hands_played;
+            out[i + 1] = p.getName(i) + ": score=" + p.score + " bid=" + p.total_bid + " taken=" + p.total_taken + " bonus=" + p.bonuses + " set=" + p.times_set + " hands=" + p.hands_played;
         }
         out = Logger.append(out);
         String timestamp = year() + "-" + month() + "-" + day() + "-" + hour() + "_" + minute() + "_" + second();
@@ -441,6 +441,28 @@ public class OhHellScoreboardV2 extends PApplet {
                             SetupScreen.INSTANCE.selected_player = i;
                         }
                     }
+                }
+            } else if(Window.current == Window.SCORE_EDITOR) {
+                Player p = Player.get(SetupScreen.INSTANCE.selected_player);
+                String s = SetupScreen.INSTANCE.new_score;
+                if(key == BACKSPACE) {
+                    if(s.length() > 0) {
+                        SetupScreen.INSTANCE.new_score = s.substring(0, s.length() - 1);
+                    }
+                } else if(key == ENTER) {
+                    int ns;
+                    try {
+                        ns = parseInt(s);
+                    } catch(Exception e) {
+                        displayError("Cannot parse " + s + " as an integer.");
+                        return;
+                    }
+                    int os = p.score;
+                    p.score = ns;
+                    SetupScreen.INSTANCE.new_score = String.valueOf(ns);
+                    Logger.write("Score of " + p.getName(SetupScreen.INSTANCE.selected_player) + " manually changed from " + os + " to " + ns);
+                } else if(Character.isDigit(key) || (s.length() == 0 && key == '-')) {
+                    SetupScreen.INSTANCE.new_score += key;
                 }
             }
         } else {

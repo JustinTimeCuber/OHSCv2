@@ -1,7 +1,8 @@
 public enum Window {
     NONE,
     TRICKS,
-    THEMES;
+    THEMES,
+    SCORE_EDITOR;
 
     static Tile tile;
     static Tile close_button;
