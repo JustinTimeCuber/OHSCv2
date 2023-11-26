@@ -47,14 +47,6 @@ public class SetupScreen implements Screen {
         }
     }
 
-    void handleChangeScore(boolean direction, int amount, OhHellScoreboardV2 sc) {
-        if(selected_player == -1) {
-            sc.displayError("Must select a player to change score");
-        } else {
-            Player.get(selected_player).score += (direction ? amount : -amount);
-        }
-    }
-
     void handleBeginGame() {
         if(ScreenManager.currentScreen() instanceof SetupScreen) {
             ScreenManager.popScreen();
