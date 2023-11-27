@@ -25,6 +25,3 @@ set_prevents_trick_points: true
 
 # Can player scores go below zero?
 negative_scores_allowed: true
-
-# Are the extra trump suits (dots and crosses) enabled?
-extra_trump_suits: false
