@@ -421,18 +421,11 @@ public class OhHellScoreboardV2 extends PApplet {
     void setTrumpFromKey(char k) {
         if(k == 'b') {
             trump_suit = null;
-        } else if(k == 's') {
-            trump_suit = Suit.getByName("spades");
-        } else if(k == 'c') {
-            trump_suit = Suit.getByName("clubs");
-        } else if(k == 'h') {
-            trump_suit = Suit.getByName("hearts");
-        } else if(k == 'd') {
-            trump_suit = Suit.getByName("diamonds");
-        } else if(k == '.') {
-            trump_suit = Suit.getByName("dots");
-        } else if(k == 'x') {
-            trump_suit = Suit.getByName("crosses");
+        } else {
+            Suit new_trump = Suit.getByKey(k);
+            if(new_trump != null) {
+                trump_suit = new_trump;
+            }
         }
     }
 

@@ -7,7 +7,6 @@ public class Config {
     static boolean set_penalty_scales = false;
     static boolean set_prevents_trick_points = true;
     static boolean negative_scores_allowed = true;
-    static boolean extra_trump_suits = false;
 
     static void loadConfig(OhHellScoreboardV2 sc) {
         try {
@@ -31,7 +30,6 @@ public class Config {
                     case "set_penalty_scales" -> set_penalty_scales = Boolean.parseBoolean(value);
                     case "set_prevents_trick_points" -> set_prevents_trick_points = Boolean.parseBoolean(value);
                     case "negative_scores_allowed" -> negative_scores_allowed = Boolean.parseBoolean(value);
-                    case "extra_trump_suits" -> extra_trump_suits = Boolean.parseBoolean(value);
                     default -> System.err.println("Unrecognized label: " + label);
                 }
             }

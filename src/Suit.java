@@ -2,23 +2,33 @@ import processing.core.PImage;
 
 public class Suit {
     private static Suit[] suits = {
-            new Suit("spades", "assets/spades.png"),
-            new Suit("hearts", "assets/hearts.png"),
-            new Suit("clubs", "assets/clubs.png"),
-            new Suit("diamonds", "assets/diamonds.png"),
-            new Suit("dots", "assets/dots.png"),
-            new Suit("crosses", "assets/crosses.png"),
+            new Suit("spades", "assets/spades.png", 's'),
+            new Suit("hearts", "assets/hearts.png", 'h'),
+            new Suit("clubs", "assets/clubs.png", 'c'),
+            new Suit("diamonds", "assets/diamonds.png", 'd'),
+            new Suit("dots", "assets/dots.png", '.'),
+            new Suit("crosses", "assets/crosses.png", 'x'),
     };
     PImage image;
     String name;
     String imagePath;
-    Suit(String n, String i) {
+    char key;
+    Suit(String n, String i, char k) {
         name = n;
         imagePath = i;
+        key = k;
     }
     static Suit getByName(String n) {
         for(Suit s : suits) {
             if(n.equals(s.name)) {
+                return s;
+            }
+        }
+        return null;
+    }
+    static Suit getByKey(char k) {
+        for(Suit s : suits) {
+            if(k == s.key) {
                 return s;
             }
         }
