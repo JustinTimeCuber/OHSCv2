@@ -35,6 +35,7 @@ public class OhHellScoreboardV2 extends PApplet {
     final PrintStream placebo_output = new PrintStream(new OutputStream() {
         @Override
         public void write(int b) {
+            // Fake System.err.write to allow suppressing Processing error messages
         }
     });
 
@@ -405,106 +406,7 @@ public class OhHellScoreboardV2 extends PApplet {
             return;
         }
         resetFramerateCooldown();
-        if(ScreenManager.currentScreen() instanceof SetupScreen) {
-            if(Window.current == Window.NONE) {
-                if(key == TAB) {
-                    SetupScreen.INSTANCE.selected_player++;
-                    if(SetupScreen.INSTANCE.selected_player >= Player.count()) {
-                        SetupScreen.INSTANCE.selected_player = 0;
-                    }
-                    return;
-                } else if(key == ENTER && SetupScreen.INSTANCE.selected_player >= 0) {
-                    SetupScreen.INSTANCE.editing_name = !SetupScreen.INSTANCE.editing_name;
-                    return;
-                }
-                if(SetupScreen.INSTANCE.editing_name) {
-                    String s = Player.get(SetupScreen.INSTANCE.selected_player).name;
-                    textSize(width * 0.05f);
-                    if(key == ',') {
-                        displayError("That character conflicts with the OHSC v2.0 autosave format");
-                    } else if(key == BACKSPACE) {
-                        if(s.length() > 0) {
-                            Player.get(SetupScreen.INSTANCE.selected_player).name = s.substring(0, s.length() - 1);
-                        }
-                    } else if(textWidth(s + key) <= MAX_NAME_WIDTH * width) {
-                        Player.get(SetupScreen.INSTANCE.selected_player).name += key;
-                    } else {
-                        displayError("The maximum name width is " + round(MAX_NAME_WIDTH * width) + " pixels");
-                    }
-                } else {
-                    int i = Math.abs(getKeyValue(key));
-                    if(i != 0 && i - 1 < Player.count()) {
-                        i--;
-                        if(SetupScreen.INSTANCE.selected_player == i) {
-                            SetupScreen.INSTANCE.editing_name = true;
-                        } else {
-                            SetupScreen.INSTANCE.selected_player = i;
-                        }
-                    }
-                }
-            } else if(Window.current == Window.SCORE_EDITOR) {
-                Player p = Player.get(SetupScreen.INSTANCE.selected_player);
-                String s = SetupScreen.INSTANCE.new_score;
-                if(key == BACKSPACE) {
-                    if(s.length() > 0) {
-                        SetupScreen.INSTANCE.new_score = s.substring(0, s.length() - 1);
-                    }
-                } else if(key == ENTER) {
-                    int ns;
-                    try {
-                        ns = parseInt(s);
-                    } catch(Exception e) {
-                        displayError("Cannot parse " + s + " as an integer.");
-                        return;
-                    }
-                    int os = p.score;
-                    p.score = ns;
-                    SetupScreen.INSTANCE.new_score = String.valueOf(ns);
-                    Logger.write("Score of " + p.getName(SetupScreen.INSTANCE.selected_player) + " manually changed from " + os + " to " + ns);
-                } else if(Character.isDigit(key) || (s.length() == 0 && key == '-')) {
-                    SetupScreen.INSTANCE.new_score += key;
-                }
-            }
-        } else {
-            if(key == 'b') {
-                trump_suit = 0;
-            } else if(key == 's') {
-                trump_suit = 1;
-            } else if(key == 'c') {
-                trump_suit = 2;
-            } else if(key == 'h') {
-                trump_suit = 3;
-            } else if(key == 'd') {
-                trump_suit = 4;
-            } else if(Config.extra_trump_suits) {
-                if(key == '.') {
-                    trump_suit = 5;
-                } else if(key == 'x') {
-                    trump_suit = 6;
-                }
-            }
-            if(key == ENTER) {
-                if(ScreenManager.currentScreen() instanceof BiddingScreen) {
-                    BiddingScreen.INSTANCE.handleFinishBidding(this);
-                } else if(ScreenManager.currentScreen() instanceof TakingScreen) {
-                    TakingScreen.INSTANCE.handleFinishRound(this);
-                }
-            }
-            int i = Math.abs(getKeyValue(key));
-            if(ScreenManager.currentScreen() instanceof BiddingScreen) {
-                if(i != 0 && i - 1 < Player.count()) {
-                    i--;
-                    Player p = Player.get(i);
-                    BiddingScreen.INSTANCE.handleBidChange(p, getKeyValue(key) > 0, this);
-                }
-            } else {
-                if(i != 0 && i - 1 < Player.count()) {
-                    i--;
-                    Player p = Player.get(i);
-                    TakingScreen.INSTANCE.handleTakenChange(p, getKeyValue(key) > 0, this);
-                }
-            }
-        }
+        ScreenManager.currentScreen().keyTyped(this);
         StateIO.saveState(DATA_PATH + "latest", this);
     }
 
@@ -532,6 +434,26 @@ public class OhHellScoreboardV2 extends PApplet {
             case 'p' -> -10;
             default -> 0;
         };
+    }
+
+    void setTrumpFromKey(char k) {
+        if(k == 'b') {
+            trump_suit = 0;
+        } else if(k == 's') {
+            trump_suit = 1;
+        } else if(k == 'c') {
+            trump_suit = 2;
+        } else if(k == 'h') {
+            trump_suit = 3;
+        } else if(k == 'd') {
+            trump_suit = 4;
+        } else if(Config.extra_trump_suits) {
+            if(k == '.') {
+                trump_suit = 5;
+            } else if(k == 'x') {
+                trump_suit = 6;
+            }
+        }
     }
 
     @Override

@@ -63,4 +63,19 @@ public class BiddingScreen extends GameplayScreen {
             super.mousePressed(sc);
         }
     }
+
+    @Override
+    public void keyTyped(OhHellScoreboardV2 sc) {
+        char key = sc.key;
+        super.keyTyped(sc);
+        if(key == sc.ENTER) {
+            handleFinishBidding(sc);
+        }
+        int i = Math.abs(sc.getKeyValue(key));
+        if(i != 0 && i - 1 < Player.count()) {
+            i--;
+            Player p = Player.get(i);
+            handleBidChange(p, sc.getKeyValue(key) > 0, sc);
+        }
+    }
 }

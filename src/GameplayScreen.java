@@ -98,6 +98,11 @@ public abstract class GameplayScreen implements Screen {
     }
 
     @Override
+    public void keyTyped(OhHellScoreboardV2 sc) {
+        sc.setTrumpFromKey(sc.key);
+    }
+
+    @Override
     public void init(OhHellScoreboardV2 sc) {
         setup_button = new Tile(0.02, 0.875, 0.14, 0.958);
         edit_bids_button = new Tile(0.15, 0.875, 0.27, 0.958);

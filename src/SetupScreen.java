@@ -1,3 +1,5 @@
+import processing.core.PApplet;
+
 import java.io.File;
 
 public class SetupScreen implements Screen {
@@ -393,6 +395,69 @@ public class SetupScreen implements Screen {
             }
             if(!clicked_player) {
                 editing_name = false;
+            }
+        }
+    }
+    
+    @Override
+    public void keyTyped(OhHellScoreboardV2 sc) {
+        char key = sc.key;
+        if(Window.current == Window.NONE) {
+            if(key == sc.TAB) {
+                selected_player++;
+                if(selected_player >= Player.count()) {
+                    selected_player = 0;
+                }
+                return;
+            } else if(key == sc.ENTER && selected_player >= 0) {
+                editing_name = !editing_name;
+                return;
+            }
+            if(editing_name) {
+                String s = Player.get(selected_player).name;
+                sc.textSize(sc.width * 0.05f);
+                if(key == ',') {
+                    sc.displayError("That character conflicts with the OHSCv2 autosave format");
+                } else if(key == sc.BACKSPACE) {
+                    if(s.length() > 0) {
+                        Player.get(selected_player).name = s.substring(0, s.length() - 1);
+                    }
+                } else if(sc.textWidth(s + key) <= sc.MAX_NAME_WIDTH * sc.width) {
+                    Player.get(selected_player).name += key;
+                } else {
+                    sc.displayError("The maximum name width is " + PApplet.round(sc.MAX_NAME_WIDTH * sc.width) + " pixels");
+                }
+            } else {
+                int i = Math.abs(sc.getKeyValue(key));
+                if(i != 0 && i - 1 < Player.count()) {
+                    i--;
+                    if(selected_player == i) {
+                        editing_name = true;
+                    } else {
+                        selected_player = i;
+                    }
+                }
+            }
+        } else if(Window.current == Window.SCORE_EDITOR) {
+            Player p = Player.get(selected_player);
+            if(key == sc.BACKSPACE) {
+                if(new_score.length() > 0) {
+                    this.new_score = new_score.substring(0, new_score.length() - 1);
+                }
+            } else if(key == sc.ENTER) {
+                int ns;
+                try {
+                    ns = PApplet.parseInt(new_score);
+                } catch(Exception e) {
+                    sc.displayError("Cannot parse " + new_score + " as an integer.");
+                    return;
+                }
+                int os = p.score;
+                p.score = ns;
+                new_score = String.valueOf(ns);
+                Logger.write("Score of " + p.getName(selected_player) + " manually changed from " + os + " to " + ns);
+            } else if(Character.isDigit(key) || (new_score.length() == 0 && key == '-')) {
+                new_score += key;
             }
         }
     }

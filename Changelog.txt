@@ -1,3 +1,6 @@
+v2.2-beta.3
+* Split code for key presses into each screen's class similarly to mouse presses
+
 v2.2-beta.2
 + Added score editing window
     Removed 1 and 10 point buttons
