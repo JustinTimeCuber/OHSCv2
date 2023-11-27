@@ -25,14 +25,7 @@ public abstract class GameplayScreen implements Screen {
     }
 
     void handleTrumpButton(OhHellScoreboardV2 sc) {
-        sc.trump_suit += sc.mouseButton == sc.LEFT ? 1 : -1;
-        int max = Config.extra_trump_suits ? 6 : 4;
-        if(sc.trump_suit < 0) {
-            sc.trump_suit = max;
-        }
-        if(sc.trump_suit > max) {
-            sc.trump_suit = 0;
-        }
+        sc.trump_suit = sc.mouseButton == sc.LEFT ? Suit.getNext(sc.trump_suit) : Suit.getPrevious(sc.trump_suit);
     }
 
     @Override
@@ -76,9 +69,11 @@ public abstract class GameplayScreen implements Screen {
         sc.textSize(sc.width * 0.05f);
         sc.text(sc.trick_mode == 0 ? "--" : String.valueOf(sc.tricks[sc.trick_index]), sc.width * 0.72f, sc.height * 0.93f);
         sc.text(total_taken, sc.width * 0.88f, sc.height * 0.93f);
-        PImage trump_icon = sc.trumpIcon();
-        if(trump_icon != null) {
-            sc.image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() * 0.25f, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() * 0.25f, trump_suit_bounding_box.w() * 0.5f, trump_suit_bounding_box.h() * 0.5f);
+        if(sc.trump_suit != null) {
+            PImage trump_icon = sc.trump_suit.image;
+            if (trump_icon != null) {
+                sc.image(trump_icon, trump_suit_bounding_box.x() + trump_suit_bounding_box.w() * 0.25f, trump_suit_bounding_box.y() + trump_suit_bounding_box.h() * 0.25f, trump_suit_bounding_box.w() * 0.5f, trump_suit_bounding_box.h() * 0.5f);
+            }
         }
     }
 

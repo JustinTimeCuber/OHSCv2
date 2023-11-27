@@ -24,9 +24,8 @@ public class OhHellScoreboardV2 extends PApplet {
     int trick_mode;
     int[] tricks;
     int trick_index;
-    int trump_suit;
+    Suit trump_suit;
     int low_framerate_cooldown;
-    PImage spades, clubs, hearts, diamonds, dots, crosses;
     PFont font;
     float aspect_ratio;
     int millis_last_frame = 0;
@@ -121,7 +120,7 @@ public class OhHellScoreboardV2 extends PApplet {
         suits = 4;
         cards_per_suit = 13;
         trick_mode = 1;
-        trump_suit = 0;
+        trump_suit = null;
         low_framerate_cooldown = 60;
         Theme.loadThemes();
         updatePlayers(true);
@@ -156,18 +155,6 @@ public class OhHellScoreboardV2 extends PApplet {
             case 5 -> "Split";
             case 6 -> "Custom";
             default -> "Undefined";
-        };
-    }
-
-    PImage trumpIcon() {
-        return switch(trump_suit) {
-            case 1 -> spades;
-            case 2 -> clubs;
-            case 3 -> hearts;
-            case 4 -> diamonds;
-            case 5 -> dots;
-            case 6 -> crosses;
-            default -> null;
         };
     }
 
@@ -345,12 +332,7 @@ public class OhHellScoreboardV2 extends PApplet {
             setInitialValues();
             StateIO.saveState(DATA_PATH + "latest", this);
         }
-        spades = loadImage("assets/spades.png");
-        hearts = loadImage("assets/hearts.png");
-        clubs = loadImage("assets/clubs.png");
-        diamonds = loadImage("assets/diamonds.png");
-        dots = loadImage("assets/dots.png");
-        crosses = loadImage("assets/crosses.png");
+        Suit.loadAll(this);
         font = createFont("assets/NTSomic-Bold.ttf", 64);
         textFont(font);
     }
@@ -438,21 +420,19 @@ public class OhHellScoreboardV2 extends PApplet {
 
     void setTrumpFromKey(char k) {
         if(k == 'b') {
-            trump_suit = 0;
+            trump_suit = null;
         } else if(k == 's') {
-            trump_suit = 1;
+            trump_suit = Suit.getByName("spades");
         } else if(k == 'c') {
-            trump_suit = 2;
+            trump_suit = Suit.getByName("clubs");
         } else if(k == 'h') {
-            trump_suit = 3;
+            trump_suit = Suit.getByName("hearts");
         } else if(k == 'd') {
-            trump_suit = 4;
-        } else if(Config.extra_trump_suits) {
-            if(k == '.') {
-                trump_suit = 5;
-            } else if(k == 'x') {
-                trump_suit = 6;
-            }
+            trump_suit = Suit.getByName("diamonds");
+        } else if(k == '.') {
+            trump_suit = Suit.getByName("dots");
+        } else if(k == 'x') {
+            trump_suit = Suit.getByName("crosses");
         }
     }
 

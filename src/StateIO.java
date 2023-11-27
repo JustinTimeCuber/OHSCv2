@@ -15,7 +15,7 @@ public class StateIO {
         state.add("cards_per_suit:" + sc.cards_per_suit);
         state.add("trick_mode:" + sc.trick_mode);
         state.add("trick_index:" + sc.trick_index);
-        state.add("trump_suit:" + sc.trump_suit);
+        state.add("trump_suit:" + (sc.trump_suit == null ? "" : sc.trump_suit.name));
         state.add("hands_played:" + sc.hands_played);
         state.add("theme_file:" + Theme.theme.file);
         state.add("theme_directory:" + Theme.theme.directory);
@@ -45,7 +45,7 @@ public class StateIO {
                 case "cards_per_suit" -> sc.cards_per_suit = Integer.parseInt(value);
                 case "trick_mode" -> sc.trick_mode = Integer.parseInt(value);
                 case "trick_index" -> sc.trick_index = Integer.parseInt(value);
-                case "trump_suit" -> sc.trump_suit = Integer.parseInt(value);
+                case "trump_suit" -> sc.trump_suit = Suit.getByName(value);
                 case "hands_played" -> sc.hands_played = Integer.parseInt(value);
                 case "theme_file" -> Theme.theme_file = value;
                 case "theme_directory" -> Theme.theme_directory = value;

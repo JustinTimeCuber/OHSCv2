@@ -74,7 +74,7 @@ public class TakingScreen extends GameplayScreen {
                     return;
                 }
             }
-            sc.trump_suit = 0;
+            sc.trump_suit = null;
             ScreenManager.setScreen(BiddingScreen.INSTANCE);
         } else {
             sc.displayError("Tricks taken must equal tricks dealt - override with enter + right click");
