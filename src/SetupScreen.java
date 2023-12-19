@@ -5,9 +5,10 @@ import java.io.File;
 public class SetupScreen implements Screen {
     static final SetupScreen INSTANCE = new SetupScreen();
     Tile[] setup_tiles;
-    Tile add_player_button, remove_player_button, edit_score_button, settings_button, custom_tricks_button, reset_button, theme_button, begin_game_button;
+    Tile add_player_button, remove_player_button, edit_score_button, settings_button, database_button, reset_button, statistics_button, begin_game_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile theme_folder_button, refresh_themes_button, theme_scroll_up_button, theme_scroll_down_button;
+    Tile custom_tricks_button, theme_button, config_open_button, config_reload_button;
     int selected_player;
     int theme_scroll_offset;
     String new_score;
@@ -84,16 +85,17 @@ public class SetupScreen implements Screen {
         sc.drawButton(add_player_button, selected_player == -1 ? "Add Player" : "Add Player Before", 0.02f, Player.count() < sc.MAX_PLAYERS, !popup_shown);
         sc.drawButton(remove_player_button, "Remove Player", 0.02f, selected_player != -1 && Player.count() > 2, !popup_shown);
         sc.drawButton(edit_score_button, "Edit score", 0.02f, selected_player != -1, !popup_shown);
-        sc.drawButton(settings_button, "Settings", 0.02f, false, !popup_shown);
-        sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, !popup_shown);
+        sc.drawButton(settings_button, "Settings", 0.02f, true, !popup_shown);
+        sc.drawButton(database_button, "Database", 0.02f, false, false);
         sc.drawButton(reset_button, "Reset", 0.02f, true, !popup_shown);
-        sc.drawButton(theme_button, "Themes", 0.02f, true, !popup_shown);
+        sc.drawButton(statistics_button, "Statistics", 0.02f, true, !popup_shown);
         sc.drawButton(begin_game_button, "Begin Game", 0.02f, true, !popup_shown);
         if(Window.current == Window.TRICKS) {
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
             sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
+            sc.drawButton(Window.back_button, "<", 0.02f, true, true);
             sc.fill(Theme.theme.text_color);
             sc.textSize(sc.width * 0.05f);
             sc.text("Trick Customization", Window.tile.cx(), Window.tile.y() + sc.height * 0.083f);
@@ -136,6 +138,7 @@ public class SetupScreen implements Screen {
             sc.stroke(Theme.theme.line_color);
             sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
+            sc.drawButton(Window.back_button, "<", 0.02f, true, true);
             sc.drawButton(refresh_themes_button, "", 0.02f, true, true);
             sc.drawButton(theme_folder_button, "F", 0.02f, true, true);
             sc.noFill();
@@ -287,6 +290,29 @@ public class SetupScreen implements Screen {
             sc.text("Current score: " + p.score, Window.tile.cx(), Window.tile.y(0.4));
             sc.text("New score: " + new_score, Window.tile.cx(), Window.tile.y(0.6));
             sc.text("Press Enter to confirm.", Window.tile.cx(), Window.tile.y(0.8));
+        } else if(Window.current == Window.SETTINGS) {
+            sc.fill(Theme.theme.popup_background_color, 230);
+            sc.stroke(Theme.theme.line_color);
+            sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
+            sc.textSize(sc.width * 0.05f);
+            sc.fill(Theme.theme.text_color);
+            sc.text("Settings", Window.tile.cx(), Window.tile.y() + sc.height * 0.083f);
+            sc.drawButton(Window.close_button, "X", 0.02f, true, true);
+            sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, true);
+            sc.drawButton(theme_button, "Themes", 0.02f, true, true);
+            sc.drawButton(config_open_button, "Open Config File", 0.02f, true, true);
+            sc.drawButton(config_reload_button, "Reload Config File", 0.02f, true, true);
+            String textLeft = String.join("\n", "Points per trick:", "Bonus points:", "Set penalty:",
+                    "Underbidding gets set:", "Overbidding gets set:", "Scale set penalty by tricks:", "Prevent trick points when set:", "Allow negative scores:");
+            String textRight = Config.points_per_trick + "\n" + Config.points_bonus + "\n" + Config.points_set + "\n" +
+                    Config.underbid_set + "\n" + Config.overbid_set + "\n" + Config.set_penalty_scales + "\n" +
+                    Config.set_prevents_trick_points + "\n" + Config.negative_scores_allowed;
+            sc.textAlign(sc.LEFT, sc.TOP);
+            sc.textSize(sc.width * 0.015f);
+            sc.text(textLeft, Window.tile.x(0.45), Window.tile.y(0.25));
+            sc.textAlign(sc.RIGHT, sc.TOP);
+            sc.text(textRight, Window.tile.x(0.85), Window.tile.y(0.25));
+            sc.textAlign(sc.CENTER, sc.CENTER);
         }
     }
 
@@ -295,6 +321,8 @@ public class SetupScreen implements Screen {
         if(Window.current == Window.TRICKS) {
             if(Window.close_button.mouseInTile()) {
                 Window.current = Window.NONE;
+            } else if(Window.back_button.mouseInTile()) {
+                Window.current = Window.SETTINGS;
             } else if(number_suits_button.mouseInTile()) {
                 sc.handleSuitsChange(sc.mouseButton == sc.LEFT);
             } else if(cards_per_suit_button.mouseInTile()) {
@@ -307,6 +335,8 @@ public class SetupScreen implements Screen {
         } else if(Window.current == Window.THEMES) {
             if(Window.close_button.mouseInTile()) {
                 Window.current = Window.NONE;
+            } else if(Window.back_button.mouseInTile()) {
+                Window.current = Window.SETTINGS;
             } else if(refresh_themes_button.mouseInTile()) {
                 Theme.themes = null;
                 Theme.loadThemes();
@@ -352,6 +382,23 @@ public class SetupScreen implements Screen {
             if(Window.close_button.mouseInTile()) {
                 Window.current = Window.NONE;
             }
+        } else if(Window.current == Window.SETTINGS) {
+            if(Window.close_button.mouseInTile()) {
+                Window.current = Window.NONE;
+            } else if(custom_tricks_button.mouseInTile()) {
+                Window.current = Window.TRICKS;
+            } else if(theme_button.mouseInTile()) {
+                Window.current = Window.THEMES;
+            } else if(config_open_button.mouseInTile()) {
+                String file = sc.DATA_PATH + "config.txt";
+                try {
+                    java.awt.Desktop.getDesktop().open(new File(file));
+                } catch(Exception e) {
+                    sc.displayError("Cannot open file: " + e.getMessage());
+                }
+            } else if(config_reload_button.mouseInTile()) {
+                Config.loadConfig(sc);
+            }
         } else {
             boolean clicked_player = false;
             if(add_player_button.mouseInTile()) {
@@ -366,14 +413,13 @@ public class SetupScreen implements Screen {
                     sc.displayError("Must select a player to edit score");
                 }
             } else if(settings_button.mouseInTile()) {
-                sc.displayError("Not yet implemented");
-                //TODO: Add settings button in place
-            } else if(custom_tricks_button.mouseInTile()) {
-                Window.current = Window.TRICKS;
+                Window.current = Window.SETTINGS;
+            } else if(database_button.mouseInTile()) {
+                sc.displayError("Database not implemented yet");
             } else if(reset_button.mouseInTile()) {
                 sc.setInitialValues();
-            } else if(theme_button.mouseInTile()) {
-                Window.current = Window.THEMES;
+            } else if(statistics_button.mouseInTile()) {
+                ScreenManager.pushScreen(StatisticsScreen.INSTANCE);
             } else if(begin_game_button.mouseInTile()) {
                 handleBeginGame();
             } else {
@@ -480,9 +526,9 @@ public class SetupScreen implements Screen {
         remove_player_button = new Tile(0.28, 0.875, 0.48, 0.958);
         edit_score_button = new Tile(0.04, 0.75, 0.24, 0.833);
         settings_button = new Tile(0.28, 0.75, 0.48, 0.833);
-        custom_tricks_button = new Tile(0.52, 0.75, 0.72, 0.833);
+        database_button = new Tile(0.52, 0.75, 0.72, 0.833);
         reset_button = new Tile(0.76, 0.75, 0.96, 0.833);
-        theme_button = new Tile(0.52, 0.875, 0.72, 0.958);
+        statistics_button = new Tile(0.52, 0.875, 0.72, 0.958);
         begin_game_button = new Tile(0.76, 0.875, 0.96, 0.958);
         number_suits_button = new Tile(0.193, 0.708, 0.327, 0.792);
         cards_per_suit_button = new Tile(0.353, 0.708, 0.487, 0.792);
@@ -492,6 +538,10 @@ public class SetupScreen implements Screen {
         refresh_themes_button = Tile.fromCoordinates(Window.tile.x(0.87), Window.tile.y() + Window.tile.w()*0.02f, Window.tile.x(0.92), Window.tile.y() + Window.tile.w()*0.07f);
         theme_scroll_up_button = Tile.fromCoordinates(Window.tile.x(0.1), Window.tile.y(0.21) - Window.tile.w()*0.05f, Window.tile.x(0.15), Window.tile.y(0.21));
         theme_scroll_down_button = Tile.fromCoordinates(Window.tile.x(0.1), Window.tile.y(0.89), Window.tile.x(0.15), Window.tile.y(0.89) + Window.tile.w()*0.05f);
+        custom_tricks_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.23), Window.tile.x(0.35), Window.tile.y(0.35));
+        theme_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.38), Window.tile.x(0.35), Window.tile.y(0.5));
+        config_open_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.53), Window.tile.x(0.35), Window.tile.y(0.65));
+        config_reload_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.68), Window.tile.x(0.35), Window.tile.y(0.8));
         editing_name = false;
         selected_player = -1;
         theme_scroll_offset = 0;

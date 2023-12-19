@@ -94,7 +94,10 @@ class Theme {
                     if(sc.loadStrings(dir + file) == null) {
                         dir = "themes/";
                     }
-                    themes.add(new Theme(dir, file, name));
+                    Theme newTheme = new Theme(dir, file, name);
+                    if(!newTheme.file.isBlank()) {
+                        themes.add(newTheme);
+                    }
                     if(file.equals(theme_file) && theme_directory.equals(dir)) {
                         theme_index = i;
                     }
@@ -122,7 +125,10 @@ class Theme {
                 try {
                     String file = themes_list_ext[i].split(":")[0];
                     String name = themes_list_ext[i].split(":")[1];
-                    themes.add(new Theme(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR, file, name));
+                    Theme newTheme = new Theme(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR, file, name);
+                    if(!newTheme.file.isBlank()) {
+                        themes.add(newTheme);
+                    }
                     if(file.equals(theme_file) && theme_directory.equals(sc.DATA_PATH + "themes" + sc.FILE_SEPARATOR)) {
                         theme_index = i + offset;
                     }
@@ -137,6 +143,9 @@ class Theme {
                     theme_index = i;
                 }
             }
+        }
+        if(theme_index >= themes.size()) {
+            theme_index = 0;
         }
         theme = themes.get(theme_index);
     }

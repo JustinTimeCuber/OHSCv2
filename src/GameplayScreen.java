@@ -50,12 +50,6 @@ public abstract class GameplayScreen implements Screen {
                 sc.textSize(game_tiles[0].w() * 0.1f);
                 sc.text(p.bid, game_tiles[i].x() + game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
             }
-            if(ScreenManager.currentScreen() instanceof TakingScreen) {
-                sc.textSize(game_tiles[0].w() * 0.04f);
-                sc.text("Taken", game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.167f);
-                sc.textSize(game_tiles[0].w() * 0.1f);
-                sc.text(p.taken, game_tiles[i].mx() - game_tiles[i].w() * 0.125f, game_tiles[i].my() - game_tiles[0].w() * 0.1f);
-            }
         }
         sc.drawButton(setup_button, "Setup", 0.02f, true, true);
         sc.drawButton(statistics_button, "Statistics", 0.02f, true, true);

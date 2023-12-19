@@ -1,6 +1,13 @@
 v2.2-beta.3
++ Added settings screen
+    Moved tricks and themes buttons to settings screen
+    Includes buttons to open and reload the config file
++ Added statistics screen button to setup screen
++ Added database button to setup screen, currently non-functional
 * Split code for key presses into each screen's class similarly to mouse presses
 * Split trump suit code into its own class
+* Further improved theme loading stability
+    Program no longer crashes when clicking the "reload themes" button results in the current theme being removed
 
 v2.2-beta.2
 + Added score editing window
