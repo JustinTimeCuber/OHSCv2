@@ -106,20 +106,25 @@ public class TakingScreen extends GameplayScreen {
         }
         sc.textSize(sc.width * 0.05f);
         sc.text(total_bid, sc.width * 0.8f, sc.height * 0.93f);
+        super.drawEndGameConfirmationBox(sc);
     }
 
     @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
-        for(int i = 0; i < Player.count(); i++) {
-            if(game_tiles[i].mouseInTile()) {
-                handleTakenChange(Player.get(i), sc.mouseButton == sc.LEFT, sc);
-                return;
-            }
-        }
-        if(proceed_button.mouseInTile()) {
-            handleFinishRound(sc);
-        } else {
+        if(Window.current == Window.CONFIRM_END_GAME) {
             super.mousePressed(sc);
+        } else {
+            for(int i = 0; i < Player.count(); i++) {
+                if(game_tiles[i].mouseInTile()) {
+                    handleTakenChange(Player.get(i), sc.mouseButton == sc.LEFT, sc);
+                    return;
+                }
+            }
+            if(proceed_button.mouseInTile()) {
+                handleFinishRound(sc);
+            } else {
+                super.mousePressed(sc);
+            }
         }
     }
 

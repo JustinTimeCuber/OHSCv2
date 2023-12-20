@@ -98,7 +98,7 @@ public class SetupScreen implements Screen {
             sc.drawButton(Window.back_button, "<", 0.02f, true, true);
             sc.fill(Theme.theme.text_color);
             sc.textSize(sc.width * 0.05f);
-            sc.text("Trick Customization", Window.tile.cx(), Window.tile.y() + sc.height * 0.083f);
+            sc.text("Trick Customization", Window.tile.cx(), Window.tile.y(0.12));
             sc.textAlign(sc.CENTER, sc.TOP);
             sc.textSize(sc.width * 0.02f);
             sc.text("Number of suits: " + sc.suits + "\nCards per suit: " + sc.cards_per_suit + "\nTotal cards in deck: " + (sc.suits * sc.cards_per_suit) +
@@ -151,7 +151,7 @@ public class SetupScreen implements Screen {
                     refresh_themes_button.x(0.8), refresh_themes_button.cy(),
                     refresh_themes_button.x(0.7), refresh_themes_button.y(0.7));
             sc.textSize(sc.width * 0.05f);
-            sc.text("Theme Selector", Window.tile.cx(), Window.tile.y() + sc.height * 0.083f);
+            sc.text("Theme Selector", Window.tile.cx(), Window.tile.y(0.12));
             float box_left = Window.tile.x() + sc.width * 0.05f;
             float box_right = Window.tile.mx() - sc.width * 0.05f;
             float box_width = box_right - box_left;
@@ -280,7 +280,7 @@ public class SetupScreen implements Screen {
             sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
             sc.textSize(sc.width * 0.05f);
             sc.fill(Theme.theme.text_color);
-            sc.text("Settings", Window.tile.cx(), Window.tile.y() + sc.height * 0.083f);
+            sc.text("Settings", Window.tile.cx(), Window.tile.y(0.12f));
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, true);
             sc.drawButton(theme_button, "Themes", 0.02f, true, true);
