@@ -1,3 +1,7 @@
+v2.2-beta.4
++ Add tooltip showing file path when hovering over "open config" button
++ Attempt to fix broken or outdated config.txt
+
 v2.2-beta.3
 + Added settings screen
     Moved tricks and themes buttons to settings screen

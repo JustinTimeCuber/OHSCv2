@@ -15,6 +15,7 @@ public class Config {
                 config = sc.loadStrings("config.txt");
                 sc.saveStrings(sc.DATA_PATH + "config.txt", config);
             }
+            boolean[] found = new boolean[8];
             for(String s : config) {
                 if(s.isBlank() || s.trim().startsWith("#")) {
                     continue;
@@ -22,19 +23,74 @@ public class Config {
                 String label = s.split(":")[0];
                 String value = s.substring(label.length() + 1).trim();
                 switch(label) {
-                    case "points_per_trick" -> points_per_trick = Integer.parseInt(value);
-                    case "points_bonus" -> points_bonus = Integer.parseInt(value);
-                    case "points_set" -> points_set = Integer.parseInt(value);
-                    case "underbid_set" -> underbid_set = Boolean.parseBoolean(value);
-                    case "overbid_set" -> overbid_set = Boolean.parseBoolean(value);
-                    case "set_penalty_scales" -> set_penalty_scales = Boolean.parseBoolean(value);
-                    case "set_prevents_trick_points" -> set_prevents_trick_points = Boolean.parseBoolean(value);
-                    case "negative_scores_allowed" -> negative_scores_allowed = Boolean.parseBoolean(value);
-                    default -> System.err.println("Unrecognized label: " + label);
+                    case "points_per_trick" -> {
+                        points_per_trick = Integer.parseInt(value);
+                        found[0] = true;
+                    }
+                    case "points_bonus" -> {
+                        points_bonus = Integer.parseInt(value);
+                        found[1] = true;
+                    }
+                    case "points_set" -> {
+                        points_set = Integer.parseInt(value);
+                        found[2] = true;
+                    }
+                    case "underbid_set" -> {
+                        underbid_set = Boolean.parseBoolean(value);
+                        found[3] = true;
+                    }
+                    case "overbid_set" -> {
+                        overbid_set = Boolean.parseBoolean(value);
+                        found[4] = true;
+                    }
+                    case "set_penalty_scales" -> {
+                        set_penalty_scales = Boolean.parseBoolean(value);
+                        found[5] = true;
+                    }
+                    case "set_prevents_trick_points" -> {
+                        set_prevents_trick_points = Boolean.parseBoolean(value);
+                        found[6] = true;
+                    }
+                    case "negative_scores_allowed" -> {
+                        negative_scores_allowed = Boolean.parseBoolean(value);
+                        found[7] = true;
+                    }
+                    default -> {
+                        System.err.println("Unrecognized label: " + label);
+                        System.err.println("Attempting to fix config.txt...");
+                        fixFile(sc);
+                    }
+                }
+            }
+            for(boolean b : found) {
+                if(!b) {
+                    fixFile(sc);
                 }
             }
         } catch(Exception e) {
             System.err.println("Could not read config.txt: " + e);
+            fixFile(sc);
         }
+    }
+    static void fixFile(OhHellScoreboardV2 sc) {
+        String[] config = sc.loadStrings("config.txt");
+        for(int i = 0; i < config.length; i++) {
+            String s = config[i];
+            if(s.isBlank() || s.trim().startsWith("#")) {
+                continue;
+            }
+            String label = s.split(":")[0];
+            switch(label) {
+                case "points_per_trick" -> config[i] = label + ": " + points_per_trick;
+                case "points_bonus" -> config[i] = label + ": " + points_bonus;
+                case "points_set" -> config[i] = label + ": " + points_set;
+                case "underbid_set" -> config[i] = label + ": " + underbid_set;
+                case "overbid_set" -> config[i] = label + ": " + overbid_set;
+                case "set_penalty_scales" -> config[i] = label + ": " + set_penalty_scales;
+                case "set_prevents_trick_points" -> config[i] = label + ": " + set_prevents_trick_points;
+                case "negative_scores_allowed" -> config[i] = label + ": " + negative_scores_allowed;
+            }
+        }
+        sc.saveStrings(sc.DATA_PATH + "config.txt", config);
     }
 }
