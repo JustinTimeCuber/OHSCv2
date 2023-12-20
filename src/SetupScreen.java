@@ -231,15 +231,7 @@ public class SetupScreen implements Screen {
             if(theme_folder_button.mouseInTile()) {
                 String dir = sc.DATA_PATH + "themes";
                 sc.textSize(sc.width * 0.015f);
-                sc.fill(Theme.theme.background_color);
-                sc.stroke(Theme.theme.line_color);
-                float tw = sc.textWidth(dir);
-                float px = (sc.mouseX + tw < sc.width * 0.98f) ? sc.mouseX : (sc.width * 0.98f - tw);
-                sc.rect(px, sc.mouseY, tw + sc.width * 0.02f, sc.width * 0.03f);
-                sc.fill(Theme.theme.text_color);
-                sc.textAlign(sc.LEFT, sc.CENTER);
-                sc.text(dir, px + sc.width * 0.01f, sc.mouseY + sc.width * 0.015f);
-                sc.textAlign(sc.CENTER, sc.CENTER);
+                sc.drawTooltip(dir, true);
             }
             for(int i = theme_scroll_offset; i < Math.min(MAX_THEME_ROWS + theme_scroll_offset, Theme.themes.size()); i++) {
                 int t = i - theme_scroll_offset;
@@ -251,15 +243,7 @@ public class SetupScreen implements Screen {
                         file = "jar/" + file;
                     }
                     sc.textSize(sc.width * 0.015f);
-                    sc.fill(Theme.theme.background_color);
-                    sc.stroke(Theme.theme.line_color);
-                    float tw = sc.textWidth(file);
-                    float px = (sc.mouseX + tw < sc.width * 0.98f) ? sc.mouseX : (sc.width * 0.98f - tw);
-                    sc.rect(px, sc.mouseY, tw + sc.width * 0.02f, sc.width * 0.03f);
-                    sc.fill(Theme.theme.text_color);
-                    sc.textAlign(sc.LEFT, sc.CENTER);
-                    sc.text(file, px + sc.width * 0.01f, sc.mouseY + sc.width * 0.015f);
-                    sc.textAlign(sc.CENTER, sc.CENTER);
+                    sc.drawTooltip(file, true);
                 }
             }
         } else if(Window.current == Window.SCORE_EDITOR) {
@@ -312,7 +296,10 @@ public class SetupScreen implements Screen {
             sc.text(textLeft, Window.tile.x(0.45), Window.tile.y(0.25));
             sc.textAlign(sc.RIGHT, sc.TOP);
             sc.text(textRight, Window.tile.x(0.85), Window.tile.y(0.25));
-            sc.textAlign(sc.CENTER, sc.CENTER);
+            String file = sc.DATA_PATH + "config.txt";
+            if(config_open_button.mouseInTile()) {
+                sc.drawTooltip(file, true);
+            }
         }
     }
 

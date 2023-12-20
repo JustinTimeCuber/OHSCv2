@@ -258,6 +258,24 @@ public class OhHellScoreboardV2 extends PApplet {
             displayError("Cannot open file: " + e.getMessage());
         }
     }
+    
+    void drawTooltip(String text, boolean handleFormatting) {
+        if(handleFormatting) {
+            fill(Theme.theme.background_color);
+            stroke(Theme.theme.line_color);
+        }
+        float tw = textWidth(text);
+        float px = (mouseX + tw < width * 0.98f) ? mouseX : (width * 0.98f - tw);
+        rect(px, mouseY, tw + width * 0.02f, width * 0.03f);
+        if(handleFormatting) {
+            fill(Theme.theme.text_color);
+            textAlign(LEFT, CENTER);
+        }
+        text(text, px + width * 0.01f, mouseY + width * 0.015f);
+        if(handleFormatting) {
+            textAlign(CENTER, CENTER);
+        }
+    }
 
     // Approximate fix for vertically-centered text to seem slightly too low
     @Override
