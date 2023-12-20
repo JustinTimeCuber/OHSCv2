@@ -20,6 +20,10 @@ public class Tile {
         return sc.mouseX > x1 * sc.width && sc.mouseX < x2 * sc.width && sc.mouseY > y1 * sc.height && sc.mouseY < y2 * sc.height;
     }
 
+    void rect(OhHellScoreboardV2 sc) {
+        sc.rect(x(), y(), w(), h());
+    }
+
     /**
      * The x coordinate of the left side of the tile.
      */

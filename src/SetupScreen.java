@@ -65,7 +65,7 @@ public class SetupScreen implements Screen {
             if(i == selected_player) {
                 sc.fill(p.display_color, 127);
             }
-            sc.rect(setup_tiles[i].x(), setup_tiles[i].y(), setup_tiles[i].w(), setup_tiles[i].h());
+            setup_tiles[i].rect(sc);
             sc.fill(p.display_color);
             if(i == selected_player && editing_name) {
                 sc.resetFramerateCooldown();
@@ -93,7 +93,7 @@ public class SetupScreen implements Screen {
         if(Window.current == Window.TRICKS) {
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
-            sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
+            Window.tile.rect(sc);
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             sc.drawButton(Window.back_button, "<", 0.02f, true, true);
             sc.fill(Theme.theme.text_color);
@@ -136,7 +136,7 @@ public class SetupScreen implements Screen {
         if(Window.current == Window.THEMES) {
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
-            sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
+            Window.tile.rect(sc);
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             sc.drawButton(Window.back_button, "<", 0.02f, true, true);
             sc.drawButton(refresh_themes_button, "", 0.02f, true, true);
@@ -256,7 +256,7 @@ public class SetupScreen implements Screen {
             }
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
-            sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
+            Window.tile.rect(sc);
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             String a = "Editing score for: ";
             String b = p.getName(selected_player);
@@ -277,7 +277,7 @@ public class SetupScreen implements Screen {
         } else if(Window.current == Window.SETTINGS) {
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
-            sc.rect(Window.tile.x(), Window.tile.y(), Window.tile.w(), Window.tile.h());
+            Window.tile.rect(sc);
             sc.textSize(sc.width * 0.05f);
             sc.fill(Theme.theme.text_color);
             sc.text("Settings", Window.tile.cx(), Window.tile.y(0.12f));

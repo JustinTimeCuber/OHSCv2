@@ -4,6 +4,8 @@ v2.2-beta.4
 + Add confirmation screen for "end game" button
     Enter + RMB still works but is not required
 * Gray out deal indicator when no trick sequence is given
+* Slightly tweaked text positioning for some windows
+* Refactor: added Tile.rect() to simplify rect(Tile.x, Tile.y, Tile.w, Tile.h)
 
 v2.2-beta.3
 + Added settings screen

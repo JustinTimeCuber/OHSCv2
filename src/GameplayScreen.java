@@ -40,7 +40,7 @@ public abstract class GameplayScreen implements Screen {
             total_bid += p.bid;
             total_taken += p.taken;
             sc.fill(Theme.theme.background_color);
-            sc.rect(game_tiles[i].x(), game_tiles[i].y(), game_tiles[i].w(), game_tiles[i].h());
+            game_tiles[i].rect(sc);
             sc.fill(p.display_color);
             sc.textSize(game_tiles[0].w() * 0.1f);
             sc.text(p.getName(i), game_tiles[i].cx(), game_tiles[i].y() + game_tiles[i].h() * 0.167f);
@@ -85,7 +85,7 @@ public abstract class GameplayScreen implements Screen {
         if(Window.current == Window.CONFIRM_END_GAME) {
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
-            sc.rect(Window.small_tile.x(), Window.small_tile.y(), Window.small_tile.w(), Window.small_tile.h());
+            Window.small_tile.rect(sc);
             sc.drawButton(cancel_end_game_button, "Cancel", 0.02f, true, true);
             sc.drawButton(confirm_end_game_button, "Confirm", 0.02f, true, true);
             sc.fill(Theme.theme.text_color);

@@ -88,7 +88,7 @@ public class StatisticsScreen implements Screen {
         sc.drawButton(return_button, "Return", 0.02f, true, true);
         sc.stroke(Theme.theme.line_color);
         sc.fill(Theme.theme.background_color);
-        sc.rect(statistics_header.x(), statistics_header.y(), statistics_header.w(), statistics_header.h());
+        statistics_header.rect(sc);
         for(float x : vertical_lines) {
             sc.line(statistics_header.x(x), statistics_header.y(), statistics_header.x(x), statistics_tiles[Player.count() - 1].my());
         }
@@ -111,7 +111,7 @@ public class StatisticsScreen implements Screen {
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(sorted_player_indices[i]);
             sc.noFill();
-            sc.rect(statistics_tiles[i].x(), statistics_tiles[i].y(), statistics_tiles[i].w(), statistics_tiles[i].h());
+            statistics_tiles[i].rect(sc);
             sc.fill(p.display_color);
             sc.textAlign(sc.LEFT, sc.CENTER);
             sc.text(p.getName(sorted_player_indices[i]), statistics_tiles[i].x(text_positions[0]), statistics_tiles[i].cy());

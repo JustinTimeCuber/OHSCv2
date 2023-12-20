@@ -11,7 +11,7 @@ public class GameOverScreen implements Screen {
         for(int i = 0; i < Player.count(); i++) {
             Player p = Player.get(i);
             sc.fill(Theme.theme.background_color);
-            sc.rect(GameplayScreen.game_tiles[i].x(), GameplayScreen.game_tiles[i].y(), GameplayScreen.game_tiles[i].w(), GameplayScreen.game_tiles[i].h());
+            GameplayScreen.game_tiles[i].rect(sc);
             sc.fill(p.display_color);
             sc.textSize(GameplayScreen.game_tiles[0].w() * 0.1f);
             sc.text(p.getName(i), GameplayScreen.game_tiles[i].cx(), GameplayScreen.game_tiles[i].y() + GameplayScreen.game_tiles[i].h() * 0.167f);

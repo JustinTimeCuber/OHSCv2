@@ -139,7 +139,7 @@ public class OhHellScoreboardV2 extends PApplet {
         }
         strokeWeight(2);
         stroke(theme.line_color);
-        rect(location.x(), location.y(), location.w(), location.h());
+        location.rect(this);
         fill(enabled ? theme.text_color : theme.grayed_text_color);
         textSize(size * width);
         text(text, location.cx(), location.cy());
