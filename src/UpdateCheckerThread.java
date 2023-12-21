@@ -9,6 +9,7 @@ public class UpdateCheckerThread extends Thread {
         result = sc.loadStrings("https://raw.githubusercontent.com/JustinTimeCuber/OHSCv2/main/src/version.txt");
         if(result != null) {
             if(ScreenManager.currentScreen() == UpdateScreen.INSTANCE) {
+                UpdateScreen.INSTANCE.manual = true;
                 ScreenManager.popScreen();
             }
             UpdateScreen.INSTANCE.data = result;

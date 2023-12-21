@@ -288,7 +288,7 @@ public class SetupScreen implements Screen {
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, true);
             sc.drawButton(theme_button, "Themes", 0.02f, true, true);
-            sc.drawButton(check_for_updates_button, "Check for Updates", 0.02f, !sc.update_checker.isAlive(), true);
+            sc.drawButton(check_for_updates_button, "Check for Updates", 0.02f, true, true);
             sc.drawButton(config_open_button, "Open Config File", 0.015f, true, true);
             sc.drawButton(config_reload_button, "Reload Config File", 0.015f, true, true);
             String textLeft = String.join("\n", "Points per trick:", "Bonus points:", "Set penalty:",
@@ -386,6 +386,8 @@ public class SetupScreen implements Screen {
             } else if(check_for_updates_button.mouseInTile()) {
                 sc.update_checker = new UpdateCheckerThread(sc);
                 sc.update_checker.start();
+                ScreenManager.pushScreen(UpdateScreen.INSTANCE);
+                UpdateScreen.INSTANCE.data = null;
                 UpdateScreen.INSTANCE.manual = true;
             } else if(config_open_button.mouseInTile()) {
                 String file = sc.DATA_PATH + "config.txt";

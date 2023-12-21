@@ -1,3 +1,10 @@
+v2.2-beta.7
++ Added "try again" button to update checker screen
+* Update checker screen now opens immediately when the button is pressed
+    Will display "checking for updates..." message until info download is complete or until download fails
+    No data will be displayed during this time, even if old data was previously downloaded
+* Update checker screen now stays open if you quit and re-open the program
+
 v2.2-beta.6
 * Various small tweaks to the update checker screen
 
