@@ -1,4 +1,3 @@
-import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 
 public class ScreenManager {
