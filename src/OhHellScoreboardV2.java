@@ -28,6 +28,8 @@ public class OhHellScoreboardV2 extends PApplet {
     int low_framerate_cooldown;
     PFont font;
     float aspect_ratio;
+    static int version_number;
+    static String version_string;
     int millis_last_frame = 0;
     final boolean debug = false;
     UpdateCheckerThread update_checker = new UpdateCheckerThread(this);
@@ -334,6 +336,9 @@ public class OhHellScoreboardV2 extends PApplet {
             println("System properties:");
             System.getProperties().list(System.out);
         }
+        String[] vs = loadStrings("version.txt")[0].split(":");
+        version_number = Integer.parseInt(vs[1]);
+        version_string = vs[2];
         Tile.sc = this;
         Theme.sc = this;
         ScreenManager.sc = this;

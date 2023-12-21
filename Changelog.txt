@@ -4,6 +4,9 @@ v2.2-beta.8
 * Replaced "database" button with "save/load" button
     Database feature will be postponed to v2.3
 * Swap order of "stable" and "snapshot" lines in update screen
+* Refactor: moved current version info to main class
+* Made all version info (current, stable, snapshot) use static variables
+- Remove some unused code
 
 v2.2-beta.7
 + Added "try again" button to update checker screen

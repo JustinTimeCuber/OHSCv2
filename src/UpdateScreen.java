@@ -3,12 +3,10 @@ import java.net.URI;
 public class UpdateScreen implements Screen {
     static final UpdateScreen INSTANCE = new UpdateScreen();
     String[] data;
-    int stable = 0;
-    int snapshot = 0;
-    int current = 0;
-    String stable_str = "";
-    String snapshot_str = "";
-    String current_str = "";
+    static int stable = 0;
+    static int snapshot = 0;
+    static String stable_str = "";
+    static String snapshot_str = "";
     Tile try_again_button;
     Tile ignore_once_button;
     Tile toggle_update_checking_button;
@@ -28,11 +26,11 @@ public class UpdateScreen implements Screen {
         boolean update_checking = Config.update_mode != UpdateMode.NONE;
         if(data != null) {
             String text = "OHSCv2 is up-to-date!";
-            if(snapshot > current) {
+            if(snapshot > OhHellScoreboardV2.version_number) {
                 update = true;
                 text = "New snapshot available!";
             }
-            if(stable > current) {
+            if(stable > OhHellScoreboardV2.version_number) {
                 update = true;
                 text = "New update available!";
             }
@@ -40,10 +38,10 @@ public class UpdateScreen implements Screen {
             sc.text(text, sc.width * 0.5f, sc.height * 0.15f);
             sc.textSize(sc.width * 0.02f);
             sc.fill(Theme.theme.text_color);
-            sc.text("Current version: " + current_str + " (" + current + ")", sc.width * 0.5f, sc.height * 0.35f);
-            sc.fill(snapshot > current ? Theme.theme.highlight_text_color : Theme.theme.text_color);
+            sc.text("Current version: " + OhHellScoreboardV2.version_string + " (" + OhHellScoreboardV2.version_number + ")", sc.width * 0.5f, sc.height * 0.35f);
+            sc.fill(snapshot > OhHellScoreboardV2.version_number ? Theme.theme.highlight_text_color : Theme.theme.text_color);
             sc.text("Latest snapshot: " + snapshot_str + " (" + snapshot + ")", sc.width * 0.5f, sc.height * 0.45f);
-            sc.fill(stable > current ? Theme.theme.highlight_text_color : Theme.theme.text_color);
+            sc.fill(stable > OhHellScoreboardV2.version_number ? Theme.theme.highlight_text_color : Theme.theme.text_color);
             sc.text("Latest stable: " + stable_str + " (" + stable + ")", sc.width * 0.5f, sc.height * 0.55f);
         } else {
             if(sc.update_checker.isAlive()) {
@@ -122,17 +120,9 @@ public class UpdateScreen implements Screen {
                 }
             }
         }
-        String[] cv = sc.loadStrings("version.txt");
-        for(String d : cv) {
-            String[] spl = d.split(":");
-            if(spl[0].equals("SNAPSHOT")) {
-                current = Integer.parseInt(spl[1]);
-                current_str = spl[2];
-            }
-        }
         if(!manual && (Config.update_mode == UpdateMode.NONE ||
-                (Config.update_mode == UpdateMode.STABLE && current >= stable) ||
-                (Config.update_mode == UpdateMode.SNAPSHOT && current >= snapshot))) {
+                (Config.update_mode == UpdateMode.STABLE && OhHellScoreboardV2.version_number >= stable) ||
+                (Config.update_mode == UpdateMode.SNAPSHOT && OhHellScoreboardV2.version_number >= snapshot))) {
             ScreenManager.popScreen();
             return;
         }
