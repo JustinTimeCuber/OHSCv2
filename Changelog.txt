@@ -1,11 +1,13 @@
 v2.2-beta.4
-+ Add tooltip showing file path when hovering over "open config" button
-+ Attempt to fix broken or outdated config.txt
-+ Add confirmation screen for "end game" button
++ Added tooltip showing file path when hovering over "open config" button
++ Will now attempt to fix broken or outdated config.txt
++ Added confirmation screen for "end game" button
     Enter + RMB still works but is not required
-* Gray out deal indicator when no trick sequence is given
-* Slightly tweaked text positioning for some windows
++ Added support for custom trick sequences
+* Grayed out deal indicator when no trick sequence is given
+* Tweaked text positioning for some windows
 * Refactor: added Tile.rect() to simplify rect(Tile.x, Tile.y, Tile.w, Tile.h)
+* Pop-up error messages are now also printed to System.err
 
 v2.2-beta.3
 + Added settings screen

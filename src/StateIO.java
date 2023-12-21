@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StateIO {
 
@@ -14,6 +15,15 @@ public class StateIO {
         state.add("suits:" + sc.suits);
         state.add("cards_per_suit:" + sc.cards_per_suit);
         state.add("trick_mode:" + sc.trick_mode);
+        if(sc.trick_mode == 6) {
+            StringBuilder custom = new StringBuilder();
+            for(int i = 0; i < sc.tricks.length; i++) {
+                custom.append(sc.tricks[i]);
+                custom.append(",");
+            }
+            //custom.append((sc.tricks[sc.tricks.length - 1]));
+            state.add("custom_tricks:" + custom);
+        }
         state.add("trick_index:" + sc.trick_index);
         state.add("trump_suit:" + (sc.trump_suit == null ? "" : sc.trump_suit.name));
         state.add("hands_played:" + sc.hands_played);
@@ -44,6 +54,15 @@ public class StateIO {
                 case "suits" -> sc.suits = Integer.parseInt(value);
                 case "cards_per_suit" -> sc.cards_per_suit = Integer.parseInt(value);
                 case "trick_mode" -> sc.trick_mode = Integer.parseInt(value);
+                case "custom_tricks" -> {
+                    if(sc.trick_mode == 6) {
+                        ArrayList<Integer> sequence = new ArrayList<>();
+                        for(String str : value.split(",")) {
+                            sequence.add(Integer.parseInt(str));
+                        }
+                        sc.tricks = sequence.stream().mapToInt(Integer::intValue).toArray();
+                    }
+                }
                 case "trick_index" -> sc.trick_index = Integer.parseInt(value);
                 case "trump_suit" -> sc.trump_suit = Suit.getByName(value);
                 case "hands_played" -> sc.hands_played = Integer.parseInt(value);
@@ -55,6 +74,9 @@ public class StateIO {
                 case "player" -> new Player().parse(value);
                 default -> System.err.println("Unrecognized label: " + label);
             }
+        }
+        if(sc.trick_mode == 6 && sc.tricks.length == 0) {
+            sc.trick_mode = 0;
         }
         Config.loadConfig(sc);
         Theme.loadThemes();
