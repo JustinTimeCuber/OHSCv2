@@ -1,3 +1,9 @@
+v2.2-beta.8
++ Added "show main folder" button to settings window
+* Slightly modified how tooltips work
+* Replaced "database" button with "save/load" button
+    Database feature will be postponed to v2.3
+
 v2.2-beta.7
 + Added "try again" button to update checker screen
 * Update checker screen now opens immediately when the button is pressed

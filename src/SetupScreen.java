@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class SetupScreen implements Screen {
     static final SetupScreen INSTANCE = new SetupScreen();
     Tile[] setup_tiles;
-    Tile add_player_button, remove_player_button, edit_score_button, settings_button, database_button, reset_button, statistics_button, begin_game_button;
+    Tile add_player_button, remove_player_button, edit_score_button, settings_button, save_load_button, reset_button, statistics_button, begin_game_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile theme_folder_button, refresh_themes_button, theme_scroll_up_button, theme_scroll_down_button;
-    Tile custom_tricks_button, theme_button, check_for_updates_button;
+    Tile custom_tricks_button, theme_button, check_for_updates_button, main_folder_button;
     Tile config_open_button, config_reload_button;
     int selected_player;
     int theme_scroll_offset;
@@ -89,7 +89,7 @@ public class SetupScreen implements Screen {
         sc.drawButton(remove_player_button, "Remove Player", 0.02f, selected_player != -1 && Player.count() > 2, !popup_shown);
         sc.drawButton(edit_score_button, "Edit score", 0.02f, selected_player != -1, !popup_shown);
         sc.drawButton(settings_button, "Settings", 0.02f, true, !popup_shown);
-        sc.drawButton(database_button, "Database", 0.02f, false, false);
+        sc.drawButton(save_load_button, "Save/Load", 0.02f, false, false);
         sc.drawButton(reset_button, "Reset", 0.02f, true, !popup_shown);
         sc.drawButton(statistics_button, "Statistics", 0.02f, true, !popup_shown);
         sc.drawButton(begin_game_button, "Begin Game", 0.02f, true, !popup_shown);
@@ -235,7 +235,7 @@ public class SetupScreen implements Screen {
             if(theme_folder_button.mouseInTile()) {
                 String dir = sc.DATA_PATH + "themes";
                 sc.textSize(sc.width * 0.015f);
-                sc.drawTooltip(dir, true);
+                sc.drawTooltip(dir);
             }
             for(int i = theme_scroll_offset; i < Math.min(MAX_THEME_ROWS + theme_scroll_offset, Theme.themes.size()); i++) {
                 int t = i - theme_scroll_offset;
@@ -247,7 +247,7 @@ public class SetupScreen implements Screen {
                         file = "jar/" + file;
                     }
                     sc.textSize(sc.width * 0.015f);
-                    sc.drawTooltip(file, true);
+                    sc.drawTooltip(file);
                 }
             }
         } else if(Window.current == Window.SCORE_EDITOR) {
@@ -289,6 +289,7 @@ public class SetupScreen implements Screen {
             sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, true);
             sc.drawButton(theme_button, "Themes", 0.02f, true, true);
             sc.drawButton(check_for_updates_button, "Check for Updates", 0.02f, true, true);
+            sc.drawButton(main_folder_button, "Show Main Folder", 0.02f, true, true);
             sc.drawButton(config_open_button, "Open Config File", 0.015f, true, true);
             sc.drawButton(config_reload_button, "Reload Config File", 0.015f, true, true);
             String textLeft = String.join("\n", "Points per trick:", "Bonus points:", "Set penalty:",
@@ -302,9 +303,12 @@ public class SetupScreen implements Screen {
             sc.text(textLeft, Window.tile.x(0.45), Window.tile.y(0.25));
             sc.textAlign(sc.RIGHT, sc.TOP);
             sc.text(textRight, Window.tile.x(0.85), Window.tile.y(0.25));
-            String file = sc.DATA_PATH + "config.txt";
+            if(main_folder_button.mouseInTile()) {
+                sc.drawTooltip(sc.DATA_PATH);
+            }
             if(config_open_button.mouseInTile()) {
-                sc.drawTooltip(file, true);
+                String file = sc.DATA_PATH + "config.txt";
+                sc.drawTooltip(file);
             }
         }
     }
@@ -389,6 +393,12 @@ public class SetupScreen implements Screen {
                 ScreenManager.pushScreen(UpdateScreen.INSTANCE);
                 UpdateScreen.INSTANCE.data = null;
                 UpdateScreen.INSTANCE.manual = true;
+            } else if(main_folder_button.mouseInTile()) {
+                try {
+                    java.awt.Desktop.getDesktop().open(new File(sc.DATA_PATH));
+                } catch(Exception e) {
+                    sc.displayError("Cannot open folder: " + e.getMessage());
+                }
             } else if(config_open_button.mouseInTile()) {
                 String file = sc.DATA_PATH + "config.txt";
                 try {
@@ -414,8 +424,8 @@ public class SetupScreen implements Screen {
                 }
             } else if(settings_button.mouseInTile()) {
                 Window.current = Window.SETTINGS;
-            } else if(database_button.mouseInTile()) {
-                sc.displayError("Database not implemented yet");
+            } else if(save_load_button.mouseInTile()) {
+                sc.displayError("Save/load feature not implemented yet");
             } else if(reset_button.mouseInTile()) {
                 sc.setInitialValues();
             } else if(statistics_button.mouseInTile()) {
@@ -558,7 +568,7 @@ public class SetupScreen implements Screen {
         remove_player_button = new Tile(0.28, 0.875, 0.48, 0.958);
         edit_score_button = new Tile(0.04, 0.75, 0.24, 0.833);
         settings_button = new Tile(0.28, 0.75, 0.48, 0.833);
-        database_button = new Tile(0.52, 0.75, 0.72, 0.833);
+        save_load_button = new Tile(0.52, 0.75, 0.72, 0.833);
         reset_button = new Tile(0.76, 0.75, 0.96, 0.833);
         statistics_button = new Tile(0.52, 0.875, 0.72, 0.958);
         begin_game_button = new Tile(0.76, 0.875, 0.96, 0.958);
@@ -573,6 +583,7 @@ public class SetupScreen implements Screen {
         custom_tricks_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.23), Window.tile.x(0.35), Window.tile.y(0.35));
         theme_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.38), Window.tile.x(0.35), Window.tile.y(0.5));
         check_for_updates_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.53), Window.tile.x(0.35), Window.tile.y(0.65));
+        main_folder_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.68), Window.tile.x(0.35), Window.tile.y(0.8));
         config_open_button = Tile.fromCoordinates(Window.tile.x(0.43), Window.tile.y(0.85), Window.tile.x(0.65), Window.tile.y(0.93));
         config_reload_button = Tile.fromCoordinates(Window.tile.x(0.66), Window.tile.y(0.85), Window.tile.x(0.88), Window.tile.y(0.93));
         editing_name = false;

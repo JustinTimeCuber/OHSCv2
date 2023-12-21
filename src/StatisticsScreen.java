@@ -124,7 +124,7 @@ public class StatisticsScreen implements Screen {
         }
         if(open_save_button.mouseInTile() && sc.last_save != null) {
             sc.textSize(sc.width * 0.015f);
-            sc.drawTooltip(sc.last_save, true);
+            sc.drawTooltip(sc.last_save);
         }
     }
 

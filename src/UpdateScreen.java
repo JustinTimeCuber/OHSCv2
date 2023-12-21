@@ -61,13 +61,13 @@ public class UpdateScreen implements Screen {
         sc.drawButton(download_update_button, update ? "Download Update" : "View Downloads", 0.015f, true, true);
         sc.textSize(sc.width * 0.015f);
         if(ignore_once_button.mouseInTile()) {
-            sc.drawTooltip("You can return to this screen using the Settings menu.", true);
+            sc.drawTooltip("You can return to this screen using the Settings menu.");
         } else if(toggle_update_checking_button.mouseInTile()) {
-            sc.drawTooltip(update_checking ? "You can return to this screen using the Settings menu." : "Change release channel to " + other, true);
+            sc.drawTooltip(update_checking ? "You can return to this screen using the Settings menu." : "Change release channel to " + other);
         } else if(toggle_release_channel_button.mouseInTile() && update_checking) {
-            sc.drawTooltip("Change release channel to " + other, true);
+            sc.drawTooltip("Change release channel to " + other);
         } else if(download_update_button.mouseInTile()) {
-            sc.drawTooltip(update_url, true);
+            sc.drawTooltip(update_url);
         }
     }
 

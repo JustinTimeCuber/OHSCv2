@@ -261,22 +261,17 @@ public class OhHellScoreboardV2 extends PApplet {
         }
     }
     
-    void drawTooltip(String text, boolean handleFormatting) {
-        if(handleFormatting) {
-            fill(Theme.theme.background_color);
-            stroke(Theme.theme.line_color);
-        }
+    void drawTooltip(String text) {
+        fill(Theme.theme.background_color);
+        stroke(Theme.theme.line_color);
+        float ts = g.textSize;
         float tw = textWidth(text);
-        float px = (mouseX + tw < width * 0.98f) ? mouseX : (width * 0.98f - tw);
-        rect(px, mouseY, tw + width * 0.02f, width * 0.03f);
-        if(handleFormatting) {
-            fill(Theme.theme.text_color);
-            textAlign(LEFT, CENTER);
-        }
-        text(text, px + width * 0.01f, mouseY + width * 0.015f);
-        if(handleFormatting) {
-            textAlign(CENTER, CENTER);
-        }
+        float px = (mouseX + tw < width - ts * 1.2f) ? mouseX : (width - ts * 1.2f - tw);
+        rect(px, mouseY, tw + width * 0.02f, 2 * ts);
+        fill(Theme.theme.text_color);
+        textAlign(LEFT, CENTER);
+        text(text, px + ts * 0.6f, mouseY + ts);
+        textAlign(CENTER, CENTER);
     }
 
     // Approximate fix for vertically-centered text to seem slightly too low
