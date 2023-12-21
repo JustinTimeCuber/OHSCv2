@@ -42,9 +42,9 @@ public class UpdateScreen implements Screen {
             sc.fill(Theme.theme.text_color);
             sc.text("Current version: " + current_str + " (" + current + ")", sc.width * 0.5f, sc.height * 0.35f);
             sc.fill(snapshot > current ? Theme.theme.highlight_text_color : Theme.theme.text_color);
-            sc.text("Latest snapshot: " + snapshot_str + " (" + snapshot + ")", sc.width * 0.5f, sc.height * 0.55f);
+            sc.text("Latest snapshot: " + snapshot_str + " (" + snapshot + ")", sc.width * 0.5f, sc.height * 0.45f);
             sc.fill(stable > current ? Theme.theme.highlight_text_color : Theme.theme.text_color);
-            sc.text("Latest stable: " + stable_str + " (" + stable + ")", sc.width * 0.5f, sc.height * 0.45f);
+            sc.text("Latest stable: " + stable_str + " (" + stable + ")", sc.width * 0.5f, sc.height * 0.55f);
         } else {
             if(sc.update_checker.isAlive()) {
                 sc.fill(Theme.theme.text_color);
