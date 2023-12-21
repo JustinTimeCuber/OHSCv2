@@ -1,3 +1,6 @@
+v2.2-beta.6
+* Various small tweaks to the update checker screen
+
 v2.2-beta.5
 + Added an update checker with "stable" and "snapshot" modes
     Runs asynchronously upon startup and when data is received, opens update screen if a new version is found

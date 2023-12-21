@@ -10,7 +10,7 @@ public class UpdateScreen implements Screen {
     String snapshot_str = "";
     String current_str = "";
     Tile ignore_once_button;
-    Tile disable_update_checking_button;
+    Tile toggle_update_checking_button;
     Tile toggle_release_channel_button;
     Tile download_update_button;
     UpdateMode other = UpdateMode.NONE;
@@ -24,27 +24,35 @@ public class UpdateScreen implements Screen {
     public void draw(OhHellScoreboardV2 sc) {
         sc.textSize(sc.width * 0.05f);
         String text = "OHSCv2 is up-to-date!";
+        boolean update = false;
+        boolean update_checking = Config.update_mode != UpdateMode.NONE;
         if(snapshot > current) {
+            update = true;
             text = "New snapshot available!";
         }
         if(stable > current) {
+            update = true;
             text = "New update available!";
         }
+        sc.fill(update ? Theme.theme.highlight_text_color : Theme.theme.overbid_color);
         sc.text(text, sc.width * 0.5f, sc.height * 0.15f);
         sc.textSize(sc.width * 0.02f);
+        sc.fill(Theme.theme.text_color);
         sc.text("Current version: " + current_str + " (" + current + ")", sc.width * 0.5f, sc.height * 0.35f);
-        sc.text("Latest stable: " + stable_str + " (" + stable + ")", sc.width * 0.5f, sc.height * 0.45f);
+        sc.fill(snapshot > current ? Theme.theme.highlight_text_color : Theme.theme.text_color);
         sc.text("Latest snapshot: " + snapshot_str + " (" + snapshot + ")", sc.width * 0.5f, sc.height * 0.55f);
-        sc.drawButton(ignore_once_button, "Ignore Once", 0.015f, true, true);
-        sc.drawButton(disable_update_checking_button, "Disable\nUpdate Checking", 0.015f, true, true);
-        sc.drawButton(toggle_release_channel_button, "Release Channel:\n" + Config.update_mode, 0.015f, true, true);
-        sc.drawButton(download_update_button, "Download Update", 0.015f, true, true);
+        sc.fill(stable > current ? Theme.theme.highlight_text_color : Theme.theme.text_color);
+        sc.text("Latest stable: " + stable_str + " (" + stable + ")", sc.width * 0.5f, sc.height * 0.45f);
+        sc.drawButton(ignore_once_button, update ? "Ignore Once" : "Return", 0.015f, true, true);
+        sc.drawButton(toggle_update_checking_button, (update_checking ? "Disable" : "Enable") + "\nUpdate Checking", 0.015f, true, true);
+        sc.drawButton(toggle_release_channel_button, "Release Channel:\n" + Config.update_mode, 0.015f, update_checking, true);
+        sc.drawButton(download_update_button, update ? "Download Update" : "View Downloads", 0.015f, true, true);
         sc.textSize(sc.width * 0.015f);
         if(ignore_once_button.mouseInTile()) {
             sc.drawTooltip("You can return to this screen using the Settings menu.", true);
-        } else if(disable_update_checking_button.mouseInTile()) {
-            sc.drawTooltip("You can return to this screen using the Settings menu.", true);
-        } else if(toggle_release_channel_button.mouseInTile()) {
+        } else if(toggle_update_checking_button.mouseInTile()) {
+            sc.drawTooltip(update_checking ? "You can return to this screen using the Settings menu." : "Change release channel to " + other, true);
+        } else if(toggle_release_channel_button.mouseInTile() && update_checking) {
             sc.drawTooltip("Change release channel to " + other, true);
         } else if(download_update_button.mouseInTile()) {
             sc.drawTooltip(update_url, true);
@@ -53,20 +61,27 @@ public class UpdateScreen implements Screen {
 
     @Override
     public void mousePressed(OhHellScoreboardV2 sc) {
+        boolean update_checking = Config.update_mode != UpdateMode.NONE;
         if(ignore_once_button.mouseInTile()) {
             ScreenManager.popScreen();
-        } else if(disable_update_checking_button.mouseInTile()) {
-            Config.update_mode = UpdateMode.NONE;
-            Config.fixFile(sc);
-            ScreenManager.popScreen();
-        } else if(toggle_release_channel_button.mouseInTile()) {
+        } else if(toggle_update_checking_button.mouseInTile()) {
+            if(update_checking) {
+                other = Config.update_mode;
+                Config.update_mode = UpdateMode.NONE;
+                Config.fixFile(sc);
+                ScreenManager.popScreen();
+            } else {
+                Config.update_mode = other;
+                Config.fixFile(sc);
+                updateButtons();
+            }
+        } else if(toggle_release_channel_button.mouseInTile() && update_checking) {
             Config.update_mode = other;
             Config.fixFile(sc);
             updateButtons();
         } else if(download_update_button.mouseInTile()) {
             try {
                 java.awt.Desktop.getDesktop().browse(URI.create(update_url));
-                sc.exit();
             } catch(Exception e) {
                 sc.displayError("Failed to open webpage: " + e.getMessage());
             }
@@ -122,7 +137,7 @@ public class UpdateScreen implements Screen {
     @Override
     public void init(OhHellScoreboardV2 sc) {
         ignore_once_button = new Tile(0.08, 0.8, 0.23, 0.9);
-        disable_update_checking_button = new Tile(0.31, 0.8, 0.46, 0.9);
+        toggle_update_checking_button = new Tile(0.31, 0.8, 0.46, 0.9);
         toggle_release_channel_button = new Tile(0.54, 0.8, 0.69, 0.9);
         download_update_button = new Tile(0.77, 0.8, 0.92, 0.9);
     }
