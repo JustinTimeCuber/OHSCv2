@@ -1,6 +1,7 @@
 import processing.core.PApplet;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class SetupScreen implements Screen {
     static final SetupScreen INSTANCE = new SetupScreen();
@@ -13,6 +14,7 @@ public class SetupScreen implements Screen {
     int theme_scroll_offset;
     String new_score;
     boolean editing_name;
+    String new_trick_sequence;
     final int MAX_THEME_ROWS = 6;
 
     private SetupScreen() {
@@ -101,14 +103,15 @@ public class SetupScreen implements Screen {
             sc.text("Trick Customization", Window.tile.cx(), Window.tile.y(0.12));
             sc.textAlign(sc.CENTER, sc.TOP);
             sc.textSize(sc.width * 0.02f);
-            sc.text("Number of suits: " + sc.suits + "\nCards per suit: " + sc.cards_per_suit + "\nTotal cards in deck: " + (sc.suits * sc.cards_per_suit) +
-                    "\nTrick mode: " + sc.trickMode() + "\nPreview:", Window.tile.cx(), Window.tile.y() + sc.width * 0.1f);
+            sc.text("Number of suits: " + sc.suits, Window.tile.cx(), Window.tile.y(0.23));
+            sc.text("Cards per suit: " + sc.cards_per_suit, Window.tile.cx(), Window.tile.y(0.30));
+            sc.text("Total deck size: " + (sc.suits * sc.cards_per_suit), Window.tile.cx(), Window.tile.y(0.37));
+            sc.text("Trick mode: " + sc.trickMode(), Window.tile.cx(), Window.tile.y(0.44));
+            sc.text("Preview:", Window.tile.cx(), Window.tile.y(0.51));
             StringBuilder preview = new StringBuilder();
             sc.fill(Theme.theme.error_text_color);
             if(sc.trick_mode == 0) {
                 preview = new StringBuilder("Trick sequence disabled; some checks will not function");
-            } else if(sc.trick_mode == 6) {
-                preview = new StringBuilder("Custom trick sequences are not currently available.");
             } else {
                 sc.fill(Theme.theme.text_color);
                 for(int i = 0; i < sc.tricks.length; i++) {
@@ -121,19 +124,19 @@ public class SetupScreen implements Screen {
                     }
                 }
             }
-            if(sc.textWidth(preview.toString()) > Window.tile.w() * 0.9) {
-                sc.textSize(sc.width * 0.02f * 0.9f * Window.tile.w() / sc.textWidth(preview.toString()));
+            sc.text(preview.toString(), Window.tile.cx(), Window.tile.y(0.58));
+            if(sc.trick_mode == 6) {
+                if(new_trick_sequence == null) {
+                    new_trick_sequence = "";
+                }
+                sc.text(new_trick_sequence.isBlank() ? "Enter a comma-separated list of trick counts" : new_trick_sequence, Window.tile.cx(), Window.tile.y(0.70));
             }
             sc.textAlign(sc.CENTER, sc.CENTER);
-            sc.text(preview.toString(), Window.tile.cx(), Window.tile.y() + sc.width * 0.26f);
             sc.drawButton(number_suits_button, "Number of Suits", 0.015f, true, true);
             sc.drawButton(cards_per_suit_button, "Cards per Suit", 0.015f, true, true);
             sc.drawButton(trick_mode_button, "Trick Mode", 0.015f, true, true);
             sc.drawButton(starting_point_button, "Starting Point", 0.015f, true, true);
-        } else if(sc.trick_mode == 6) {
-            sc.trick_mode = 0;
-        }
-        if(Window.current == Window.THEMES) {
+        } else if(Window.current == Window.THEMES) {
             sc.fill(Theme.theme.popup_background_color, 230);
             sc.stroke(Theme.theme.line_color);
             Window.tile.rect(sc);
@@ -374,6 +377,7 @@ public class SetupScreen implements Screen {
                 Window.current = Window.NONE;
             } else if(custom_tricks_button.mouseInTile()) {
                 Window.current = Window.TRICKS;
+                new_trick_sequence = "";
             } else if(theme_button.mouseInTile()) {
                 Window.current = Window.THEMES;
             } else if(config_open_button.mouseInTile()) {
@@ -475,7 +479,7 @@ public class SetupScreen implements Screen {
             Player p = Player.get(selected_player);
             if(key == sc.BACKSPACE) {
                 if(new_score.length() > 0) {
-                    this.new_score = new_score.substring(0, new_score.length() - 1);
+                    new_score = new_score.substring(0, new_score.length() - 1);
                 }
             } else if(key == sc.ENTER) {
                 int ns;
@@ -491,6 +495,38 @@ public class SetupScreen implements Screen {
                 Logger.write("Score of " + p.getName(selected_player) + " manually changed from " + os + " to " + ns);
             } else if(Character.isDigit(key) || (new_score.length() == 0 && key == '-')) {
                 new_score += key;
+            }
+        } else if(Window.current == Window.TRICKS) {
+            if(sc.trick_mode == 6) {
+                if(key == sc.BACKSPACE) {
+                    if(new_trick_sequence.length() > 0) {
+                        new_trick_sequence = new_trick_sequence.substring(0, new_trick_sequence.length() - 1);
+                    }
+                } else if(key == ' ' || key == ',') {
+                    if(new_trick_sequence.length() > 0 && new_trick_sequence.charAt(new_trick_sequence.length() - 1) != key) {
+                        new_trick_sequence += key;
+                    }
+                } else if(Character.isDigit(key)) {
+                    new_trick_sequence += key;
+                } else if(key == sc.ENTER) {
+                    String[] nts = new_trick_sequence.split(",");
+                    new_trick_sequence = "";
+                    ArrayList<Integer> sequence = new ArrayList<>();
+                    try {
+                        for(String s : nts) {
+                            if(s.isBlank()) {
+                                continue;
+                            }
+                            sequence.add(Integer.parseInt(s));
+                        }
+                        if(sequence.isEmpty()) {
+                            sc.displayError("Please enter a comma-separated sequence of numbers.");
+                        }
+                        sc.tricks = sequence.stream().mapToInt(Integer::intValue).toArray();
+                    } catch(Exception e) {
+                        sc.displayError("Failed to parse sequence: " + e.getMessage());
+                    }
+                }
             }
         }
     }

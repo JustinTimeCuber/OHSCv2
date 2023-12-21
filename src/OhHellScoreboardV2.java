@@ -53,6 +53,7 @@ public class OhHellScoreboardV2 extends PApplet {
     }
 
     void displayError(String m, int f) {
+        System.err.println("[Displayed Error] " + m);
         error_message = m;
         error_frames = f;
     }
