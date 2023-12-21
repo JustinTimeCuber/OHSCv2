@@ -13,7 +13,7 @@ public class Config {
         try {
             String[] config = sc.loadStrings(sc.DATA_PATH + "config.txt");
             if(config == null) {
-                config = sc.loadStrings("config.txt");
+                config = sc.loadStrings("default_config.txt");
                 sc.saveStrings(sc.DATA_PATH + "config.txt", config);
             }
             boolean[] found = new boolean[9];
@@ -78,7 +78,7 @@ public class Config {
         }
     }
     static void fixFile(OhHellScoreboardV2 sc) {
-        String[] config = sc.loadStrings("config.txt");
+        String[] config = sc.loadStrings("default_config.txt");
         for(int i = 0; i < config.length; i++) {
             String s = config[i];
             if(s.isBlank() || s.trim().startsWith("#")) {

@@ -30,7 +30,7 @@ public class OhHellScoreboardV2 extends PApplet {
     float aspect_ratio;
     int millis_last_frame = 0;
     final boolean debug = false;
-    final UpdateCheckerThread update_checker = new UpdateCheckerThread(this);
+    UpdateCheckerThread update_checker = new UpdateCheckerThread(this);
     final PrintStream system_err = System.err;
     final PrintStream placebo_output = new PrintStream(new OutputStream() {
         @Override
@@ -349,6 +349,7 @@ public class OhHellScoreboardV2 extends PApplet {
             StateIO.loadState(DATA_PATH + "latest", this);
         } catch(Exception e) {
             System.err.println("Exception loading save: " + e);
+            e.printStackTrace();
             setInitialValues();
             StateIO.saveState(DATA_PATH + "latest", this);
         }

@@ -9,7 +9,8 @@ public class SetupScreen implements Screen {
     Tile add_player_button, remove_player_button, edit_score_button, settings_button, database_button, reset_button, statistics_button, begin_game_button;
     Tile number_suits_button, cards_per_suit_button, trick_mode_button, starting_point_button;
     Tile theme_folder_button, refresh_themes_button, theme_scroll_up_button, theme_scroll_down_button;
-    Tile custom_tricks_button, theme_button, config_open_button, config_reload_button;
+    Tile custom_tricks_button, theme_button, check_for_updates_button;
+    Tile config_open_button, config_reload_button;
     int selected_player;
     int theme_scroll_offset;
     String new_score;
@@ -287,13 +288,15 @@ public class SetupScreen implements Screen {
             sc.drawButton(Window.close_button, "X", 0.02f, true, true);
             sc.drawButton(custom_tricks_button, "Trick Options", 0.02f, true, true);
             sc.drawButton(theme_button, "Themes", 0.02f, true, true);
-            sc.drawButton(config_open_button, "Open Config File", 0.02f, true, true);
-            sc.drawButton(config_reload_button, "Reload Config File", 0.02f, true, true);
+            sc.drawButton(check_for_updates_button, "Check for Updates", 0.02f, !sc.update_checker.isAlive(), true);
+            sc.drawButton(config_open_button, "Open Config File", 0.015f, true, true);
+            sc.drawButton(config_reload_button, "Reload Config File", 0.015f, true, true);
             String textLeft = String.join("\n", "Points per trick:", "Bonus points:", "Set penalty:",
-                    "Underbidding gets set:", "Overbidding gets set:", "Scale set penalty by tricks:", "Prevent trick points when set:", "Allow negative scores:");
+                    "Underbidding gets set:", "Overbidding gets set:", "Scale set penalty by tricks:", "Prevent trick points when set:",
+                    "Allow negative scores:", "Check for updates:");
             String textRight = Config.points_per_trick + "\n" + Config.points_bonus + "\n" + Config.points_set + "\n" +
                     Config.underbid_set + "\n" + Config.overbid_set + "\n" + Config.set_penalty_scales + "\n" +
-                    Config.set_prevents_trick_points + "\n" + Config.negative_scores_allowed;
+                    Config.set_prevents_trick_points + "\n" + Config.negative_scores_allowed + "\n" + Config.update_mode;
             sc.textAlign(sc.LEFT, sc.TOP);
             sc.textSize(sc.width * 0.015f);
             sc.text(textLeft, Window.tile.x(0.45), Window.tile.y(0.25));
@@ -380,6 +383,10 @@ public class SetupScreen implements Screen {
                 new_trick_sequence = "";
             } else if(theme_button.mouseInTile()) {
                 Window.current = Window.THEMES;
+            } else if(check_for_updates_button.mouseInTile()) {
+                sc.update_checker = new UpdateCheckerThread(sc);
+                sc.update_checker.start();
+                UpdateScreen.INSTANCE.manual = true;
             } else if(config_open_button.mouseInTile()) {
                 String file = sc.DATA_PATH + "config.txt";
                 try {
@@ -563,8 +570,9 @@ public class SetupScreen implements Screen {
         theme_scroll_down_button = Tile.fromCoordinates(Window.tile.x(0.1), Window.tile.y(0.89), Window.tile.x(0.15), Window.tile.y(0.89) + Window.tile.w()*0.05f);
         custom_tricks_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.23), Window.tile.x(0.35), Window.tile.y(0.35));
         theme_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.38), Window.tile.x(0.35), Window.tile.y(0.5));
-        config_open_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.53), Window.tile.x(0.35), Window.tile.y(0.65));
-        config_reload_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.68), Window.tile.x(0.35), Window.tile.y(0.8));
+        check_for_updates_button = Tile.fromCoordinates(Window.tile.x(0.05), Window.tile.y(0.53), Window.tile.x(0.35), Window.tile.y(0.65));
+        config_open_button = Tile.fromCoordinates(Window.tile.x(0.43), Window.tile.y(0.85), Window.tile.x(0.65), Window.tile.y(0.93));
+        config_reload_button = Tile.fromCoordinates(Window.tile.x(0.66), Window.tile.y(0.85), Window.tile.x(0.88), Window.tile.y(0.93));
         editing_name = false;
         selected_player = -1;
         theme_scroll_offset = 0;

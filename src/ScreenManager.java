@@ -1,3 +1,4 @@
+import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 
 public class ScreenManager {
@@ -7,7 +8,8 @@ public class ScreenManager {
             BiddingScreen.INSTANCE,
             TakingScreen.INSTANCE,
             GameOverScreen.INSTANCE,
-            StatisticsScreen.INSTANCE
+            StatisticsScreen.INSTANCE,
+            UpdateScreen.INSTANCE
     };
     private final static Stack<Screen> screen_stack = new Stack<>();
 
@@ -34,15 +36,12 @@ public class ScreenManager {
     }
 
     static Screen screenFromString(String s) {
-        return switch(s) {
-            case "SetupScreen" -> SetupScreen.INSTANCE;
-            case "BiddingScreen" -> BiddingScreen.INSTANCE;
-            case "TakingScreen" -> TakingScreen.INSTANCE;
-            case "GameOverScreen" -> GameOverScreen.INSTANCE;
-            case "StatisticsScreen" -> StatisticsScreen.INSTANCE;
-            case "UpdateScreen" -> UpdateScreen.INSTANCE;
-            default -> null;
-        };
+        for(Screen scr : all_screens) {
+            if(scr.getClass().getName().equals(s)) {
+                return scr;
+            }
+        }
+        return null;
     }
 
     static void reset() {

@@ -1,3 +1,11 @@
+v2.2-beta.5
++ Added an update checker with "stable" and "snapshot" modes
+    Runs asynchronously upon startup and when data is received, opens update screen if a new version is found
+    Can be easily changed between these modes as well as disabled entirely
+    Includes a button to open the GitHub download page
++ Added update checker button to settings window
+* Moved config buttons in settings window
+
 v2.2-beta.4
 + Added tooltip showing file path when hovering over "open config" button
 + Added tooltips for file paths in more cases:

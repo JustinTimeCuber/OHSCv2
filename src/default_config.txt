@@ -27,4 +27,4 @@ set_prevents_trick_points: true
 negative_scores_allowed: true
 
 # Which updates, if any, should be checked for? (STABLE, SNAPSHOT, or NONE)
-update_mode: STABLE
+update_mode: SNAPSHOT

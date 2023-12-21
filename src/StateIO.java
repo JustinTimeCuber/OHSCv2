@@ -21,7 +21,6 @@ public class StateIO {
                 custom.append(sc.tricks[i]);
                 custom.append(",");
             }
-            //custom.append((sc.tricks[sc.tricks.length - 1]));
             state.add("custom_tricks:" + custom);
         }
         state.add("trick_index:" + sc.trick_index);
