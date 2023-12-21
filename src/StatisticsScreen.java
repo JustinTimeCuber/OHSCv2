@@ -122,6 +122,10 @@ public class StatisticsScreen implements Screen {
             sc.text(p.bonuses, statistics_tiles[i].x(text_positions[4]), statistics_tiles[i].cy());
             sc.text(p.times_set, statistics_tiles[i].x(text_positions[5]), statistics_tiles[i].cy());
         }
+        if(open_save_button.mouseInTile() && sc.last_save != null) {
+            sc.textSize(sc.width * 0.015f);
+            sc.drawTooltip(sc.last_save, true);
+        }
     }
 
     @Override

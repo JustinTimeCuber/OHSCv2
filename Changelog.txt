@@ -1,5 +1,7 @@
 v2.2-beta.4
 + Added tooltip showing file path when hovering over "open config" button
++ Added tooltips for file paths in more cases:
+    "Open config" button in settings window and "open save" button in statistics screen
 + Will now attempt to fix broken or outdated config.txt
 + Added confirmation screen for "end game" button
     Enter + RMB still works but is not required
