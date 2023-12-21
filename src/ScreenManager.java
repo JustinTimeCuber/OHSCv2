@@ -40,6 +40,7 @@ public class ScreenManager {
             case "TakingScreen" -> TakingScreen.INSTANCE;
             case "GameOverScreen" -> GameOverScreen.INSTANCE;
             case "StatisticsScreen" -> StatisticsScreen.INSTANCE;
+            case "UpdateScreen" -> UpdateScreen.INSTANCE;
             default -> null;
         };
     }

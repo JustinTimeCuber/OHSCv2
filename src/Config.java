@@ -7,6 +7,7 @@ public class Config {
     static boolean set_penalty_scales = false;
     static boolean set_prevents_trick_points = true;
     static boolean negative_scores_allowed = true;
+    static UpdateMode update_mode = UpdateMode.STABLE;
 
     static void loadConfig(OhHellScoreboardV2 sc) {
         try {
@@ -15,7 +16,7 @@ public class Config {
                 config = sc.loadStrings("config.txt");
                 sc.saveStrings(sc.DATA_PATH + "config.txt", config);
             }
-            boolean[] found = new boolean[8];
+            boolean[] found = new boolean[9];
             for(String s : config) {
                 if(s.isBlank() || s.trim().startsWith("#")) {
                     continue;
@@ -55,6 +56,10 @@ public class Config {
                         negative_scores_allowed = Boolean.parseBoolean(value);
                         found[7] = true;
                     }
+                    case "update_mode" -> {
+                        update_mode = UpdateMode.valueOf(value);
+                        found[8] = true;
+                    }
                     default -> {
                         System.err.println("Unrecognized label: " + label);
                         System.err.println("Attempting to fix config.txt...");
@@ -89,6 +94,7 @@ public class Config {
                 case "set_penalty_scales" -> config[i] = label + ": " + set_penalty_scales;
                 case "set_prevents_trick_points" -> config[i] = label + ": " + set_prevents_trick_points;
                 case "negative_scores_allowed" -> config[i] = label + ": " + negative_scores_allowed;
+                case "update_mode" -> config[i] = label + ": " + update_mode;
             }
         }
         sc.saveStrings(sc.DATA_PATH + "config.txt", config);

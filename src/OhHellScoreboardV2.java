@@ -30,6 +30,7 @@ public class OhHellScoreboardV2 extends PApplet {
     float aspect_ratio;
     int millis_last_frame = 0;
     final boolean debug = false;
+    final UpdateCheckerThread update_checker = new UpdateCheckerThread(this);
     final PrintStream system_err = System.err;
     final PrintStream placebo_output = new PrintStream(new OutputStream() {
         @Override
@@ -354,6 +355,9 @@ public class OhHellScoreboardV2 extends PApplet {
         Suit.loadAll(this);
         font = createFont("assets/NTSomic-Bold.ttf", 64);
         textFont(font);
+        if(Config.update_mode != UpdateMode.NONE) {
+            update_checker.start();
+        }
     }
 
     @Override
